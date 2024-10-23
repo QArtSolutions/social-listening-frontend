@@ -1,28 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom";
 
 const LoginButton = () => {
-  const { loginWithRedirect, logout, isAuthenticated,user } = useAuth0();
+  const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      window.localStorage.setItem("isLogedIn", true);
+      navigate('/'); 
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
-    <ul>
-  {isAuthenticated ? (
-    <li>
-        <button onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
-          Log Out
-        </button>
-      </li>
-   ) : (
-      <li>
-      <button onClick={() => loginWithRedirect()}>Log In</button>
-      </li>
-   )}
+    <div>
+      {!isAuthenticated && (
+        <button onClick={() => loginWithRedirect()}>Log In</button>
+      )}
 
-      <li>{isAuthenticated && <p>{user.name}</p>}
-      </li>
- 
-            
-    </ul>
+    </div>
   );
 };
 

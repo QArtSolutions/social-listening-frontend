@@ -1,36 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import LoginButton from './component/login';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './component/home';
-import { useAuth0 } from "@auth0/auth0-react";
+import Entry from './component/entry'; // New page for login form
 
 const App = () => {
-  const { isAuthenticated, isLoading } = useAuth0();
-  const [login, setLogin] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set login state only after checking the authentication status
-    if (!isLoading) {
-      setLogin(isAuthenticated || window.localStorage.getItem("isLogedIn") === "true");
-    }
-  }, [isAuthenticated, isLoading]);
+    const loggedIn = window.localStorage.getItem("isLoggedIn") === "true";
+    setIsAuthenticated(loggedIn);
+    setLoading(false);
+  }, []);
 
-  if (isLoading || login === null) {
-    // Show loading spinner while the authentication state is being checked
+  if (loading) {
     return <div>Loading...</div>;
   }
 
   return (
     <div>
-      <h1>Hello, This is a React App!</h1>
-      <h2>Happy Coding!!</h2> 
+      <h1>Qart Solutions</h1>
+      <h2>Social-Listening Platform</h2>
 
       <BrowserRouter>
         <Routes>
-          {/* Redirect to Home or Login based on login state */}
-          <Route path="/" element={login ? <Home /> : <LoginButton />} />
+          <Route path="/" element={isAuthenticated ? <Home /> : <LoginButton />} />
+          <Route path="/entry" element={<Entry setIsAuthenticated={setIsAuthenticated} />} />
         </Routes>
       </BrowserRouter>
+    </div>
+  );
+};
+
+const LoginButton = () => {
+  const navigate = useNavigate();
+  
+  return (
+    <div>
+      <button onClick={() => navigate('/entry')}>Login</button>
     </div>
   );
 };

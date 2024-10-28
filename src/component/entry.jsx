@@ -1,10 +1,8 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './entry.css'; 
+import './entry.css';
 
 const Entry = ({ setIsAuthenticated }) => {
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -13,66 +11,45 @@ const Entry = ({ setIsAuthenticated }) => {
 
   async function loginUser(credentials) {
     try {
-      const response = await fetch('http://localhost:3000/api/users/login', {
+      const response = await fetch('http://localhost:3001/api/users/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
       });
-  
+
       if (!response.ok) {
-        const errorData = await response.json();  // Get the error message
+        const errorData = await response.json();
         throw new Error(errorData.message);
       }
-  
+
       return await response.json();
-  
     } catch (error) {
       console.error('Login error:', error.message);
       throw error;
     }
   }
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     try {
       const response = await loginUser({ email, password });
-  
-      // If login is successful, handle it
+
       window.localStorage.setItem("isLoggedIn", true);
       setIsAuthenticated(true);
       navigate('/');
-      
     } catch (error) {
-      setError(error.message);  // Display the error message in the UI
+      setError(error.message);
       setLoading(false);
     }
   };
-  
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-
-//     const response = await loginUser({ username, email, password });
-
-//     if (response.success) {
-//       window.localStorage.setItem("isLoggedIn", true);
-//       setIsAuthenticated(true);
-//       navigate('/');  
-//     } else {
-//       setError('Invalid credentials');
-//       setLoading(false);
-//     }
-//   };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <img src="./logo.png" alt="Qart Logo" className="logo" />
         <h2>Login To Your Account</h2>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
@@ -100,10 +77,6 @@ const Entry = ({ setIsAuthenticated }) => {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-        <p className="signup-prompt">
-  You don't have an account yet? <a href="http://localhost:3000/api/users/register">Create one now!</a>
-</p>
-
       </div>
     </div>
   );

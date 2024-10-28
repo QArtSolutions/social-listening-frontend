@@ -1,0 +1,17 @@
+.social-media-graphic {
+    position: relative;
+    width: 400px;       /* Width of the large icon circle */
+    height: 400px;      /* Height of the large icon circle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #007bff; /* Dashed border to match the design */
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.large-icon {
+    width: 100%;        /* Fill the circle */
+    height: 100%;       /* Fill the circle */
+    object-fit: absolute;  /* Ensures the image covers the area without distortion */
+}

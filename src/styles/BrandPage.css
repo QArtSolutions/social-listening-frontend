@@ -1,0 +1,34 @@
+.brand-page-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+.header {
+    width: 100%;
+    padding: 10px 20px;
+    text-align: left;
+    background-color: #fff;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    height: 100%;            /* Make the logo take the full height of the header */
+    max-height: 70px;        /* Set a max height to prevent it from overflowing */
+    width: auto;             /* Keep the aspect ratio */
+    object-fit: absolute;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    max-width: 1200px;
+    margin-top: 50px;
+}
+

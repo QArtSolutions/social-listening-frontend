@@ -1,0 +1,41 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  background-color: #2a2a2a;
+  color: white;
+  z-index: 1000;
+}
+
+.logo-image {
+  height: 50px; /* Adjust as necessary */
+  width: auto;
+}
+
+.search-bar {
+  flex: 1;
+  max-width: 400px;
+  margin: 0 1rem;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff; /* Ensures the background is white */
+  color: #333; /* Sets text color to be visible on white background */
+  font-size: 1rem;
+}
+
+.search-bar::placeholder {
+  color: #888; /* Placeholder color */
+}
+
+.profile-icon {
+  font-size: 1.5rem;
+}
+
+  

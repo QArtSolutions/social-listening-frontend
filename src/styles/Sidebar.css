@@ -1,0 +1,18 @@
+.sidebar {
+    width: 200px;
+    padding: 1rem;
+    background-color: #333;
+    color: white;
+  }
+  
+  .sidebar a {
+    display: block;
+    margin: 0.5rem 0;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .sidebar a:hover {
+    color: #ff3b30; /* Highlight color */
+  }
+  

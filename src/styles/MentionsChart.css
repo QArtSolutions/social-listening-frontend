@@ -1,7 +1,32 @@
-.mentions-chart {
-  width: 100%;
-  max-width: 600px;
-  height: 200px; /* Set a fixed height */
-  margin: auto;
+/* .mentions-chart {
+  margin: auto; 
+  margin-bottom: 1.5rem;
+} */
+
+.date-range-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.date-range-buttons button {
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border: 1px solid #007bff;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.date-range-buttons button:hover {
+  background-color: #0056b3;
+}
+
+
+.chart-container {
+  margin: auto; 
   margin-bottom: 1.5rem;
 }

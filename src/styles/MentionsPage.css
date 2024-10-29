@@ -1,0 +1,41 @@
+/* Layout container for the entire page */
+.mentions-page {
+  display: flex;
+  padding-top: 60px; /* Offset for fixed header */
+}
+
+/* Fixed sidebar styling */
+.sidebar {
+  position: fixed;
+  top: 60px; /* Start below the header */
+  left: 0;
+  width: 200px;
+  height: calc(100vh - 60px); /* Full height minus header */
+  background-color: #333;
+  padding: 1rem;
+  color: white;
+  overflow-y: auto;
+}
+
+/* Main content area */
+.mentions-content {
+  margin-left: 200px; /* Offset for fixed sidebar */
+  padding: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  height: calc(100vh - 60px); /* Full height minus header */
+}
+
+/* Chart and mentions list container */
+h2 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.mentions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}

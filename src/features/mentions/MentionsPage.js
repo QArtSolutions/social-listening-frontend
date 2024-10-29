@@ -17,7 +17,7 @@ const MentionsPage = () => {
   return (
     <div className="mentions-page">
       <Header />  
-      <Sidebar />
+      <Sidebar projectName="Raymond"/>
       <div className="mentions-content">
         <h2>Total Mentions</h2>
         <MentionsChart />

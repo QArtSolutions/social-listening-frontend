@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
+import { useBrand } from '../../contexts/BrandContext';
 import {
   Chart as ChartJS,
   LineElement,
@@ -14,6 +15,7 @@ import { addDays, subMonths, format } from 'date-fns';
 ChartJS.register(LineElement, LinearScale, CategoryScale, PointElement, Tooltip, Legend);
 
 const MentionsChart = () => {
+  const { brand } = useBrand();
   const [selectedRange, setSelectedRange] = useState("30d"); // Default to Last 30 Days
   const [startDate, setStartDate] = useState(new Date());
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
@@ -53,7 +55,7 @@ const MentionsChart = () => {
       labels,
       datasets: [
         {
-          label: `Data for ${selectedRange}`,
+          label: `Data for ${brand}`,
           data: dataPoints,
           fill: false,
           borderColor: '#007bff',

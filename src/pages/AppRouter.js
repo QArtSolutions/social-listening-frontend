@@ -8,6 +8,7 @@ import { BrandProvider } from '../contexts/BrandContext';
 const SignUp = lazy(() => import('../features/auth/SignUp'));
 const BrandPage = lazy(() => import('./BrandPage'));
 const MentionsPage = lazy(() => import('../features/mentions/MentionsPage'));
+const Comparision = lazy(() => import('../features/comparision/comparisionpage'));
 
 const AppRouter = ({ isAuthenticated, setIsAuthenticated }) => {
   
@@ -45,6 +46,17 @@ const AppRouter = ({ isAuthenticated, setIsAuthenticated }) => {
           element={<Entry setIsAuthenticated={setIsAuthenticated} />}
         />
         <Route exact path="/mentions" element={<MentionsPage />} />
+        <Route
+          exact
+          path="/comparision"
+          element={
+            isAuthenticated ? (
+              <Comparision setIsAuthenticated={setIsAuthenticated} />
+            ) : (
+              <Entry setIsAuthenticated={setIsAuthenticated} />
+            )
+          }
+        />
         {/* Add more routes here */}
       </Routes>
       </Suspense>

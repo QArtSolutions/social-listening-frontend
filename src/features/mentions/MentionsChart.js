@@ -18,7 +18,7 @@ ChartJS.register(LineElement, LinearScale, CategoryScale, PointElement, Tooltip,
 
 const MentionsChart = () => {
   const { brand } = useBrand();
-  const [selectedRange, setSelectedRange] = useState("30d"); // Default to Last 30 Days
+  const [selectedRange, setSelectedRange] = useState("7d"); // Default to Last 30 Days
   const [startDate, setStartDate] = useState(new Date());
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const [cursor, setCursor] = useState(null); // State to track cursor for pagination

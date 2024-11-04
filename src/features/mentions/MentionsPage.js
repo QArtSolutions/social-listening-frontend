@@ -66,7 +66,7 @@ const MentionsPage = () => {
           ))}
         </div>
         {cursor && (
-          <button onClick={fetchMentions}>Load More</button>
+          <button className="load-more-button" onClick={fetchMentions}>Load More</button>
         )}
       </div>
     </div>

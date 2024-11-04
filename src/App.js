@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import AppRouter from './pages/AppRouter';
 import './index.css';
-
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -20,7 +19,6 @@ function App() {
 
   return (
     <div>
-      
       <BrowserRouter>
         <AppRouter isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
       </BrowserRouter>

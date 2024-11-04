@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import './SignUp.css'; // Import the CSS file for styling
+import React, { useState, startTransition } from 'react';
 import { registerUser } from '../../services/api/auth';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Make sure to install fontawesome
+import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 
 
 const SignUp = () => {
@@ -32,76 +32,81 @@ const SignUp = () => {
       return;
     }
 
-    try {
-      const response = await registerUser(username, email, password);
-      console.log('Success:', response); // Check the API response
-      setMessage('User registered successfully!');
-      setMessageType('success');
-    } catch (error) {
-      console.error('Error:', error); // Log the error for debugging
-      setMessage(error.message || 'Registration failed. Please try again.');
-      setMessageType('error');
-    }
+    startTransition(async () => {
+      try {
+        const response = await registerUser(username, email, password);
+        console.log('Success:', response);
+        setMessage('User registered successfully!');
+        setMessageType('success');
+      } catch (error) {
+        console.error('Error:', error);
+        setMessage(error.message || 'Registration failed. Please try again.');
+        setMessageType('error');
+      }
+    });
   };
 
   return (
-    <div className="signup-container">
-      <div className="signup-box">
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-md w-96 flex flex-col">
+        <h2 className="text-2xl font-serif text-gray-600 text-left mb-4">Create an Account</h2>
+        
+        {message && (
+          <div className={`text-sm text-center mb-4 ${messageType === 'error' ? 'text-red-500' : 'text-green-500'}`}>
+            {message}
+          </div>
+        )}
 
-        <img src="https://tse1.mm.bing.net/th?id=OIP.Gbn-yi8QZV8ClA4VZrxIoAHaEd&pid=Api&P=0&h=180" alt="logo" className="logo" />
-
-        <h2>Create an Account</h2>
-
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label>Name</label>
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          <div className="mb-6 relative w-full">
             <input
-              type="name"
+              type="text"
               placeholder="Name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              className="border-b border-gray-300 focus:border-blue-500 focus:outline-none w-full pb-2 text-gray-600 placeholder-gray-300"
             />
           </div>
 
-          <div className="input-group">
-            <label>Email</label>
+          <div className="mb-6 relative w-full">
             <input
               type="email"
               placeholder="Business Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="border-b border-gray-300 focus:border-blue-500 focus:outline-none w-full pb-2 text-gray-600 placeholder-gray-300"
             />
           </div>
 
-          <div className="input-group">
-            <label>Password</label>
+          <div className="mb-6 relative w-full">
             <input
               type="password"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="border-b border-gray-300 focus:border-blue-500 focus:outline-none w-full pb-2 text-gray-600 placeholder-gray-300"
             />
           </div>
 
-          <button type="submit" className="submit-btn">Sign Up</button>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 text-lg font-medium hover:bg-blue-700 transition duration-200"
+          >
+            Sign Up
+          </button>
         </form>
 
-        <p>
+        <p className="text-center text-sm text-gray-500 mt-4">
           By signing up I agree to the
-          <a href="/terms" target="_blank"> terms & conditions </a>
-          and <a href="/privacy" target="_blank"> privacy policy</a>.
+          <a href="/terms" target="_blank" className="text-blue-600 hover:underline"> terms & conditions </a>
+          and <a href="/privacy" target="_blank" className="text-blue-600 hover:underline"> privacy policy</a>.
         </p>
-        
-        {message && (
-          <div className={`message ${messageType}`}>
-            {message}
-          </div>
-        )}
       </div>
     </div>
+
   );
 };
 

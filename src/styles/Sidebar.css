@@ -1,0 +1,33 @@
+.sidebar {
+  position: fixed;
+  top: 60px; /* Start below the header */
+  left: 0;
+  width: 200px;
+  height: calc(100vh - 60px); /* Full height minus header */
+  background-color: #333;
+  padding: 1rem;
+  color: white;
+  overflow-y: auto;
+}
+
+/* Project name styling */
+.project-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #ff3b30; /* Optional color for emphasis */
+}
+
+/* Links section */
+.sidebar-links a {
+  display: block;
+  margin: 0.5rem 0;
+  color: white;
+  text-decoration: none;
+}
+
+.sidebar-links a:hover {
+  color: #ff3b30; /* Highlight color */
+}
+
+  

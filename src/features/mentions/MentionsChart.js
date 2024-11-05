@@ -95,7 +95,7 @@ const MentionsChart = () => {
       labels,
       datasets: [
         {
-          label: `${brand} Mentions`,
+          label: `Brand Mentions`,
           data: mentionsPerDate,
           borderColor: '#4caf50',
           fill: false,

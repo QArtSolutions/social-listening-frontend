@@ -27,7 +27,8 @@ const MentionsPage = () => {
         },
         params: {
           query: brand,
-          cursor: cursor // Pass the cursor for pagination
+          cursor: cursor, // Pass the cursor for pagination
+          count: 10
         }
       };
 

@@ -14,9 +14,16 @@
 }
 
 .logo-image {
-  height: 50px; /* Adjust as necessary */
-  width: auto;
+  height: 85px; /* Adjusted for a more balanced size */
+  width: auto;  /* Keeps the aspect ratio */
+  max-width: 100%; /* Ensures it scales with the header */
+  object-fit: contain; /* Ensures it fits within the box without distortion */
+  display: block;
+  margin-bottom: 10px;
+  margin-top: 0px;
+  /* margin: 0 10px; Adds a bit of space around the logo */
 }
+
 
 .search-bar {
   flex: 1;
@@ -37,5 +44,7 @@
 .profile-icon {
   font-size: 1.5rem;
 }
+
+
 
   

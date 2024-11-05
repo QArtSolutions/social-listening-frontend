@@ -39,3 +39,25 @@ h2 {
   gap: 1rem;
   margin-top: 1rem;
 }
+.load-more-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  text-align: center;
+  transition: background-color 0.3s ease;
+}
+
+.load-more-button:hover {
+  background-color: #45a049;
+}
+
+.load-more-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}

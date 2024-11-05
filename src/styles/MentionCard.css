@@ -1,35 +1,60 @@
+/* MentionCard.css */
+
 .mention-card {
-    border: 1px solid #ddd;
-    padding: 1rem;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .mention-title {
-    font-size: 1rem;
-    color: #333;
-    margin-bottom: 0.5rem;
-  }
-  
-  .mention-info {
-    font-size: 0.85rem;
-    color: #666;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-  
-  .mention-actions {
-    display: flex;
-    gap: 1rem;
-    color: #007bff;
-    font-size: 0.9rem;
-  }
-  
-  .mention-actions span {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mention-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.profile-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.user-info .user-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.user-info .user-description {
+  font-size: 14px;
+  color: #555;
+  margin: 4px 0 0;
+}
+
+.mention-card-body {
+  margin: 12px 0;
+}
+
+.tweet-text {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #333;
+}
+
+.mention-card-footer {
+  display: flex;
+  gap: 12px; /* Add spacing between items */
+  font-size: 14px;
+  color: #777;
+}
+
+.created-at,
+.like-count,
+.retweet-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}

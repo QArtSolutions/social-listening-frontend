@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useBrand } from '../../contexts/BrandContext';
+import axios from 'axios';
+
 import {
   Chart as ChartJS,
   LineElement,
@@ -16,9 +18,65 @@ ChartJS.register(LineElement, LinearScale, CategoryScale, PointElement, Tooltip,
 
 const MentionsChart = () => {
   const { brand } = useBrand();
-  const [selectedRange, setSelectedRange] = useState("30d"); // Default to Last 30 Days
+  const [selectedRange, setSelectedRange] = useState("7d"); // Default to Last 30 Days
   const [startDate, setStartDate] = useState(new Date());
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+  const [cursor, setCursor] = useState(null); // State to track cursor for pagination
+
+  useEffect(() => {
+    const fetchMentionsData = async () => {
+      try {
+        let allMentions = [];
+        let currentCursor = cursor;
+
+        do {
+          const response = await axios.get('https://twitter-pack.p.rapidapi.com/search/tweet', {
+            headers: {
+              'x-rapidapi-key': '6009977b2amsh2d3f65eafe06fd2p12ec3fjsnc366b1c8aac1',
+              'x-rapidapi-host': 'twitter-pack.p.rapidapi.com'
+            },
+            params: {
+              query: brand,
+              cursor: currentCursor, // Pass the cursor to fetch additional pages
+            }
+          });
+
+          const mentions = response.data.data?.data || [];
+          allMentions = [...allMentions, ...mentions];
+
+          // Update the cursor for the next page
+          currentCursor = response.data.cursor || null;
+
+        } while (currentCursor); // Continue fetching as long as there's a cursor
+
+        processMentionsData(allMentions); // Process all accumulated mentions
+      } catch (error) {
+        console.error('Error fetching mentions:', error);
+      }
+    };
+
+    fetchMentionsData();
+  }, [brand, selectedRange, startDate]);
+
+  const processMentionsData = (mentions) => {
+    const labels = generateLabels();
+    const mentionsPerDate = labels.map(label => {
+      const count = mentions.filter(mention => format(new Date(mention.legacy.created_at), 'd MMM') === label).length;
+      return count;
+    });
+
+    setChartData({
+      labels,
+      datasets: [
+        {
+          label: `${brand} Mentions`,
+          data: mentionsPerDate,
+          borderColor: '#4caf50',
+          fill: false,
+        }
+      ]
+    });
+  };
 
   // Helper function to generate date labels based on the selected range
   const generateLabels = () => {
@@ -40,30 +98,6 @@ const MentionsChart = () => {
     }
     return labels;
   };
-
-  // Generate random data points (in a real app, replace with actual data fetching logic)
-  const generateData = (numPoints) => {
-    return Array.from({ length: numPoints }, () => Math.floor(Math.random() * 100) + 10);
-  };
-
-  // Update chart data based on the selected range
-  useEffect(() => {
-    const labels = generateLabels();
-    const dataPoints = generateData(labels.length);
-
-    setChartData({
-      labels,
-      datasets: [
-        {
-          label: `Data for ${brand}`,
-          data: dataPoints,
-          fill: false,
-          borderColor: '#007bff',
-          tension: 0.1,
-        },
-      ],
-    });
-  }, [selectedRange, startDate]);
 
   const options = {
     responsive: true,
@@ -97,6 +131,3 @@ const MentionsChart = () => {
 };
 
 export default MentionsChart;
-
-
-

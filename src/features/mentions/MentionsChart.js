@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useBrand } from '../../contexts/BrandContext';
 import axios from 'axios';
+// import { parse } from 'date-fns';
 
 import {
   Chart as ChartJS,
@@ -12,59 +13,84 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { addDays, subMonths, format } from 'date-fns';
+import { addDays, subMonths, format, parse } from 'date-fns';
 
 ChartJS.register(LineElement, LinearScale, CategoryScale, PointElement, Tooltip, Legend);
 
 const MentionsChart = () => {
   const { brand } = useBrand();
-  const [selectedRange, setSelectedRange] = useState("7d"); // Default to Last 30 Days
+  const [selectedRange, setSelectedRange] = useState("7d");
   const [startDate, setStartDate] = useState(new Date());
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
-  const [cursor, setCursor] = useState(null); // State to track cursor for pagination
 
   useEffect(() => {
-    const fetchMentionsData = async () => {
+    const fetchAllMentionsData = async () => {
       try {
         let allMentions = [];
-        let currentCursor = cursor;
+        let currentCursor = null;
+        let hasMoreData = true;
 
-        do {
+        while (hasMoreData) {
           const response = await axios.get('https://twitter-pack.p.rapidapi.com/search/tweet', {
             headers: {
               'x-rapidapi-key': '6009977b2amsh2d3f65eafe06fd2p12ec3fjsnc366b1c8aac1',
               'x-rapidapi-host': 'twitter-pack.p.rapidapi.com'
             },
             params: {
+              count: 1000,
               query: brand,
-              cursor: currentCursor, // Pass the cursor to fetch additional pages
+              cursor: currentCursor,
             }
           });
 
           const mentions = response.data.data?.data || [];
           allMentions = [...allMentions, ...mentions];
 
-          // Update the cursor for the next page
+          // Check if there's a cursor for the next page; if not, exit the loop
           currentCursor = response.data.cursor || null;
+          hasMoreData = currentCursor != null;
+        }
 
-        } while (currentCursor); // Continue fetching as long as there's a cursor
-
-        processMentionsData(allMentions); // Process all accumulated mentions
+        processMentionsData(allMentions);
       } catch (error) {
         console.error('Error fetching mentions:', error);
       }
     };
 
-    fetchMentionsData();
+    fetchAllMentionsData();
   }, [brand, selectedRange, startDate]);
 
   const processMentionsData = (mentions) => {
     const labels = generateLabels();
-    const mentionsPerDate = labels.map(label => {
-      const count = mentions.filter(mention => format(new Date(mention.legacy.created_at), 'd MMM') === label).length;
-      return count;
+    const mentionsCountByDate = labels.reduce((acc, label) => {
+      acc[label] = 0;
+      return acc;
+    }, {});
+  
+    mentions.forEach(mention => {
+      const createdAt = mention.legacy?.created_at;
+  
+      if (createdAt) {
+        try {
+          // Parse date using 'new Date' for direct parsing
+          const parsedDate = new Date(createdAt);
+          const mentionDate = format(parsedDate, 'd MMM');
+  
+          // Increment the count for the parsed date
+          if (mentionsCountByDate.hasOwnProperty(mentionDate)) {
+            mentionsCountByDate[mentionDate] += 1;
+          }
+        } catch (error) {
+          console.warn("Error parsing date:", createdAt, error);
+        }
+      } else {
+        console.warn("Mention missing created_at field:", mention);
+      }
     });
-
+  
+    // Convert counts into an array format for the chart
+    const mentionsPerDate = labels.map(label => mentionsCountByDate[label]);
+  
     setChartData({
       labels,
       datasets: [
@@ -77,7 +103,7 @@ const MentionsChart = () => {
       ]
     });
   };
-
+  
   // Helper function to generate date labels based on the selected range
   const generateLabels = () => {
     const labels = [];

@@ -6,7 +6,7 @@ const Header = () => {
     return (
       <header className="header">
         <Link to="/" className="logo">
-          <img src="/SocialAwaz (8).png" alt="social awaz" className="logo-image" /> {/* Logo Image */}
+          <img src="/SocialAwaz.png" alt="social awaz" className="logo-image" /> {/* Logo Image */}
         </Link>
         <input type="text" placeholder="Search through mentions, authors & domains..." className="search-bar" />
         <Link to="/profile" className="profile-icon">👤</Link>

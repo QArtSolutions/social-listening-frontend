@@ -17,7 +17,7 @@
 }
 
 .logo {
-    height: 100%;            /* Make the logo take the full height of the header */
+    height: 200%;            /* Make the logo take the full height of the header */
     max-height: 70px;        /* Set a max height to prevent it from overflowing */
     width: auto;             /* Keep the aspect ratio */
     object-fit: absolute;

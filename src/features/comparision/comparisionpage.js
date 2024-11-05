@@ -1,122 +1,400 @@
+// import React, { useState, useEffect } from 'react';
+// import MentionsChart from '../mentions/MentionsChart';
+// import MentionCard from '../mentions/MentionCard';
+// import Sidebar from '../../components/layout/Sidebar';
+// import Header from '../../components/layout/Header';
+// import { useBrand } from '../../contexts/BrandContext';
+// import axios from 'axios';
+// import '../../styles/MentionsPage.css';
+
+// const MentionsPage = () => {
+//   const [mentions, setMentions] = useState([]);
+//   const { brand } = useBrand();
+
+//   useEffect(() => {
+//     const fetchMentions = async () => {
+//       try {
+//         const url = 'https://instagram-scraper-api3.p.rapidapi.com/hashtag_media';
+//         const options = {
+//           headers: {
+//             'x-rapidapi-key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
+//             'x-rapidapi-host': 'instagram-scraper-api3.p.rapidapi.com'
+//           },
+//           params: {
+//             hashtag: brand,
+//             feed_type: 'recent'
+//           }
+//         };
+
+//         const response = await axios.get(url, options);
+        
+//         console.log("Full response:", response.data); // Debugging log
+//         const mentionsData = response.data.results || []; // Adjust based on actual response structure
+
+//         setMentions(Array.isArray(mentionsData) ? mentionsData : []);
+//       } catch (error) {
+//         console.error('Error fetching mentions:', error);
+//         setMentions([]); // Clear mentions on error
+//       }
+//     };
+
+//     fetchMentions();
+//   }, [brand]);
+
+//   return (
+//     <div className="mentions-page">
+//       <Header />
+//       <Sidebar projectName={brand}/>   
+//       <div className="mentions-content">
+//         <h2>Total Mentions for {brand}</h2>
+//         <MentionsChart />
+//         <div className="mentions-list">
+//           {mentions.length > 0 ? (
+//             mentions.map((mention, index) => (
+//               <MentionCard key={mention.id || index} mention={mention} />
+//             ))
+//           ) : (
+//             <p>No mentions found for this brand. Is the array empty</p>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MentionsPage;
+
+import axios from 'axios';
 import React, { useState } from 'react';
 import Sidebar from '../../components/layout/Sidebar';
 import Header from '../../components/layout/Header';
-import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+import ComparisonCard from './comparisioncard';
 
 const ComparisonPage = () => {
-  const [brand1, setBrand1] = useState('');
-  const [brand2, setBrand2] = useState('');
-  const [data, setData] = useState(null);
+  const [hashtag1, setHashtag1] = useState('');
+  const [hashtag2, setHashtag2] = useState('');
+  const [hashtag1Count, setHashtag1Count] = useState(0);
+  const [hashtag2Count, setHashtag2Count] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Placeholder function for fetching comparison data
-  const fetchComparisonData = () => {
-    // Mock data; replace this with your API fetch later
-    setData({
-      labels: ['5 Sep', '15 Sep', '25 Sep', '5 Oct'],
-      datasets: [
-        {
-          label: brand1,
-          data: [40, 60, 55, 70],
-          borderColor: 'rgb(34, 197, 94)', // green
-          backgroundColor: 'rgba(34, 197, 94, 0.2)',
-        },
-        {
-          label: brand2,
-          data: [30, 50, 65, 60],
-          borderColor: 'rgb(59, 130, 246)', // blue
-          backgroundColor: 'rgba(59, 130, 246, 0.2)',
-        },
-      ],
-    });
-  };
+  const fetchHashtagData = async () => {
+    if (!hashtag1 || !hashtag2) {
+      alert("Please enter both hashtags.");
+      return;
+    }
 
-  const handleCompare = () => {
-    fetchComparisonData(); // This will be an API call in the future
+    setLoading(true);
+    setError(null);
+
+    try {
+      const options1 = {
+        method: 'GET',
+        url: 'https://instagram-data1.p.rapidapi.com/hashtag/info',
+        params: { hashtag: hashtag1 },
+        headers: {
+          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83', 
+          'X-RapidAPI-Host': 'instagram-data1.p.rapidapi.com',
+        },
+      };
+
+      const options2 = {
+        method: 'GET',
+        url: 'https://instagram-data1.p.rapidapi.com/hashtag/info',
+        params: { hashtag: hashtag2 },
+        headers: {
+          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
+          'X-RapidAPI-Host': 'instagram-data1.p.rapidapi.com',
+        },
+      };
+
+      // Fetch data for both hashtags concurrently
+      const [response1, response2] = await Promise.all([
+        axios.request(options1),
+        axios.request(options2),
+      ]);
+
+      // Update counts based on the API response
+      setHashtag1Count(response1.data.count);
+      setHashtag2Count(response2.data.count);
+
+    } catch (err) {
+      setError('Failed to fetch data.');
+      console.error('API Error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <Sidebar />
+    <div>
+      {/* <Sidebar />
+      <Header /> */}
 
-      <div className="flex flex-col flex-1 bg-gray-100">
-        {/* Header */}
-        <Header />
+      <div className="comparison-page">
+        <h1>Instagram Hashtag Comparison</h1>
+        
+        <input
+          type="text"
+          placeholder="Enter first hashtag"
+          value={hashtag1}
+          onChange={(e) => setHashtag1(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Enter second hashtag"
+          value={hashtag2}
+          onChange={(e) => setHashtag2(e.target.value)}
+        />
+        
+        <button onClick={fetchHashtagData}>Fetch Hashtag Data</button>
 
-        <div className="p-6">
-          <h1 className="text-2xl font-semibold mb-4">Comparison</h1>
+        {loading && <p>Loading...</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
 
-          <div className="flex space-x-4 mb-6">
-            <input
-              type="text"
-              placeholder="Enter first brand"
-              value={brand1}
-              onChange={(e) => setBrand1(e.target.value)}
-              className="px-4 py-2 border rounded-lg w-1/2"
-            />
-            <input
-              type="text"
-              placeholder="Enter second brand"
-              value={brand2}
-              onChange={(e) => setBrand2(e.target.value)}
-              className="px-4 py-2 border rounded-lg w-1/2"
-            />
-            <button
-              onClick={handleCompare}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-            >
-              Compare
-            </button>
-          </div>
-
-          {/* Comparison Table */}
-          <div className="bg-white rounded-lg shadow p-6 mb-6">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Metric</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{brand1 || 'Brand 1'}</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{brand2 || 'Brand 2'}</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Total Mentions</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">27K</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">16K</td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Instagram Mentions</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5K</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3K</td>
-                </tr>
-                {/* Add more rows as needed */}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Comparison Chart */}
-          {data && (
-            <div className="bg-white rounded-lg shadow p-6">
-              <Line data={data} options={{ responsive: true, plugins: { legend: { position: 'top' } } }} />
-            </div>
-          )}
+        <div className="results">
+          <ComparisonCard 
+            hashtag1={hashtag1} 
+            hashtag1Count={hashtag1Count} 
+            hashtag2={hashtag2} 
+            hashtag2Count={hashtag2Count} 
+          />
         </div>
       </div>
-    </div>  
+    </div>
   );
 };
 
 export default ComparisonPage;
+
+
+
+//***** */ Below gives a json file kinda output****
+
+// import axios from 'axios';
+// import React, { useState } from 'react';
+// import Sidebar from '../../components/layout/Sidebar';
+// import Header from '../../components/layout/Header';
+
+// const ComparisonPage = () => {
+//   const [hashtag, setHashtag] = useState('');  // Use a single hashtag input
+//   const [data, setData] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState('');
+
+//   const fetchHashtagData = async () => {
+//     if (!hashtag) {
+//       alert("Please enter a hashtag.");
+//       return;
+//     }
+
+//     setLoading(true);
+//     setError('');
+//     setData(null);
+
+//     try {
+//       const url = 'https://instagram-scraper-api3.p.rapidapi.com/hashtag_media';
+//       const options = {
+//         headers: {
+//           'x-rapidapi-key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
+//           'x-rapidapi-host': 'instagram-scraper-api3.p.rapidapi.com'
+//         },
+//         params: { 
+//           hashtag: hashtag,
+//           feed_type: 'recent'
+//          }
+//       };
+
+//       const response = await axios.get(url, options);
+//       setData(response.data);  // Store the API response in state
+//     } catch (err) {
+//       setError('Error fetching data');
+//       console.error('API Error:', err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div>
+//       {/* <Sidebar />
+//       <Header /> */}
+//       <div className="content">
+//         <h1>Instagram Hashtag Data</h1>
+        
+//         <input
+//           type="text"
+//           value={hashtag}
+//           onChange={(e) => setHashtag(e.target.value)}
+//           placeholder="Enter a hashtag"
+//         />
+//         <button onClick={fetchHashtagData}>Fetch Hashtag Data</button>
+
+//         {loading && <p>Loading...</p>}
+//         {error && <p style={{ color: 'red' }}>{error}</p>}
+        
+//         {data && (
+//           <div>
+//             <h2>API Response</h2>
+//             <pre>{JSON.stringify(data, null, 2)}</pre> {/* Display raw JSON */}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ComparisonPage;
+
+
+
+
+// import React, { useState } from 'react';
+// import Sidebar from '../../components/layout/Sidebar';
+// import Header from '../../components/layout/Header';
+// import { Line } from 'react-chartjs-2';
+// import {
+//   Chart as ChartJS,
+//   CategoryScale,
+//   LinearScale,
+//   PointElement,
+//   LineElement,
+//   Title,
+//   Tooltip,
+//   Legend,
+// } from 'chart.js';
+
+// ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+
+// const ComparisonPage = () => {
+//   const [brand1, setBrand1] = useState('');
+//   const [brand2, setBrand2] = useState('');
+//   const [data, setData] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState('');
+
+
+//   const fetchComparisonData = async () => {
+//     if (!brand1 || !brand2) {
+//       alert("Please enter both hashtags.");
+//       return;
+//     }
+
+//      const url = 'https://instagram-scraper-api3.p.rapidapi.com/hashtag_media';
+//         const options = {
+//           headers: {
+//             'x-rapidapi-key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
+//             'x-rapidapi-host': 'instagram-scraper-api3.p.rapidapi.com'
+//           },
+//           params: {
+//             hashtag: brand1,
+//             feed_type: 'recent'
+//           }
+//     };
+
+//     setLoading(true);
+//     setError('');
+
+//     try {
+//       const response = await fetch(url, options);
+//       if (!response.ok) {
+//         throw new Error(`Error ${response.status}: ${response.statusText}`);
+//       }
+//       const json = await response.json();
+//       setData(json);
+//     } catch (error) {
+//       console.error("Error fetching data:", error.message);
+//       setError(`Failed to fetch data: ${error.message}`);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+
+//   return (
+//     <div style={{ display: 'flex', minHeight: '100vh' }}>
+//       <Sidebar />
+
+//       <div style={{ flex: 1, marginLeft: '200px' }}> {/* Adjust sidebar width if necessary */}
+//         <Header />
+
+//         <div style={{ padding: '20px', maxWidth: '800px', margin: 'auto' }}>
+//           <h2>Compare Hashtags</h2>
+//           <div style={{ marginBottom: '20px' }}>
+//             <label>
+//               <span>Hashtag 1:</span>
+//               <input
+//                 type="text"
+//                 value={brand1}
+//                 onChange={(e) => setBrand1(e.target.value)}
+//                 style={{ display: 'block', width: '100%', padding: '8px', margin: '10px 0' }}
+//               />
+//             </label>
+//           </div>
+
+//           <div style={{ marginBottom: '20px' }}>
+//             <label>
+//               <span>Hashtag 2:</span>
+//               <input
+//                 type="text"
+//                 value={brand2}
+//                 onChange={(e) => setBrand2(e.target.value)}
+//                 style={{ display: 'block', width: '100%', padding: '8px', margin: '10px 0' }}
+//               />
+//             </label>
+//           </div>
+
+//           <button
+//             onClick={fetchComparisonData}
+//             style={{ padding: '10px 20px', backgroundColor: '#007bff', color: '#fff', border: 'none', cursor: 'pointer' }}
+//             disabled={loading}
+//           >
+//             {loading ? "Comparing..." : "Compare"}
+//           </button>
+
+//           {error && <p style={{ color: 'red' }}>{error}</p>}
+
+//           {data && (
+//             <div style={{ marginTop: '20px' }}>
+//               <h3>Comparison Results</h3>
+//               {/* Render chart or data visualization here */}
+//               <Line
+//                 data={{
+//                   labels: data.dates, // Replace with actual data labels
+//                   datasets: [
+//                     {
+//                       label: `#${brand1}`,
+//                       data: data.brand1Data, // Replace with actual data
+//                       borderColor: 'rgba(75, 192, 192, 1)',
+//                       backgroundColor: 'rgba(75, 192, 192, 0.2)',
+//                     },
+//                     {
+//                       label: `#${brand2}`,
+//                       data: data.brand2Data, // Replace with actual data
+//                       borderColor: 'rgba(255, 99, 132, 1)',
+//                       backgroundColor: 'rgba(255, 99, 132, 0.2)',
+//                     },
+//                   ],
+//                 }}
+//                 options={{
+//                   responsive: true,
+//                   plugins: {
+//                     legend: {
+//                       position: 'top',
+//                     },
+//                     title: {
+//                       display: true,
+//                       text: 'Hashtag Comparison',
+//                     },
+//                   },
+//                 }}
+//               />
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ComparisonPage;

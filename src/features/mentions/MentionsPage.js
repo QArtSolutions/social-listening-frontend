@@ -9,15 +9,12 @@ import '../../styles/MentionsPage.css';
 
 const MentionsPage = () => {
   const [mentions, setMentions] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(''); // State for search input
   const [cursor, setCursor] = useState(null); // State to hold the cursor for pagination
   const { brand } = useBrand();
 
-  const fetchMentions = async () => {
-    if (!brand) {
-      console.error("Brand is not defined.");
-      return;
-    }
-
+  // Function to fetch mentions based on current search term or brand
+  const fetchMentions = async (query) => {
     try {
       const url = 'https://twitter-pack.p.rapidapi.com/search/tweet';
       const options = {
@@ -26,39 +23,41 @@ const MentionsPage = () => {
           'x-rapidapi-host': 'twitter-pack.p.rapidapi.com'
         },
         params: {
-          query: brand,
-          cursor: cursor // Pass the cursor for pagination
+          query: query || brand, // Use either searchTerm or initial brand
+          cursor: cursor, // Pass the cursor for pagination
+          count: 1000
         }
       };
 
       const response = await axios.get(url, options);
       console.log("Full response:", response.data); // Debugging log
 
-      // Ensure that 'data' is an array within response
-      const mentionsData = response.data?.data?.data || []; // Adjust based on actual response structure
+      const mentionsData = response.data?.data?.data || [];
       const nextCursor = response.data?.data?.cursor; // Retrieve the next cursor from response
 
-      if (Array.isArray(mentionsData)) {
-        setMentions(prevMentions => [...prevMentions, ...mentionsData]);
-      } else {
-        console.error("Unexpected data format", mentionsData);
-      }
-
-      setCursor(nextCursor); // Update the cursor for the next page
+      // Update mentions with new data if available
+      setMentions(cursor ? (prevMentions) => [...prevMentions, ...mentionsData] : mentionsData);
+      setCursor(nextCursor);
     } catch (error) {
       console.error('Error fetching mentions:', error);
     }
   };
 
   useEffect(() => {
-    fetchMentions();
-  }, [brand]);
+    fetchMentions(searchTerm || brand); // Initially fetch data based on brand or searchTerm
+  }, [brand, searchTerm]);
+
+  // Handle search input from Header
+  const handleSearch = (newSearchTerm) => {
+    setCursor(null); // Reset cursor for new search
+    setSearchTerm(newSearchTerm); // Update search term to trigger fetch
+  };
 
   return (
     <div className="mentions-page">
       <Sidebar />
       <div className="mentions-content">
-        <Header />
+        <Header onSearch={handleSearch} /> {/* Pass search function to Header */}
         <MentionsChart mentions={mentions} />
         <div className="mentions-list">
           {mentions.map((mention, index) => (
@@ -66,7 +65,7 @@ const MentionsPage = () => {
           ))}
         </div>
         {cursor && (
-          <button className="load-more-button" onClick={fetchMentions}>Load More</button>
+          <button className="load-more-button" onClick={() => fetchMentions(searchTerm || brand)}>Load More</button>
         )}
       </div>
     </div>

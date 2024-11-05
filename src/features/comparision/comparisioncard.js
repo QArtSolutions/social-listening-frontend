@@ -5,12 +5,12 @@ import './comparisioncard.css';
 const ComparisonCard = ({ hashtag1Count, hashtag2Count, hashtag1, hashtag2 }) => {
   return (
     <div className="comparison-card">
-      <h3>Instagram Mentions Comparison</h3>
+      <h3>Overview</h3>
       <table>
         <thead>
           <tr>
-            <th>Hashtag</th>
-            <th>Instagram Mentions</th>
+            <th>Brand Name</th>
+            <th>Total Instagram Mentions</th>
           </tr>
         </thead>
         <tbody>

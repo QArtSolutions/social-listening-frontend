@@ -7,7 +7,7 @@ function BrandPage(setIsAuthenticated) {
     return (
         <div className="brand-page-container">
             <header className="header">
-                <img src="https://tse1.mm.bing.net/th?id=OIP.Gbn-yi8QZV8ClA4VZrxIoAHaEd&pid=Api&P=0&h=180" alt="Logo" className="logo" />
+                <img src="../SocialAwaz.png" alt="Social Hear" className="logo" />
             </header>
             <div className="content">
                  <BrandInput setIsAuthenticated={setIsAuthenticated} />

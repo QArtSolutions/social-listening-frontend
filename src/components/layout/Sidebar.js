@@ -13,7 +13,7 @@ const Sidebar = () => {
       </div>
       <nav className="sidebar-links">
         <Link to="/mentions">Mentions</Link>
-        <Link to="/comparison">Comparison</Link>
+        <Link to="/comparision">Comparision</Link>
       </nav>
     </aside>
   );

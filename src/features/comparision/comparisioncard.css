@@ -1,0 +1,79 @@
+.comparison-container {
+  display: flex;
+  height: 100vh; /* Ensure the container takes the full height */
+}
+
+.comparison-content {
+  flex: 1; /* Take up remaining space */
+  padding: 20px;
+  margin-left: 220px; /* Add left margin to accommodate the sidebar width */
+  margin-top: 60px; /* Add top margin to prevent overlap with header */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align horizontally */
+  justify-content: flex-start; /* Align items to the start vertically */
+}
+
+.comparison-input {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%; /* Make it full width to center properly */
+  max-width: 600px; /* Set a max-width for better layout */
+}
+
+.comparison-input input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.comparison-input button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.comparison-input button:hover {
+  background-color: #0056b3;
+}
+
+.loading-text {
+  color: #007bff;
+}
+
+.error-text {
+  color: red;
+}
+
+.comparison-card {
+  border: 1px solid #ddd;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Make card full width */
+  max-width: 600px; /* Set a max width for the card */
+}
+
+.comparison-card h3 {
+  margin-top: 0;
+}
+
+.comparison-card table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.comparison-card th, .comparison-card td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.comparison-card th {
+  background-color: #f2f2f2;
+}

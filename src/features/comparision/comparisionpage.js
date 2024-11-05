@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/layout/Sidebar';
 import Header from '../../components/layout/Header';
 import ComparisonCard from './comparisioncard';
@@ -14,6 +14,10 @@ const ComparisonPage = () => {
   const [hashtag2Count, setHashtag2Count] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setHashtag1Input(hashtag1); // Update local state with context value
+  }, [hashtag1]);
 
   const fetchHashtagData = async () => {
     if (!hashtag1Input || !hashtag2) {
@@ -76,7 +80,7 @@ const ComparisonPage = () => {
           />
           <input
             type="text"
-            placeholder="Enter second hashtag"
+            placeholder="Enter second brandname"
             value={hashtag2}
             onChange={(e) => setHashtag2(e.target.value)}
           />
@@ -88,7 +92,7 @@ const ComparisonPage = () => {
 
         <div className="results">
           <ComparisonCard 
-            hashtag1={hashtag1Input} // Use the state variable for hashtag1
+            hashtag1={hashtag1Input || hashtag1} // Use the state variable for hashtag1
             hashtag1Count={hashtag1Count} 
             hashtag2={hashtag2} 
             hashtag2Count={hashtag2Count} 

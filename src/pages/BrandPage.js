@@ -10,7 +10,7 @@ function BrandPage(setIsAuthenticated) {
                 <img src="../SocialAwaz.png" alt="Social Hear" className="logo" />
             </header>
             <div className="content">
-                 <BrandInput setIsAuthenticated={setIsAuthenticated} />
+                <BrandInput setIsAuthenticated={setIsAuthenticated} />
                 <SocialMediaGraphic />
             </div>
         </div>

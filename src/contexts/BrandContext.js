@@ -6,9 +6,10 @@ const BrandContext = createContext();
 // Brand context provider component
 export const BrandProvider = ({ children }) => {
   const [brand, setBrand] = useState('');
+  const hashtag1 = brand; // Set hashtag1 equal to brand
 
   return (
-    <BrandContext.Provider value={{ brand, setBrand }}>
+    <BrandContext.Provider value={{ brand, setBrand, hashtag1 }}>
       {children}
     </BrandContext.Provider>
   );

@@ -97,6 +97,7 @@ const ComparisonPage = () => {
             hashtag2={hashtag2} 
             hashtag2Count={hashtag2Count} 
           />
+        
         </div>
       </div>
     </div>

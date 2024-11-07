@@ -70,7 +70,7 @@
 }
 
 .comparison-card th, .comparison-card td {
-  padding: 6px 160px; /* Add padding for wider columns */
+  padding: 6px 150px; /* Add padding for wider columns */
   text-align: center;
 }
 

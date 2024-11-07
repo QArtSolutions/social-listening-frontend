@@ -12,6 +12,8 @@ const ComparisonPage = () => {
   const [hashtag2, setHashtag2] = useState('');
   const [hashtag1Count, setHashtag1Count] = useState(0);
   const [hashtag2Count, setHashtag2Count] = useState(0);
+  const [hashtag3Count, setHashtag3Count] = useState(0);
+  const [hashtag4Count, setHashtag4Count] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -49,15 +51,44 @@ const ComparisonPage = () => {
         },
       };
 
-      const [response1, response2] = await Promise.all([
+      const options3 = {
+        method: 'GET',
+        url: 'https://get-twitter-mentions.p.rapidapi.com',
+        params: { hashtag: hashtag1Input, period: 1 },
+        headers: {
+          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
+          'X-RapidAPI-Host': 'get-twitter-mentions.p.rapidapi.com',
+        },
+      };
+
+      const options4 = {
+        method: 'GET',
+        url: 'https://get-twitter-mentions.p.rapidapi.com',
+        params: { hashtag: hashtag2, period: 1 },
+        headers: {
+          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
+          'X-RapidAPI-Host': 'get-twitter-mentions.p.rapidapi.com',
+        },
+      };
+
+      const [response1, response2, response3, response4] = await Promise.all([
         axios.request(options1),
         axios.request(options2),
+        axios.request(options3),
+        axios.request(options4),
       ]);
 
       setHashtag1Count(response1.data.count);
       setHashtag2Count(response2.data.count);
+      setHashtag3Count(response3.data.length);
+      setHashtag4Count(response4.data.length);
+
     } catch (err) {
-      setError('Failed to fetch data.');
+      if (err.response && err.response.status === 429) {
+        setError('API limit reached. Please try again later.');
+      } else {
+        setError('Failed to fetch data.');
+      }
       console.error('API Error:', err);
     } finally {
       setLoading(false);
@@ -71,7 +102,7 @@ const ComparisonPage = () => {
         <Header />
 
         <div className="comparison-input">
-          <h1>Instagram Brand Comparison</h1>
+          <h1>Social Media Brand Comparison</h1>
           <input
             type="text"
             placeholder={hashtag1} 
@@ -96,6 +127,8 @@ const ComparisonPage = () => {
             hashtag1Count={hashtag1Count} 
             hashtag2={hashtag2} 
             hashtag2Count={hashtag2Count} 
+            hashtag3Count={hashtag3Count} 
+            hashtag4Count={hashtag4Count} 
           />
         
         </div>

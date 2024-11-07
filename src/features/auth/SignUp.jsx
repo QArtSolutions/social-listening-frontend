@@ -1,7 +1,7 @@
 import React, { useState, startTransition } from 'react';
 import { registerUser } from '../../services/api/auth';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Make sure to install fontawesome
-import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Make sure to install fontawesome
+// import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 
 
 const SignUp = () => {

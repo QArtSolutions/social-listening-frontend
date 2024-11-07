@@ -13,7 +13,7 @@ const Entry = ({ setIsAuthenticated }) => {
 
   async function loginUser(credentials) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/users/login`, {
+      const response = await fetch(`https://dev-backend.socialhear.com/api/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

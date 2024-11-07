@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/Header.css';
 import { useBrand } from '../../contexts/BrandContext';
 import axios from 'axios';
+import API_BASE_URL from '../../config.js';
 
 const Header =({ onSearch }) => {
     const [searchInput, setSearchInput] = useState('');
@@ -24,7 +25,7 @@ const Header =({ onSearch }) => {
           }
 
           // Save search history to backend
-          await axios.post('https://dev-backend.socialhear.com/api/users/search-history', {
+          await axios.post(`${API_BASE_URL}/api/users/search-history`, {
               userId,
               searchedBrand: searchInput
           });

@@ -23,7 +23,7 @@ const MentionsPage = () => {
           'x-rapidapi-host': 'twitter-pack.p.rapidapi.com'
         },
         params: {
-          query: query || brand, // Use either searchTerm or initial brand
+          query: `brand=${query || brand} clothing`, // Use either searchTerm or initial brand
           cursor: cursor, // Pass the cursor for pagination
           count: 1000
         }

@@ -49,13 +49,38 @@ const ComparisonPage = () => {
         },
       };
 
-      const [response1, response2] = await Promise.all([
+      const options3 = {
+        method: 'GET',
+        url: 'https://instagram-data1.p.rapidapi.com/hashtag/info',
+        params: { hashtag: hashtag2 },
+        headers: {
+          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
+          'X-RapidAPI-Host': 'instagram-data1.p.rapidapi.com',
+        },
+      };
+
+      const options4 = {
+        method: 'GET',
+        url: 'https://instagram-data1.p.rapidapi.com/hashtag/info',
+        params: { hashtag: hashtag2 },
+        headers: {
+          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
+          'X-RapidAPI-Host': 'instagram-data1.p.rapidapi.com',
+        },
+      };
+
+      const [response1, response2, response3, response4] = await Promise.all([
         axios.request(options1),
         axios.request(options2),
+        axios.request(options3),
+        axios.request(options4),
       ]);
 
       setHashtag1Count(response1.data.count);
       setHashtag2Count(response2.data.count);
+      setHashtag3Count(response3.data.count);
+      setHashtag4Count(response4.data.count);
+
     } catch (err) {
       setError('Failed to fetch data.');
       console.error('API Error:', err);

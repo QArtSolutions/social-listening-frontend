@@ -1,6 +1,5 @@
-const API_URL = 'https://dev-backend.socialhear.com/'; 
-// import API_BASE_URL from '../../config.js';
-
+//  import API_BASE_URL from '../../config.js';
+const API_URL = `https://dev-backend.socialhear.com/`;
 
 export const registerUser = async (username, email, password) => {
   try {

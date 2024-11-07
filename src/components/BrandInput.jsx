@@ -21,7 +21,7 @@ function BrandInput({ isAuthenticated, setIsAuthenticated }) {
         const userId = window.localStorage.getItem("userId");
 
         try {
-            await axios.post(`${API_BASE_URL}/api/users/search-history`, {
+            await axios.post(`https://dev-backend.socialhear.com/api/users/search-history`, {
                 userId,
                 searchedBrand: inputBrand
             });

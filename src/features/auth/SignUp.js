@@ -1,8 +1,8 @@
 import React, { useState, startTransition } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 import { registerUser } from '../../services/api/auth';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Make sure to install fontawesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Make sure to install FontAwesome
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
-
 
 const SignUp = () => {
   const [username, setUsername] = useState('');
@@ -10,7 +10,7 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
-
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,6 +38,7 @@ const SignUp = () => {
         console.log('Success:', response);
         setMessage('User registered successfully!');
         setMessageType('success');
+        setTimeout(() => navigate('/entry'), 1000); // Redirect to login after 1-second delay
       } catch (error) {
         console.error('Error:', error);
         setMessage(error.message || 'Registration failed. Please try again.');
@@ -106,7 +107,6 @@ const SignUp = () => {
         </p>
       </div>
     </div>
-
   );
 };
 

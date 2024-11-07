@@ -1,6 +1,7 @@
 const API_URL = 'https://dev-backend.socialhear.com/'; 
 
 
+
 export const registerUser = async (username, email, password) => {
   try {
     const response = await fetch(`${API_URL}/api/users/register`, {

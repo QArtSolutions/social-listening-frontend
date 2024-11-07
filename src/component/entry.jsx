@@ -38,7 +38,9 @@ const Entry = ({ setIsAuthenticated }) => {
 
     try {
       const response = await loginUser({ email, password });
+      const user = response.user;
       window.localStorage.setItem("isLoggedIn", true);
+      window.localStorage.setItem("userId", user.id);
       setIsAuthenticated(true);
       navigate('/home');
     } catch (error) {

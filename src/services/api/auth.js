@@ -1,4 +1,4 @@
-const API_URL = 'http://dev-backend.socialhear.com/'; 
+const API_URL = 'https://dev-backend.socialhear.com/'; 
 
 
 export const registerUser = async (username, email, password) => {

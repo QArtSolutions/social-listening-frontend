@@ -24,7 +24,7 @@ const Header =({ onSearch }) => {
           }
 
           // Save search history to backend
-          await axios.post('http://dev-backend.socialhear.com/api/users/search-history', {
+          await axios.post('https://dev-backend.socialhear.com/api/users/search-history', {
               userId,
               searchedBrand: searchInput
           });

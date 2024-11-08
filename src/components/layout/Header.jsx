@@ -4,6 +4,7 @@ import '../../styles/Header.css';
 import { useBrand } from '../../contexts/BrandContext';
 import axios from 'axios';
 import API_BASE_URL from '../../config.js';
+import { getBackendUrl } from '../../utils/apiUrl.jsx';
 
 const Header =({ onSearch }) => {
     const [searchInput, setSearchInput] = useState('');
@@ -23,9 +24,9 @@ const Header =({ onSearch }) => {
               console.error("User ID not found in local storage.");
               return;
           }
-
+          const apiUrl= getBackendUrl();
           // Save search history to backend
-          await axios.post(`https://dev-backend.socialhear.com/api/users/search-history`, {
+          await axios.post(`${apiUrl}/api/users/search-history`, {
               userId,
               searchedBrand: searchInput
           });

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Make sure to install fontawesome
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
 import API_BASE_URL from '../config.js';
+import { getBackendUrl } from '../utils/apiUrl.jsx';
 
 const Entry = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState('');
@@ -12,8 +13,9 @@ const Entry = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
 
   async function loginUser(credentials) {
+    const apiUrl = getBackendUrl();
     try {
-      const response = await fetch(`https://dev-backend.socialhear.com/api/users/login`, {
+      const response = await fetch(`${apiUrl}/api/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

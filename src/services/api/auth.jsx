@@ -1,9 +1,11 @@
 //  import API_BASE_URL from '../../config.js';
-const API_URL = `https://dev-backend.socialhear.com/`;
+// const API_URL = `https://dev-backend.socialhear.com/`;
+import { getBackendUrl } from "../../utils/apiUrl";
 
 export const registerUser = async (username, email, password) => {
+  const apiUrl= getBackendUrl();
   try {
-    const response = await fetch(`${API_URL}/api/users/register`, {
+    const response = await fetch(`${apiUrl}/api/users/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

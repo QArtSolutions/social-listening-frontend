@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Make sure to install fontawesome
 import { faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons';
-import API_BASE_URL from '../config.js';
 import { getBackendUrl } from '../utils/apiUrl.jsx';
 
 const Entry = ({ setIsAuthenticated }) => {

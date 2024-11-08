@@ -1,4 +1,3 @@
-//  import API_BASE_URL from '../../config.js';
 // const API_URL = `https://dev-backend.socialhear.com/`;
 import { getBackendUrl } from "../../utils/apiUrl";
 

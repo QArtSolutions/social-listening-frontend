@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBrand } from '../contexts/BrandContext';
 import axios from 'axios';
-import API_BASE_URL from '../config.js';
 import '../styles/BrandInput.css'; // Adjust the path as necessary
 import { getBackendUrl } from '../utils/apiUrl.jsx';
 

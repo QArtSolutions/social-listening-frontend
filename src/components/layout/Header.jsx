@@ -3,15 +3,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/Header.css';
 import { useBrand } from '../../contexts/BrandContext';
 import axios from 'axios';
-import API_BASE_URL from '../../config.js';
-import { getBackendUrl } from '../../utils/apiUrl.jsx';
+import { getBackendUrl  } from '../../utils/apiUrl.jsx';
+
 
 const Header =({ onSearch }) => {
     const [searchInput, setSearchInput] = useState('');
     const { setBrand } = useBrand(); 
     const navigate = useNavigate();
+    
 
     const handleSearch = async (e) => {
+        
         e.preventDefault();
         // if (searchInput.trim() === '') return;
 
@@ -20,17 +22,18 @@ const Header =({ onSearch }) => {
 
         try {
           const userId = window.localStorage.getItem("userId");
+          const apiUrl= getBackendUrl();
           if (!userId) {
               console.error("User ID not found in local storage.");
               return;
           }
-          const apiUrl= getBackendUrl();
+          
           // Save search history to backend
           await axios.post(`${apiUrl}/api/users/search-history`, {
               userId,
               searchedBrand: searchInput
           });
-
+          console.log("user history saved successfully");
           setSearchInput(''); // Clear search bar after storing
       } catch (error) {
           console.error("Failed to save search history:", error);

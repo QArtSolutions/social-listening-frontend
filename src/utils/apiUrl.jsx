@@ -5,6 +5,8 @@ export const getBackendUrl = () => {
       return 'https://dev-backend.socialhear.com'; // Dev backend
     } else if (currentUrl.includes('socialhear.com')) {
       return 'https://backend.socialhear.com'; // Prod backend
-    } 
+    } else {
+        return 'http://localhost:3001'; // localhost backend
+      }
   };
   

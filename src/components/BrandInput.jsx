@@ -4,6 +4,7 @@ import { useBrand } from '../contexts/BrandContext';
 import axios from 'axios';
 import API_BASE_URL from '../config.js';
 import '../styles/BrandInput.css'; // Adjust the path as necessary
+import { getBackendUrl } from '../utils/apiUrl.jsx';
 
 function BrandInput({ isAuthenticated, setIsAuthenticated }) {
     const navigate = useNavigate(); // Hook for navigation
@@ -19,9 +20,9 @@ function BrandInput({ isAuthenticated, setIsAuthenticated }) {
    
     const saveUserHistory = async () => {
         const userId = window.localStorage.getItem("userId");
-
+        const apiUrl= getBackendUrl();
         try {
-            await axios.post(`https://dev-backend.socialhear.com/api/users/search-history`, {
+            await axios.post(`${apiUrl}/api/users/search-history`, {
                 userId,
                 searchedBrand: inputBrand
             });

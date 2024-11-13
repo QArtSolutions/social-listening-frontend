@@ -36,7 +36,7 @@ const MentionsChart = () => {
             },
             params: {
               count: 1000,
-              query: brand,
+              query: `brand=${brand} clothing`,
               cursor: currentCursor,
             }
           });

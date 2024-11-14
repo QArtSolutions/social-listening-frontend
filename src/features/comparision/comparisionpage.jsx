@@ -36,7 +36,7 @@ const ComparisonPage = () => {
         url: 'https://instagram-data1.p.rapidapi.com/hashtag/info',
         params: { hashtag: hashtag1Input }, 
         headers: {
-          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
+          'X-RapidAPI-Key': '6009977b2amsh2d3f65eafe06fd2p12ec3fjsnc366b1c8aac1',
           'X-RapidAPI-Host': 'instagram-data1.p.rapidapi.com',
         },
       };
@@ -46,28 +46,28 @@ const ComparisonPage = () => {
         url: 'https://instagram-data1.p.rapidapi.com/hashtag/info',
         params: { hashtag: hashtag2 },
         headers: {
-          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
+          'X-RapidAPI-Key': '6009977b2amsh2d3f65eafe06fd2p12ec3fjsnc366b1c8aac1',
           'X-RapidAPI-Host': 'instagram-data1.p.rapidapi.com',
         },
       };
 
       const options3 = {
         method: 'GET',
-        url: 'https://get-twitter-mentions.p.rapidapi.com',
-        params: { hashtag: hashtag1Input, period: 1 },
+        url: 'https://instagram-statistics-api.p.rapidapi.com/search',
+        params: { q: hashtag1Input, page: 1, perPage: 10, socialTypes: 'TW', trackTotal: true},
         headers: {
-          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
-          'X-RapidAPI-Host': 'get-twitter-mentions.p.rapidapi.com',
+          'X-RapidAPI-Key': '6009977b2amsh2d3f65eafe06fd2p12ec3fjsnc366b1c8aac1',
+          'X-RapidAPI-Host': 'instagram-statistics-api.p.rapidapi.com',
         },
       };
 
       const options4 = {
         method: 'GET',
-        url: 'https://get-twitter-mentions.p.rapidapi.com',
-        params: { hashtag: hashtag2, period: 1 },
+        url: 'https://instagram-statistics-api.p.rapidapi.com/search',
+        params: { q: hashtag2, page: 1, perPage: 10, socialTypes: 'TW', trackTotal: true },
         headers: {
-          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
-          'X-RapidAPI-Host': 'get-twitter-mentions.p.rapidapi.com',
+          'X-RapidAPI-Key': '6009977b2amsh2d3f65eafe06fd2p12ec3fjsnc366b1c8aac1',
+          'X-RapidAPI-Host': 'instagram-statistics-api.p.rapidapi.com',
         },
       };
 
@@ -80,8 +80,8 @@ const ComparisonPage = () => {
 
       setHashtag1Count(response1.data.count);
       setHashtag2Count(response2.data.count);
-      setHashtag3Count(response3.data.length);
-      setHashtag4Count(response4.data.length);
+      setHashtag3Count(response3.data.pagination.total);
+      setHashtag4Count(response4.data.pagination.total);
 
     } catch (err) {
       if (err.response && err.response.status === 429) {

@@ -30,4 +30,44 @@
   color: #ff3b30; /* Highlight color */
 }
 
-  
+.insights {
+  margin-top: 30px;
+}
+
+.insight-item {
+  padding: 8px 0;
+}
+.search-history {
+  margin-top: 20px;
+}
+
+.search-history h4 {
+  font-size: 18px;
+  font-weight: bold;
+  color: red;
+  margin-bottom: 10px;
+}
+
+.search-history ul {
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.search-history ul li {
+  font-size: 14px;
+  color: white;
+  margin-bottom: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Empty state when no search history */
+.search-history ul li.no-history {
+  font-style: italic;
+  color: #aaa;
+}
+
+/* Add a small border radius for cleaner corners */
+.search-history ul li:last-child {
+  border-bottom: none;
+}

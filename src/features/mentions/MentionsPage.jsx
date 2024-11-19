@@ -77,7 +77,6 @@ const MentionsPage = () => {
   // Function to fetch Facebook posts
   const fetchFacebookPosts = async () => {
     try {
-       
       const options = {
         method: 'GET',
         url: 'https://facebook-scraper3.p.rapidapi.com/search/posts',
@@ -124,25 +123,13 @@ const MentionsPage = () => {
   };
 
   // Load more functionality for all APIs
-  const loadMoreData = (apiType) => {
-    switch (apiType) {
-      case 'twitter':
-        if (twitterCursor) {
-          fetchMentions(searchTerm || brand, twitterCursor);
-        }
-        break;
-      case 'instagram':
-        if (instagramCursor) {
-          fetchInstagramPosts();
-        }
-        break;
-      case 'facebook':
-        if (facebookCursor) {
-          fetchFacebookPosts();
-        }
-        break;
-      default:
-        break;
+  const loadMoreData = () => {
+    if (twitterCursor) {
+      fetchMentions(searchTerm || brand, twitterCursor);
+    } else if (instagramCursor) {
+      fetchInstagramPosts();
+    } else if (facebookCursor) {
+      fetchFacebookPosts();
     }
   };
 

@@ -1,60 +1,125 @@
-/* MentionCard.css */
-
+/* General MentionCard Styles */
 .mention-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
   padding: 16px;
   margin-bottom: 16px;
-  background-color: #fff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Hover Effects */
+.mention-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* MentionCard Header */
 .mention-card-header {
-  display: flex;
-  align-items: center;
   margin-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 8px;
 }
 
-.profile-image {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  margin-right: 12px;
-}
-
-.user-info .user-name {
+.mention-card-username {
   font-size: 18px;
   font-weight: bold;
+  color: #333;
   margin: 0;
 }
 
-.user-info .user-description {
-  font-size: 14px;
-  color: #555;
-  margin: 4px 0 0;
-}
-
+/* MentionCard Body */
 .mention-card-body {
-  margin: 12px 0;
+  margin-bottom: 12px;
 }
 
-.tweet-text {
-  font-size: 16px;
-  line-height: 1.4;
-  color: #333;
+.mention-card-text {
+  font-size: 17px; /* Adjusted for better readability */
+  color: #555;
+  line-height: 1.6;
+  margin: 0 0 12px;
 }
 
+.mention-card-hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px; /* Added consistent spacing between hashtags */
+}
+
+.mention-card-hashtag {
+  background-color: #f0f0f0;
+  color: #007bff;
+  border-radius: 12px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* MentionCard Footer */
 .mention-card-footer {
   display: flex;
-  gap: 12px; /* Add spacing between items */
-  font-size: 14px;
+  justify-content: space-between;
+  font-size: 13px;
   color: #777;
 }
 
-.created-at,
-.like-count,
-.retweet-count {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.mention-card-timestamp {
+  font-style: italic;
+}
+
+.mention-card-platform {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Base Tag Styling */
+.mention-card-tag {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: white;
+  border-radius: 16px; /* Makes it pill-shaped */
+  margin-left: 8px; /* Space between other elements */
+  text-align: center;
+  white-space: nowrap;
+  transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+/* Green Tag for Yes */
+.mention-card-tag-yes {
+  background-color: #4caf50; /* Success Green */
+}
+
+/* Red Tag for No */
+.mention-card-tag-no {
+  background-color: #f44336; /* Error Red */
+}
+
+/* Hover Effect */
+.mention-card-tag:hover {
+  opacity: 0.9; /* Slight dim effect */
+  cursor: default; /* Pointer cursor for interactivity */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mention-card {
+    padding: 12px;
+  }
+
+  .mention-card-username {
+    font-size: 16px;
+  }
+
+  .mention-card-text {
+    font-size: 13px;
+  }
+
+  .mention-card-footer {
+    flex-direction: column;
+    gap: 8px; /* Added spacing between footer elements */
+  }
 }

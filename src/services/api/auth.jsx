@@ -4,6 +4,7 @@ import { getBackendUrl } from "../../utils/apiUrl";
 export const registerUser = async (username, email, password) => {
   const apiUrl= getBackendUrl();
   try {
+    console.log(apiUrl);
     const response = await fetch(`${apiUrl}/api/users/register`, {
       method: 'POST',
       headers: {

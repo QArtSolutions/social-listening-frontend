@@ -105,6 +105,17 @@ const SignUp = () => {
           <a href="/terms" target="_blank" className="text-blue-600 hover:underline"> terms & conditions </a>
           and <a href="/privacy" target="_blank" className="text-blue-600 hover:underline"> privacy policy</a>.
         </p>
+
+        <p className="text-center text-sm text-gray-500 mt-4">
+          Already have an account?{' '}
+          <button
+            onClick={() => navigate('/entry')}
+            className="text-blue-600 hover:underline font-medium"
+          >
+            Sign In
+          </button>
+        </p>
+        
       </div>
     </div>
   );

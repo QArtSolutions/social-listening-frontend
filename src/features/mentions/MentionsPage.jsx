@@ -18,7 +18,7 @@ const MentionsPage = () => {
     try {
       setLoading(true); // Set loading state
       const response = await axios.post(
-        'https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-south-1.on.aws/filtered_tweets/_search',
+        'https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-south-1.on.aws/final_tweets/_search',
         {
           query: {
             match: {

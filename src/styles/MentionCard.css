@@ -98,6 +98,11 @@
   background-color: #f44336; /* Error Red */
 }
 
+.mention-card-tag-neutral {
+  background-color: #ffc107; /* Yellow for Neutral */
+  color: white;
+}
+
 /* Hover Effect */
 .mention-card-tag:hover {
   opacity: 0.9; /* Slight dim effect */

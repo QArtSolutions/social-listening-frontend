@@ -25,7 +25,7 @@ const MentionsPage = () => {
               Keyword: query || brand, // Query based on the search term or brand
             },
           },
-          size: 20, // Number of results to fetch
+          size: 1000, // Number of results to fetch
         },
         {
           auth: {

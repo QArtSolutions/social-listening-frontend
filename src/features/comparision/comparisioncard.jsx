@@ -30,6 +30,11 @@ const ComparisonCard = ({ hashtag1, hashtag2, hashtag1Count, hashtag2Count, hash
             <td>{hashtag3Count}</td>
             <td>{hashtag4Count}</td>
           </tr>
+          <tr>
+          <td>Linkden Mentions</td>
+  <td style={{ fontStyle: 'italic' }}>Coming Soon...</td>
+  <td style={{ fontStyle: 'italic' }}><i>Coming Soon...</i></td>
+          </tr>
         </tbody>
       </table>
     </div>

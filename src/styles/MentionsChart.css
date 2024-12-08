@@ -30,3 +30,46 @@
   margin: auto; 
   margin-bottom: 1.5rem;
 }
+.sentiment-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align to the left */
+  justify-content: center;
+  width: 300px; /* Fixed width for the square tile */
+  height: 300px; /* Fixed height for the square tile */
+  background-color: #f8f9fa; /* Light gray background */
+  border: 1px solid #ddd; /* Border for the tile */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px; /* Inner spacing */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.pie-chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Center within the tile */
+  height: 100%;
+}
+.mentions-chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Space between the charts */
+}
+.chart-heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  color: #4caf50; /* Green color for heading */
+  margin-bottom: 1rem; /* Space below the heading */
+  /* text-transform: uppercase; Make text uppercase */
+  letter-spacing: 1px; /* Add letter spacing */
+}
+
+.trend-tile {
+  background-color: #f9f9f9; /* Light background for the tile */
+  padding: 20px; /* Padding inside the tile */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  margin: 20px 0; /* Add space between tiles */
+}

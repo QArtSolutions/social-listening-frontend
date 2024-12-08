@@ -1,24 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { Line } from 'react-chartjs-2';
+import { Line, Pie } from 'react-chartjs-2';
 import { useBrand } from '../../contexts/BrandContext';
 import axios from 'axios';
-
+  import '../../styles/MentionsChart.css';
 import {
   Chart as ChartJS,
   LineElement,
   LinearScale,
   CategoryScale,
   PointElement,
+  ArcElement,
   Tooltip,
   Legend,
 } from 'chart.js';
 import { addDays, format } from 'date-fns';
 
-ChartJS.register(LineElement, LinearScale, CategoryScale, PointElement, Tooltip, Legend);
+ChartJS.register(
+  LineElement,
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  ArcElement,
+  Tooltip,
+  Legend
+);
 
 const MentionsChart = () => {
   const { brand } = useBrand();
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+  const [sentimentData, setSentimentData] = useState({ labels: [], datasets: [] });
+  const [trendData, setTrendData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -30,22 +41,24 @@ const MentionsChart = () => {
           {
             query: {
               match: {
-                Keyword: brand, // Query based on the brand
+                Keyword: brand,
               },
             },
-            size: 10000, // Fetch up to 1000 results
+            size: 10000,
           },
           {
             auth: {
               username: 'qartAdmin',
-              password: '6#h!%HbsBH4zXRat@qFPSnfn@04#2023', // Elasticsearch credentials
+              password: '6#h!%HbsBH4zXRat@qFPSnfn@04#2023',
             },
           }
         );
 
-        const mentions = response.data.hits.hits.map((hit) => hit._source);
+        const mentions = response.data.hits?.hits?.map((hit) => hit._source) || [];
 
         processMentionsData(mentions);
+        processSentimentData(mentions);
+        processSentimentTrend(mentions);
       } catch (error) {
         console.error('Error fetching chart data from Elasticsearch:', error);
       } finally {
@@ -57,21 +70,20 @@ const MentionsChart = () => {
   }, [brand]);
 
   const processMentionsData = (mentions) => {
-    const labels = generateLabels(); // Generate labels for the last 7 days
+    const labels = generateLabels(30); // Generate labels for the last 30 days
     const mentionsCountByDate = labels.reduce((acc, label) => {
       acc[label] = 0;
       return acc;
     }, {});
 
     mentions.forEach((mention) => {
-      const createdAt = mention.timestamp;
+      const createdAt = mention?.timestamp;
 
       if (createdAt) {
         try {
           const parsedDate = new Date(createdAt);
           const mentionDate = format(parsedDate, 'd MMM');
 
-          // Increment the count for the parsed date
           if (mentionsCountByDate.hasOwnProperty(mentionDate)) {
             mentionsCountByDate[mentionDate] += 1;
           }
@@ -95,19 +107,106 @@ const MentionsChart = () => {
       ],
     });
   };
+  
+  const processSentimentData = (mentions) => {
+    const sentimentCounts = { positive: 0, negative: 0, neutral: 0 };
 
-  // Generate labels for the last 7 days
-  const generateLabels = () => {
+    mentions.forEach((mention) => {
+      if (mention?.Sentiment === 'positive') sentimentCounts.positive++;
+      else if (mention?.Sentiment === 'negative') sentimentCounts.negative++;
+      else sentimentCounts.neutral++;
+    });
+
+    setSentimentData({
+      labels: ['Positive', 'Negative', 'Neutral'],
+      datasets: [
+        {
+          data: [
+            sentimentCounts.positive,
+            sentimentCounts.negative,
+            sentimentCounts.neutral,
+          ],
+          backgroundColor: ['#4caf50', '#f44336', '#ffc107'],
+        },
+      ],
+    });
+  };
+
+  const processSentimentTrend = (mentions) => {
+    const labels = generateLabels(30); // Generate labels for the last 30 days
+    const sentimentTrend = {
+      positive: labels.reduce((acc, label) => {
+        acc[label] = 0;
+        return acc;
+      }, {}),
+      negative: labels.reduce((acc, label) => {
+        acc[label] = 0;
+        return acc;
+      }, {}),
+      neutral: labels.reduce((acc, label) => {
+        acc[label] = 0;
+        return acc;
+      }, {}),
+    };
+
+    mentions.forEach((mention) => {
+      const createdAt = mention?.timestamp;
+      const sentiment = mention?.Sentiment;
+
+      if (createdAt && sentiment) {
+        try {
+          const parsedDate = new Date(createdAt);
+          const mentionDate = format(parsedDate, 'd MMM');
+
+          if (sentimentTrend[sentiment] && sentimentTrend[sentiment].hasOwnProperty(mentionDate)) {
+            sentimentTrend[sentiment][mentionDate] += 1;
+          }
+        } catch (error) {
+          console.warn('Error parsing date:', createdAt, error);
+        }
+      }
+    });
+
+    const positiveData = labels.map((label) => sentimentTrend.positive[label]);
+    const negativeData = labels.map((label) => sentimentTrend.negative[label]);
+    const neutralData = labels.map((label) => sentimentTrend.neutral[label]);
+
+    setTrendData({
+      labels,
+      datasets: [
+        {
+          label: 'Positive',
+          data: positiveData,
+          borderColor: '#4caf50',
+          fill: false,
+        },
+        {
+          label: 'Negative',
+          data: negativeData,
+          borderColor: '#f44336',
+          fill: false,
+        },
+        {
+          label: 'Neutral',
+          data: neutralData,
+          borderColor: '#ffc107',
+          fill: false,
+        },
+      ],
+    });
+  };
+
+  const generateLabels = (days) => {
     const labels = [];
     const currentDate = new Date();
 
-    for (let i = 6; i >= 0; i--) {
+    for (let i = days - 1; i >= 0; i--) {
       labels.push(format(addDays(currentDate, -i), 'd MMM'));
     }
     return labels;
   };
 
-  const options = {
+  const lineChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
@@ -117,18 +216,36 @@ const MentionsChart = () => {
 
   return (
     <div className="mentions-chart-container">
-      <h3>Last 7 Days</h3>
-      <div className="chart-container">
-        {loading ? (
-          <p>Loading chart...</p>
-        ) : chartData.labels.length > 0 ? (
-          <Line data={chartData} options={options} width={400} height={200} />
-        ) : (
-          <p>No data available for the chart.</p>
-        )}
-      </div>
+      {loading ? (
+        <p>Loading data...</p>
+      ) : (
+        <>
+         <div className="trend-tile">
+          <h3 className="chart-heading">Last 30 Days Mentions</h3>
+          <div className="trend-chart-container">
+            <Line data={chartData} options={lineChartOptions} width={400} height={200} />
+          </div>
+          </div>
+
+          <div className="sentiment-tile">
+            <h3>Sentiment Summary</h3>
+            <div className="pie-chart-container">
+              <Pie data={sentimentData} options={{ maintainAspectRatio: false }} width={300} height={300} />
+            </div>
+          </div>
+
+          <div className="trend-tile">
+          <h3 className="chart-heading">Sentiment Trend Analysis</h3>
+            <div className="trend-chart-container">
+              <Line data={trendData} options={lineChartOptions} width={400} height={200} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
 export default MentionsChart;
+
+

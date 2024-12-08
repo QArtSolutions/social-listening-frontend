@@ -11,6 +11,7 @@ const MentionsPage = () => {
   const [mentions, setMentions] = useState([]); // State for mentions (Twitter, Instagram, Facebook combined)
   const [searchTerm, setSearchTerm] = useState(''); // State for search input
   const [loading, setLoading] = useState(false); // State for loading indicator
+  const [activeTab, setActiveTab] = useState('analytics'); // State for active tab
   const { brand } = useBrand();
 
   // Function to fetch data from Elasticsearch
@@ -37,7 +38,7 @@ const MentionsPage = () => {
 
       // Extract and format the results from Elasticsearch response
       const hits = response.data.hits.hits.map((hit) => hit._source);
-      console.log("data fetched");
+      console.log('Data fetched');
       setMentions(hits); // Update mentions state
     } catch (error) {
       console.error('Error fetching data from Elasticsearch:', error);
@@ -62,22 +63,38 @@ const MentionsPage = () => {
       <Sidebar />
       <div className="mentions-content">
         <Header onSearch={handleSearch} />
+        <div className="mentions-tabs">
+          <button
+            className={`tab-button ${activeTab === 'analytics' ? 'active' : ''}`}
+            onClick={() => setActiveTab('analytics')}
+          >
+            Analytics
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'conversations' ? 'active' : ''}`}
+            onClick={() => setActiveTab('conversations')}
+          >
+            Conversations
+          </button>
+        </div>
         {loading ? (
           <p>Loading mentions...</p>
         ) : (
           <>
-            <MentionsChart mentions={mentions} />
-            <div className="mentions-list">
-              {/* Render Mentions */}
-              {mentions.map((mention, index) => (
-                <MentionCard
-                  key={index}
-                  mention={mention}
-                  isInstagram={mention.source === 'instagram'}
-                  isFacebook={mention.source === 'facebook'}
-                />
-              ))}
-            </div>
+            {activeTab === 'analytics' && <MentionsChart mentions={mentions} />}
+            {activeTab === 'conversations' && (
+              <div className="mentions-list">
+                {/* Render Mentions */}
+                {mentions.map((mention, index) => (
+                  <MentionCard
+                    key={index}
+                    mention={mention}
+                    isInstagram={mention.source === 'instagram'}
+                    isFacebook={mention.source === 'facebook'}
+                  />
+                ))}
+              </div>
+            )}
           </>
         )}
       </div>

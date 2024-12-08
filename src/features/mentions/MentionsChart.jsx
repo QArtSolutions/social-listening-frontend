@@ -216,33 +216,39 @@ const MentionsChart = () => {
 
   return (
     <div className="mentions-chart-container">
-      {loading ? (
-        <p>Loading data...</p>
-      ) : (
-        <>
-         <div className="trend-tile">
-          <h3 className="chart-heading">Last 30 Days Mentions</h3>
-          <div className="trend-chart-container">
-            <Line data={chartData} options={lineChartOptions} width={400} height={200} />
-          </div>
-          </div>
+  {loading ? (
+    <p>Loading data...</p>
+  ) : (
+    <>
+      {/* Line Chart for Last 30 Days Mentions */}
+      <div className="trend-tile">
+        <h3 className="chart-heading">Last 30 Days Mentions</h3>
+        <div className="trend-chart-container">
+          <Line data={chartData} options={lineChartOptions} width={400} height={200} />
+        </div>
+      </div>
 
-          <div className="sentiment-tile">
-            <h3>Sentiment Summary</h3>
-            <div className="pie-chart-container">
-              <Pie data={sentimentData} options={{ maintainAspectRatio: false }} width={300} height={300} />
-            </div>
+      {/* Row containing Pie Chart and Sentiment Trend Chart */}
+      <div className="chart-row">
+        {/* Pie Chart for Sentiment Summary */}
+        <div className="chart-tile">
+          <h3 className="chart-heading">Sentiment Summary</h3>
+          <div className="pie-chart-container">
+            <Pie data={sentimentData} options={{ maintainAspectRatio: false }} width={300} height={300} />
           </div>
+        </div>
 
-          <div className="trend-tile">
+        {/* Line Chart for Sentiment Trend */}
+        <div className="chart-tile">
           <h3 className="chart-heading">Sentiment Trend Analysis</h3>
-            <div className="trend-chart-container">
-              <Line data={trendData} options={lineChartOptions} width={400} height={200} />
-            </div>
+          <div className="trend-chart-container">
+            <Line data={trendData} options={lineChartOptions} width={400} height={200} />
           </div>
-        </>
-      )}
-    </div>
+        </div>
+      </div>
+    </>
+  )}
+</div>
   );
 };
 

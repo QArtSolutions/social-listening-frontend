@@ -73,3 +73,57 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   margin: 20px 0; /* Add space between tiles */
 }
+
+
+
+/* MentionsChart.css */
+
+/* Container for side-by-side charts */
+.chart-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Align items to the top */
+  margin-top: 20px;
+  gap: 20px; /* Space between the tiles */
+}
+
+/* Each chart tile styling */
+.chart-tile {
+  flex: 1; /* Allow both charts to take equal space */
+  background-color: #f9f9f9; /* Light background */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 48%; /* Limit width to fit side by side */
+}
+
+/* Headings inside chart tiles */
+.chart-heading {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  color: #4caf50;
+  margin-bottom: 1rem;
+}
+
+/* Pie chart container */
+.pie-chart-container {
+  width: 100%;
+  height: auto; /* Ensure responsive resizing */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Sentiment trend chart container */
+.trend-chart-container {
+  width: 100%;
+  height: auto; /* Ensure responsive resizing */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

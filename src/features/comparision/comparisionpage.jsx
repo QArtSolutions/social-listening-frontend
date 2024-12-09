@@ -118,13 +118,13 @@ const ComparisonPage = () => {
           <h1>Social Media Brand Comparison</h1>
           <input
             type="text"
-            placeholder={Brand1 || 'Enter Brand 1'}
+            placeholder={Brand1 || 'Enter name of first brand'}
             value={Brand1Input}
             onChange={(e) => setBrand1Input(e.target.value)}
           />
           <input
             type="text"
-            placeholder="Enter second brandname"
+            placeholder="Enter name of second brand"
             value={Brand2}
             onChange={(e) => setBrand2(e.target.value)}
           />

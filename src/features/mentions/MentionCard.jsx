@@ -6,11 +6,12 @@ const MentionCard = ({ mention, isInstagram, isFacebook }) => {
     return <div className="mention-card">No mention data available</div>;
   }
 
-  const platformName = isInstagram
-    ? 'Instagram'
-    : isFacebook
-    ? 'Facebook'
-    : 'Twitter';
+  const platformName = mention.source;
+  // isInstagram
+  //   ? 'Instagram'
+  //   : isFacebook
+  //   ? 'Facebook'
+  //   : 'Twitter';
 
   // Determine tag text and style dynamically
   const isFilteredText =

@@ -55,7 +55,23 @@ return (
           ))}
         </div>
       )}
+     
+     {/* Images */}
+     {/* {mention.images && mention.images.length > 0 && (
+          <div className="mention-card-images">
+            {mention.images.map((image, index) => (
+              <img
+                key={index}
+                src={getProxiedImageUrl(image)}
+                alt={`Mention image ${index + 1}`}
+                className="mention-card-image"
+              />
+            ))}
+          </div>
+        )} */}
+
     </div>
+
 
     {/* Card Footer */}
     <div className="mention-card-footer">

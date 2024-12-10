@@ -26,104 +26,66 @@
 }
 
 
-.chart-container {
-  margin: auto; 
-  margin-bottom: 1.5rem;
-}
-.sentiment-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Align to the left */
-  justify-content: center;
-  width: 300px; /* Fixed width for the square tile */
-  height: 300px; /* Fixed height for the square tile */
-  background-color: #f8f9fa; /* Light gray background */
-  border: 1px solid #ddd; /* Border for the tile */
-  border-radius: 10px; /* Rounded corners */
-  padding: 20px; /* Inner spacing */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
+/* MentionsChart.css */
 
-.pie-chart-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%; /* Center within the tile */
-  height: 100%;
-}
 .mentions-chart-container {
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Space between the charts */
+  padding: 20px;
+  background-color: #f5f5f5; /* Match Figma background */
+  font-family: 'Poppins', sans-serif; /* Match Figma font */
 }
+
 .chart-heading {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 15px;
   text-align: center;
-  color: #4caf50; /* Green color for heading */
-  margin-bottom: 1rem; /* Space below the heading */
-  /* text-transform: uppercase; Make text uppercase */
-  letter-spacing: 1px; /* Add letter spacing */
 }
 
-.trend-tile {
-  background-color: #f9f9f9; /* Light background for the tile */
-  padding: 20px; /* Padding inside the tile */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  margin: 20px 0; /* Add space between tiles */
+.trend-tile,
+.chart-tile {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Match Figma shadow */
+  padding: 20px;
+  margin: 20px 0;
+  flex: 1;
 }
 
-
-
-/* MentionsChart.css */
-
-/* Container for side-by-side charts */
 .chart-row {
   display: flex;
+  gap: 20px;
   justify-content: space-between;
-  align-items: flex-start; /* Align items to the top */
-  margin-top: 20px;
-  gap: 20px; /* Space between the tiles */
 }
 
-/* Each chart tile styling */
-.chart-tile {
-  flex: 1; /* Allow both charts to take equal space */
-  background-color: #f9f9f9; /* Light background */
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 48%; /* Limit width to fit side by side */
-}
-
-/* Headings inside chart tiles */
-.chart-heading {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-  color: #4caf50;
-  margin-bottom: 1rem;
-}
-
-/* Pie chart container */
-.pie-chart-container {
-  width: 100%;
-  height: auto; /* Ensure responsive resizing */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Sentiment trend chart container */
+.pie-chart-container,
 .trend-chart-container {
-  width: 100%;
-  height: auto; /* Ensure responsive resizing */
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 300px; /* Adjust height */
 }
+
+.pie-chart-container canvas,
+.trend-chart-container canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.chart-tile {
+  width: 48%; /* Adjust width for 2 charts in a row */
+}
+
+@media (max-width: 768px) {
+  .chart-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .chart-tile {
+    width: 100%;
+  }
+}
+

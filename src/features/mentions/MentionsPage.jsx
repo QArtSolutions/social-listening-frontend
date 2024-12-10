@@ -90,7 +90,7 @@ const MentionsPage = () => {
                     key={index}
                     mention={mention}
                     isInstagram={mention.source === 'instagram'}
-                    isFacebook={mention.source === 'facebook'}
+                    isLinkedIn={mention.source === 'LinkedIn'}
                   />
                 ))}
               </div>

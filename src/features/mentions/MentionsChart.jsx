@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Line, Pie } from 'react-chartjs-2';
+import { Line, Pie, Doughnut} from 'react-chartjs-2';
 import { useBrand } from '../../contexts/BrandContext';
 import axios from 'axios';
   import '../../styles/MentionsChart.css';
@@ -12,8 +12,10 @@ import {
   ArcElement,
   Tooltip,
   Legend,
+  Filler
 } from 'chart.js';
 import { addDays, format } from 'date-fns';
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
 ChartJS.register(
   LineElement,
@@ -22,8 +24,39 @@ ChartJS.register(
   PointElement,
   ArcElement,
   Tooltip,
-  Legend
+  Legend,
+  Filler,
+  ChartDataLabels // Register the plugin
 );
+
+ChartJS.register({
+  id: "centerText",
+  beforeDraw(chart) {
+    if (chart.config.options.plugins.centerText) {
+      const { width } = chart;
+      const { height } = chart;
+      const ctx = chart.ctx;
+      const { text, subText } = chart.config.options.plugins.centerText;
+
+      ctx.save();
+
+      // Style for the main text
+      ctx.font = "bold 20px Poppins";
+      ctx.fillStyle = "#000";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      // Draw the subtext (e.g., "Total Number of Mentions")
+      ctx.fillText(subText, width / 2, height / 2 - 10);
+
+      // Draw the main text (e.g., the mentions count)
+      ctx.font = "bold 24px Poppins"; // Larger font for the count
+      ctx.fillText(text, width / 2, height / 2 + 15);
+
+      ctx.restore();
+    }
+  },
+});
 
 const MentionsChart = () => {
   const { brand } = useBrand();
@@ -31,6 +64,7 @@ const MentionsChart = () => {
   const [sentimentData, setSentimentData] = useState({ labels: [], datasets: [] });
   const [trendData, setTrendData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
+  const [totalMentions, setTotalMentions] = useState(0);
 
   useEffect(() => {
     const fetchChartData = async () => {
@@ -55,7 +89,7 @@ const MentionsChart = () => {
         );
 
         const mentions = response.data.hits?.hits?.map((hit) => hit._source) || [];
-
+        setTotalMentions(mentions.length);
         processMentionsData(mentions);
         processSentimentData(mentions);
         processSentimentTrend(mentions);
@@ -101,8 +135,11 @@ const MentionsChart = () => {
         {
           label: `Mentions for ${brand}`,
           data: mentionsPerDate,
-          borderColor: '#4caf50',
-          fill: false,
+          borderColor: "#4caf50",
+          backgroundColor: "rgba(76, 175, 80, 0.2)",
+          fill: true,
+          tension: 0.5, // Smooth line
+          
         },
       ],
     });
@@ -127,6 +164,7 @@ const MentionsChart = () => {
             sentimentCounts.neutral,
           ],
           backgroundColor: ['#4caf50', '#f44336', '#ffc107'],
+          hoverOffset: 4,
         },
       ],
     });
@@ -175,22 +213,28 @@ const MentionsChart = () => {
       labels,
       datasets: [
         {
-          label: 'Positive',
+          label: "Positive",
           data: positiveData,
-          borderColor: '#4caf50',
-          fill: false,
+          borderColor: "#4caf50",
+          backgroundColor: "rgba(76, 175, 80, 0.2)",
+          fill: true,
+          tension: 0.5, // Smooth line
         },
         {
-          label: 'Negative',
-          data: negativeData,
-          borderColor: '#f44336',
-          fill: false,
+          label: "Negative",
+          data: labels.map((label) => sentimentTrend.negative[label]),
+          borderColor: "#f44336",
+          backgroundColor: "rgba(244, 67, 54, 0.2)",
+          fill: true,
+          tension: 0.5, // Smooth line
         },
         {
-          label: 'Neutral',
-          data: neutralData,
-          borderColor: '#ffc107',
-          fill: false,
+          label: "Neutral",
+          data: labels.map((label) => sentimentTrend.neutral[label]),
+          borderColor: "#ffc107",
+          backgroundColor: "rgba(255, 193, 7, 0.2)",
+          fill: true,
+          tension: 0.5, // Smooth line
         },
       ],
     });
@@ -200,7 +244,7 @@ const MentionsChart = () => {
     const labels = [];
     const currentDate = new Date();
 
-    for (let i = days - 1; i >= 0; i--) {
+    for (let i = days - 1; i >= 0; i-=4) {
       labels.push(format(addDays(currentDate, -i), 'd MMM'));
     }
     return labels;
@@ -209,9 +253,70 @@ const MentionsChart = () => {
   const lineChartOptions = {
     responsive: true,
     maintainAspectRatio: false,
-    scales: {
-      y: { beginAtZero: true, type: 'linear' },
+    plugins: {
+      legend: {
+        display: true,
+        position: "top", // Position matches Figma
+        labels: {
+          font: {
+            size: 14,
+            family: 'Poppins',
+          },
+        },
+      },
     },
+    scales: {
+      x: {
+        ticks: {
+          font: {
+            size: 12,
+            family: 'Poppins',
+          },
+          color: '#666',
+        },
+        grid: {
+          display: false, // Remove grid lines to match Figma
+        },
+      },
+      y: {
+        ticks: {
+          font: {
+            size: 12,
+            family: 'Poppins',
+          },
+          color: '#666',
+        },
+        grid: {
+          color: '#e5e5e5', // Subtle grid lines
+        },
+      },
+    },
+  };
+
+  const pieChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          font: { size: 14 },
+        },
+      },
+      datalabels: {
+        display: false, // Disable default datalabels
+        
+      },
+      tooltip: {
+        enabled: true,
+      },
+      centerText: {
+        display: true,
+        text: `${totalMentions} `,
+        subText: "Total Mentions", 
+      },
+    },
+    cutout: "60%", // Makes it a doughnut chart
   };
 
   return (
@@ -234,7 +339,7 @@ const MentionsChart = () => {
         <div className="chart-tile">
           <h3 className="chart-heading">Sentiment Summary</h3>
           <div className="pie-chart-container">
-            <Pie data={sentimentData} options={{ maintainAspectRatio: false }} width={300} height={300} />
+            <Pie Doughnut data={sentimentData} options={pieChartOptions} width={300} height={300} />
           </div>
         </div>
 

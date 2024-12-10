@@ -144,7 +144,7 @@ const ComparisonPage = () => {
           <ComparisonCard
             hashtag1={Brand1Input}
             hashtag2={Brand2}
-            hashtag1Count={instagramCountBrand1 + twitterCountBrand1 + LinkedInCountBrand2}
+            hashtag1Count={instagramCountBrand1 + twitterCountBrand1 + LinkedInCountBrand1}
             hashtag2Count={instagramCountBrand2 + twitterCountBrand2 + LinkedInCountBrand2}
             hashtag3Count={twitterCountBrand1}
             hashtag4Count={twitterCountBrand2}

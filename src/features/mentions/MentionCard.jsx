@@ -6,11 +6,12 @@ const MentionCard = ({ mention, isInstagram, isFacebook }) => {
     return <div className="mention-card">No mention data available</div>;
   }
 
-  const platformName = isInstagram
-    ? 'Instagram'
-    : isFacebook
-    ? 'Facebook'
-    : 'Twitter';
+  const platformName = mention.source;
+  // isInstagram
+  //   ? 'Instagram'
+  //   : isFacebook
+  //   ? 'Facebook'
+  //   : 'Twitter';
 
   // Determine tag text and style dynamically
   const isFilteredText =
@@ -28,8 +29,8 @@ const isFilteredClass =
     : 'mention-card-tag-neutral';
 
 // Get user image or fallback to a default avatar
-const userImage = mention.profile_image_url || '/default-avatar.png'; // Replace with your default avatar path
-
+const userImage = mention.profile_image_url || './profile image.jpg'; 
+const getProxiedImageUrl = (url) => `https://dev-backend.socialhear.com/proxy?url=${encodeURIComponent(url)}`;
 return (
   <div className="mention-card">
     {/* Card Header */}
@@ -54,7 +55,23 @@ return (
           ))}
         </div>
       )}
+     
+     {/* Images */}
+     {/* {mention.images && mention.images.length > 0 && (
+          <div className="mention-card-images">
+            {mention.images.map((image, index) => (
+              <img
+                key={index}
+                src={getProxiedImageUrl(image)}
+                alt={`Mention image ${index + 1}`}
+                className="mention-card-image"
+              />
+            ))}
+          </div>
+        )} */}
+
     </div>
+
 
     {/* Card Footer */}
     <div className="mention-card-footer">

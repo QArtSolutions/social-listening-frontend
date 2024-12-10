@@ -11,9 +11,9 @@ const apiUrl = 'https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-s
 
 const ComparisonPage = () => {
   
-  const {Brand1} = useBrand(); 
+  // const {Brand1} = useBrand(); 
   const [Brand2, setBrand2] = useState('');
-  const [Brand1Input, setBrand1Input] = useState(Brand1);
+  const [Brand1Input, setBrand1Input] = useState('');
   const [twitterCountBrand1, setTwitterCountBrand1] = useState(0);
   const [instagramCountBrand1, setInstagramCountBrand1] = useState(0);
   const [twitterCountBrand2, setTwitterCountBrand2] = useState(0);
@@ -24,9 +24,9 @@ const ComparisonPage = () => {
   const [error, setError] = useState(null);
 
   // Update local state with context value
-  useEffect(() => {
-    setBrand1Input(Brand1); // Set initial input value from Brand1 context
-  }, [Brand1]);
+  // useEffect(() => {
+  //   setBrand1Input(Brand1); // Set initial input value from Brand1 context
+  // }, [Brand1]);
 
 
   // const fetchHashtagData = async () => {
@@ -36,20 +36,22 @@ const ComparisonPage = () => {
   //   setError(null);
 
   // Function to search for a keyword in the 'filtered_tweets' index using Axios
-  async function searchForKeyword(keyword) {
+  async function searchForKeyword(keyword, page = 0, size = 100) {
     try {
       const response = await axios.post(
         `${apiUrl}/${indexName}/_search`,
         {
-          query: {
-            match: {
-              Keyword: keyword, 
-            },
-          },
+          "from": page * size, // Skip documents based on the page
+          "size": size, // Number of documents to fetch per page
+          "query": {
+            "match": {
+              "Keyword": keyword
+            }
+          }
         },
         {
           auth: {
-            username: 'qartAdmin', 
+            username: 'qartAdmin',
             password: '6#h!%HbsBH4zXRat@qFPSnfn@04#2023',
           },
         }
@@ -60,30 +62,48 @@ const ComparisonPage = () => {
       return [];
     }
   }
-
+  
+  // Function to fetch all paginated results
+  async function fetchAllPaginatedResults(keyword, size = 100) {
+    let page = 0;
+    let results = [];
+    let hasMore = true;
+  
+    while (hasMore) {
+      const hits = await searchForKeyword(keyword, page, size);
+      if (hits.length > 0) {
+        results = results.concat(hits); // Add results to the array
+        page++;
+      } else {
+        hasMore = false; // Stop if no more results
+      }
+    }
+  
+    return results;
+  }
+  
   // Function to filter results by source (Twitter or Instagram)
   async function filterBySource(results, source) {
-    return results.filter((result) => result._source.source === source); // Filter results by source (Twitter or Instagram)
+    return results.filter((result) => result._source.source === source);
   }
-
+  
   // Function to get the count of Twitter or Instagram sources for a given brand
   async function getSourceCountForBrand(brandKeyword, source) {
-    const brandResults = await searchForKeyword(brandKeyword); // Get documents for the given brand keyword
+    const brandResults = await fetchAllPaginatedResults(brandKeyword); // Get all paginated documents for the brand
     const filteredResults = await filterBySource(brandResults, source); // Filter by source
     return filteredResults.length; // Return the count of filtered results
   }
-
+  
   // Function to get the count for Brand1's Twitter and Instagram sources
   async function getBrand1Counts() {
     const twitterCountBrand1 = await getSourceCountForBrand(Brand1Input, 'Twitter');
     const instagramCountBrand1 = await getSourceCountForBrand(Brand1Input, 'Instagram');
     const LinkedInCountBrand1 = await getSourceCountForBrand(Brand1Input, 'LinkedIn');
-    console.log("Brand1 Counts: ", twitterCountBrand1, instagramCountBrand1);
     setTwitterCountBrand1(twitterCountBrand1);
     setInstagramCountBrand1(instagramCountBrand1);
     setLinkedInCountBrand1(LinkedInCountBrand1);
   }
-
+  
   // Function to get the count for Brand2's Twitter and Instagram sources
   async function getBrand2Counts() {
     const twitterCountBrand2 = await getSourceCountForBrand(Brand2, 'Twitter');
@@ -93,15 +113,14 @@ const ComparisonPage = () => {
     setInstagramCountBrand2(instagramCountBrand2);
     setLinkedInCountBrand2(LinkedInCountBrand2);
   }
-
-
+  
   // Fetch and log the counts
   async function fetchCounts() {
-    if (!Brand1Input || !Brand2) {
-          alert("Please enter two different brands.");
-          return;
-        }
-
+    if (!Brand1Input || !Brand2 || Brand1Input === Brand2) {
+      alert("Please enter two different brands.");
+      return;
+    }
+  
     setLoading(true);
     try {
       await getBrand1Counts();
@@ -112,7 +131,6 @@ const ComparisonPage = () => {
       setLoading(false);
     }
   }
-
   
 
   return (
@@ -124,7 +142,7 @@ const ComparisonPage = () => {
           <h1>Social Media Brand Comparison</h1>
           <input
             type="text"
-            placeholder={Brand1 || 'Enter name of first brand'}
+            placeholder={'Enter name of first brand'}
             value={Brand1Input}
             onChange={(e) => setBrand1Input(e.target.value)}
           />

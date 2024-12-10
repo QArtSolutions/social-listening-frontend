@@ -30,7 +30,7 @@ const isFilteredClass =
 
 // Get user image or fallback to a default avatar
 const userImage = mention.profile_image_url || './profile image.jpg'; 
-const getProxiedImageUrl = (url) => `https://dev-backend.socialhear.com/proxy?url=${encodeURIComponent(url)}`;
+
 return (
   <div className="mention-card">
     {/* Card Header */}

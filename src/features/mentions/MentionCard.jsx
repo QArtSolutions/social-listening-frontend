@@ -29,7 +29,7 @@ const isFilteredClass =
     : 'mention-card-tag-neutral';
 
 // Get user image or fallback to a default avatar
-const userImage = mention.profile_image_url || '/default-avatar.png'; // Replace with your default avatar path
+const userImage = mention.profile_image_url || './profile image.jpg'; 
 
 return (
   <div className="mention-card">

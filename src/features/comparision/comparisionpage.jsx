@@ -18,6 +18,8 @@ const ComparisonPage = () => {
   const [instagramCountBrand1, setInstagramCountBrand1] = useState(0);
   const [twitterCountBrand2, setTwitterCountBrand2] = useState(0);
   const [instagramCountBrand2, setInstagramCountBrand2] = useState(0);
+  const [LinkedInCountBrand1, setLinkedInCountBrand1] = useState(0);
+  const [LinkedInCountBrand2, setLinkedInCountBrand2] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -75,17 +77,21 @@ const ComparisonPage = () => {
   async function getBrand1Counts() {
     const twitterCountBrand1 = await getSourceCountForBrand(Brand1Input, 'Twitter');
     const instagramCountBrand1 = await getSourceCountForBrand(Brand1Input, 'Instagram');
+    const LinkedInCountBrand1 = await getSourceCountForBrand(Brand1Input, 'LinkedIn');
     console.log("Brand1 Counts: ", twitterCountBrand1, instagramCountBrand1);
     setTwitterCountBrand1(twitterCountBrand1);
     setInstagramCountBrand1(instagramCountBrand1);
+    setLinkedInCountBrand1(LinkedInCountBrand1);
   }
 
   // Function to get the count for Brand2's Twitter and Instagram sources
   async function getBrand2Counts() {
     const twitterCountBrand2 = await getSourceCountForBrand(Brand2, 'Twitter');
     const instagramCountBrand2 = await getSourceCountForBrand(Brand2, 'Instagram');
+    const LinkedInCountBrand2 = await getSourceCountForBrand(Brand2, 'LinkedIn');
     setTwitterCountBrand2(twitterCountBrand2);
     setInstagramCountBrand2(instagramCountBrand2);
+    setLinkedInCountBrand2(LinkedInCountBrand2);
   }
 
 
@@ -138,12 +144,15 @@ const ComparisonPage = () => {
           <ComparisonCard
             hashtag1={Brand1Input}
             hashtag2={Brand2}
-            hashtag1Count={instagramCountBrand1 + twitterCountBrand1}
-            hashtag2Count={instagramCountBrand2 + twitterCountBrand2}
+            hashtag1Count={instagramCountBrand1 + twitterCountBrand1 + LinkedInCountBrand2}
+            hashtag2Count={instagramCountBrand2 + twitterCountBrand2 + LinkedInCountBrand2}
             hashtag3Count={twitterCountBrand1}
             hashtag4Count={twitterCountBrand2}
             hashtag5Count={instagramCountBrand1}
             hashtag6Count={instagramCountBrand2}
+            hashtag7Count={LinkedInCountBrand1}
+            hashtag8Count={LinkedInCountBrand2}
+
           />
         </div>
       </div>

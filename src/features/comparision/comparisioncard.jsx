@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './comparisioncard.css';
 
-const ComparisonCard = ({ hashtag1, hashtag2, hashtag1Count, hashtag2Count, hashtag3Count, hashtag4Count, hashtag5Count, hashtag6Count }) => {
+const ComparisonCard = ({ hashtag1, hashtag2, hashtag1Count, hashtag2Count, hashtag3Count, hashtag4Count, hashtag5Count, hashtag6Count, hashtag7Count, hashtag8Count  }) => {
   return (
     <div className="comparison-card">
       <h3>Overview</h3>
@@ -32,8 +32,8 @@ const ComparisonCard = ({ hashtag1, hashtag2, hashtag1Count, hashtag2Count, hash
           </tr>
           <tr>
           <td>Linkden Mentions</td>
-  <td style={{ fontStyle: 'italic' }}>Coming Soon...</td>
-  <td style={{ fontStyle: 'italic' }}><i>Coming Soon...</i></td>
+          <td>{hashtag7Count}</td>
+          <td>{hashtag8Count}</td>
           </tr>
         </tbody>
       </table>

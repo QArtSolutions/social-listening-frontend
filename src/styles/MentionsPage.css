@@ -39,6 +39,8 @@ h2 {
   gap: 1rem;
   margin-top: 1rem;
 }
+
+/* Button for loading more mentions */
 .load-more-button {
   background-color: #4caf50;
   color: white;
@@ -62,16 +64,38 @@ h2 {
   cursor: not-allowed;
 }
 
+/* Tabs container for Analytics and Conversations */
+/* Tabs container for Analytics and Conversations */
+.mentions-tabs {
+  display: flex;
+  border-bottom: 2px solid #ddd; /* Line below tabs */
+  margin-bottom: 20px;
+  margin-left: 20px; /* Shift the tabs to the right */
+}
+
+/* Default styling for tab buttons */
 .tab-button {
-  padding: 10px 20px;
+  padding: 12px 20px;
   margin-right: 10px;
   border: none;
   cursor: pointer;
   background-color: #f0f0f0;
-  border-radius: 4px;
+  color: #333;
+  border-radius: 4px 4px 0 0; /* Rounded top corners */
+  font-size: 12px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Styling for the active tab */
 .tab-button.active {
-  background-color: #007bff;
-  color: white;
+  background-color: #007bff; /* Blue background for active tab */
+  color: white; /* White text for active tab */
+  font-weight: bold; /* Bold text */
+  border-bottom: 2px solid transparent; /* Removes bottom border */
+}
+
+/* Hover effect for inactive tabs */
+.tab-button:hover:not(.active) {
+  background-color: #e0e0e0; /* Light gray background on hover */
+  color: #000; /* Black text on hover */
 }

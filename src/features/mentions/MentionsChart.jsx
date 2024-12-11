@@ -1,33 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Line, Pie, Doughnut} from 'react-chartjs-2';
-import { useBrand } from '../../contexts/BrandContext';
-import axios from 'axios';
-  import '../../styles/MentionsChart.css';
+import React, { useState, useEffect } from "react";
+import ReactApexChart from "react-apexcharts";
+import { Pie } from "react-chartjs-2";
+import { useBrand } from "../../contexts/BrandContext";
+import axios from "axios";
+import { addDays, format } from "date-fns";
+import "../../styles/MentionsChart.css";
 import {
   Chart as ChartJS,
-  LineElement,
-  LinearScale,
-  CategoryScale,
-  PointElement,
   ArcElement,
   Tooltip,
   Legend,
-  Filler
-} from 'chart.js';
-import { addDays, format } from 'date-fns';
-import ChartDataLabels from "chartjs-plugin-datalabels";
+} from "chart.js";
 
-ChartJS.register(
-  LineElement,
-  LinearScale,
-  CategoryScale,
-  PointElement,
-  ArcElement,
-  Tooltip,
-  Legend,
-  Filler,
-  ChartDataLabels // Register the plugin
-);
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 ChartJS.register({
   id: "centerText",
@@ -40,17 +25,16 @@ ChartJS.register({
 
       ctx.save();
 
-      // Style for the main text
-      ctx.font = "bold 20px Poppins";
-      ctx.fillStyle = "#000";
+      // Style for the subtext
+      ctx.font = "bold 16px Poppins";
+      ctx.fillStyle = "#666";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-
-      // Draw the subtext (e.g., "Total Number of Mentions")
       ctx.fillText(subText, width / 2, height / 2 - 10);
 
-      // Draw the main text (e.g., the mentions count)
-      ctx.font = "bold 24px Poppins"; // Larger font for the count
+      // Style for the main text
+      ctx.font = "bold 24px Poppins";
+      ctx.fillStyle = "#000";
       ctx.fillText(text, width / 2, height / 2 + 15);
 
       ctx.restore();
@@ -60,9 +44,9 @@ ChartJS.register({
 
 const MentionsChart = () => {
   const { brand } = useBrand();
-  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+  const [mentionsChartData, setMentionsChartData] = useState({ categories: [], series: [] });
+  const [trendChartData, setTrendChartData] = useState({ categories: [], series: [] });
   const [sentimentData, setSentimentData] = useState({ labels: [], datasets: [] });
-  const [trendData, setTrendData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
   const [totalMentions, setTotalMentions] = useState(0);
 
@@ -71,7 +55,7 @@ const MentionsChart = () => {
       try {
         setLoading(true);
         const response = await axios.post(
-          'https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-south-1.on.aws/filtered_tweets/_search',
+          "https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-south-1.on.aws/filtered_tweets/_search",
           {
             query: {
               match: {
@@ -82,19 +66,18 @@ const MentionsChart = () => {
           },
           {
             auth: {
-              username: 'qartAdmin',
-              password: '6#h!%HbsBH4zXRat@qFPSnfn@04#2023',
+              username: "qartAdmin",
+              password: "6#h!%HbsBH4zXRat@qFPSnfn@04#2023",
             },
           }
         );
 
         const mentions = response.data.hits?.hits?.map((hit) => hit._source) || [];
-        setTotalMentions(mentions.length);
         processMentionsData(mentions);
         processSentimentData(mentions);
-        processSentimentTrend(mentions);
+        processSentimentTrendData(mentions);
       } catch (error) {
-        console.error('Error fetching chart data from Elasticsearch:', error);
+        console.error("Error fetching chart data from Elasticsearch:", error);
       } finally {
         setLoading(false);
       }
@@ -104,8 +87,8 @@ const MentionsChart = () => {
   }, [brand]);
 
   const processMentionsData = (mentions) => {
-    const labels = generateLabels(30); // Generate labels for the last 30 days
-    const mentionsCountByDate = labels.reduce((acc, label) => {
+    const categories = generateLabels(30);
+    const mentionsCountByDate = categories.reduce((acc, label) => {
       acc[label] = 0;
       return acc;
     }, {});
@@ -116,46 +99,49 @@ const MentionsChart = () => {
       if (createdAt) {
         try {
           const parsedDate = new Date(createdAt);
-          const mentionDate = format(parsedDate, 'd MMM');
+          const mentionDate = format(parsedDate, "d MMM");
 
           if (mentionsCountByDate.hasOwnProperty(mentionDate)) {
             mentionsCountByDate[mentionDate] += 1;
           }
         } catch (error) {
-          console.warn('Error parsing date:', createdAt, error);
+          console.warn("Error parsing date:", createdAt, error);
         }
       }
     });
 
-    const mentionsPerDate = labels.map((label) => mentionsCountByDate[label]);
+    const data = categories.map((label) => mentionsCountByDate[label]);
 
-    setChartData({
-      labels,
-      datasets: [
-        {
-          label: `Mentions for ${brand}`,
-          data: mentionsPerDate,
-          borderColor: "#4caf50",
-          backgroundColor: "rgba(76, 175, 80, 0.2)",
-          fill: true,
-          tension: 0.5, // Smooth line
-          
-        },
-      ],
+    setMentionsChartData({
+      categories,
+      series: [{ name: `Mentions for ${brand}`, data }],
     });
   };
-  
+
   const processSentimentData = (mentions) => {
+    const filteredMentions = mentions.filter((mention) => {
+      const createdAt = mention?.timestamp;
+      if (createdAt) {
+        const mentionDate = new Date(createdAt);
+        return mentionDate >= addDays(new Date(), -30);
+      }
+      return false;
+    });
+
     const sentimentCounts = { positive: 0, negative: 0, neutral: 0 };
 
-    mentions.forEach((mention) => {
-      if (mention?.Sentiment === 'positive') sentimentCounts.positive++;
-      else if (mention?.Sentiment === 'negative') sentimentCounts.negative++;
+    filteredMentions.forEach((mention) => {
+      if (mention?.Sentiment === "positive") sentimentCounts.positive++;
+      else if (mention?.Sentiment === "negative") sentimentCounts.negative++;
       else sentimentCounts.neutral++;
     });
 
+    setTotalMentions(
+      sentimentCounts.positive + sentimentCounts.negative + sentimentCounts.neutral
+    );
+
     setSentimentData({
-      labels: ['Positive', 'Negative', 'Neutral'],
+      labels: ["Positive", "Negative", "Neutral"],
       datasets: [
         {
           data: [
@@ -163,28 +149,18 @@ const MentionsChart = () => {
             sentimentCounts.negative,
             sentimentCounts.neutral,
           ],
-          backgroundColor: ['#4caf50', '#f44336', '#ffc107'],
-          hoverOffset: 4,
+          backgroundColor: ["#4caf50", "#f44336", "#ffc107"],
         },
       ],
     });
   };
 
-  const processSentimentTrend = (mentions) => {
-    const labels = generateLabels(30); // Generate labels for the last 30 days
+  const processSentimentTrendData = (mentions) => {
+    const categories = generateLabels(30);
     const sentimentTrend = {
-      positive: labels.reduce((acc, label) => {
-        acc[label] = 0;
-        return acc;
-      }, {}),
-      negative: labels.reduce((acc, label) => {
-        acc[label] = 0;
-        return acc;
-      }, {}),
-      neutral: labels.reduce((acc, label) => {
-        acc[label] = 0;
-        return acc;
-      }, {}),
+      positive: categories.map(() => 0),
+      negative: categories.map(() => 0),
+      neutral: categories.map(() => 0),
     };
 
     mentions.forEach((mention) => {
@@ -194,48 +170,24 @@ const MentionsChart = () => {
       if (createdAt && sentiment) {
         try {
           const parsedDate = new Date(createdAt);
-          const mentionDate = format(parsedDate, 'd MMM');
+          const mentionDate = format(parsedDate, "d MMM");
 
-          if (sentimentTrend[sentiment] && sentimentTrend[sentiment].hasOwnProperty(mentionDate)) {
-            sentimentTrend[sentiment][mentionDate] += 1;
+          const index = categories.indexOf(mentionDate);
+          if (index !== -1) {
+            sentimentTrend[sentiment][index]++;
           }
         } catch (error) {
-          console.warn('Error parsing date:', createdAt, error);
+          console.warn("Error parsing date:", createdAt, error);
         }
       }
     });
 
-    const positiveData = labels.map((label) => sentimentTrend.positive[label]);
-    const negativeData = labels.map((label) => sentimentTrend.negative[label]);
-    const neutralData = labels.map((label) => sentimentTrend.neutral[label]);
-
-    setTrendData({
-      labels,
-      datasets: [
-        {
-          label: "Positive",
-          data: positiveData,
-          borderColor: "#4caf50",
-          backgroundColor: "rgba(76, 175, 80, 0.2)",
-          fill: true,
-          tension: 0.5, // Smooth line
-        },
-        {
-          label: "Negative",
-          data: labels.map((label) => sentimentTrend.negative[label]),
-          borderColor: "#f44336",
-          backgroundColor: "rgba(244, 67, 54, 0.2)",
-          fill: true,
-          tension: 0.5, // Smooth line
-        },
-        {
-          label: "Neutral",
-          data: labels.map((label) => sentimentTrend.neutral[label]),
-          borderColor: "#ffc107",
-          backgroundColor: "rgba(255, 193, 7, 0.2)",
-          fill: true,
-          tension: 0.5, // Smooth line
-        },
+    setTrendChartData({
+      categories,
+      series: [
+        { name: "Positive", data: sentimentTrend.positive, color: "#4caf50" },
+        { name: "Negative", data: sentimentTrend.negative, color: "#f44336" },
+        { name: "Neutral", data: sentimentTrend.neutral, color: "#ffc107" },
       ],
     });
   };
@@ -244,53 +196,10 @@ const MentionsChart = () => {
     const labels = [];
     const currentDate = new Date();
 
-    for (let i = days - 1; i >= 0; i-=4) {
-      labels.push(format(addDays(currentDate, -i), 'd MMM'));
+    for (let i = days - 1; i >= 0; i -= 4) {
+      labels.push(format(addDays(currentDate, -i), "d MMM"));
     }
     return labels;
-  };
-
-  const lineChartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: true,
-        position: "top", // Position matches Figma
-        labels: {
-          font: {
-            size: 14,
-            family: 'Poppins',
-          },
-        },
-      },
-    },
-    scales: {
-      x: {
-        ticks: {
-          font: {
-            size: 12,
-            family: 'Poppins',
-          },
-          color: '#666',
-        },
-        grid: {
-          display: false, // Remove grid lines to match Figma
-        },
-      },
-      y: {
-        ticks: {
-          font: {
-            size: 12,
-            family: 'Poppins',
-          },
-          color: '#666',
-        },
-        grid: {
-          color: '#e5e5e5', // Subtle grid lines
-        },
-      },
-    },
   };
 
   const pieChartOptions = {
@@ -298,65 +207,111 @@ const MentionsChart = () => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
+        display: false,
         position: "bottom",
-        labels: {
-          font: { size: 14 },
-        },
+        labels: { font: { size: 14 } },
       },
-      datalabels: {
-        display: false, // Disable default datalabels
-        
-      },
-      tooltip: {
-        enabled: true,
-      },
+      datalabels: { display: false },
+      tooltip: { enabled: true },
       centerText: {
         display: true,
-        text: `${totalMentions} `,
-        subText: "Total Mentions", 
+        text: `${totalMentions}`,
+        subText: "Total Mentions",
       },
     },
-    cutout: "60%", // Makes it a doughnut chart
+    cutout: "60%",
+  };
+
+  const apexChartOptions = {
+    chart: { type: "spline", toolbar: { show: false } },
+    xaxis: { categories: mentionsChartData.categories },
+    yaxis: { title: { text: "Mentions Count" } },
+    stroke: { curve: "smooth" },
+    colors: ["blue"],
+  };
+
+  const trendChartOptions = {
+    chart: { type: "spline", toolbar: { show: false } },
+    xaxis: { categories: trendChartData.categories },
+    stroke: { curve: "smooth" },
+    yaxis: { title: { text: "Sentiment Count" } },
+    colors: trendChartData.series.map((s) => s.color),
   };
 
   return (
-    <div className="mentions-chart-container">
-  {loading ? (
-    <p>Loading data...</p>
-  ) : (
-    <>
-      {/* Line Chart for Last 30 Days Mentions */}
-      <div className="trend-tile">
-        <h3 className="chart-heading">Last 30 Days Mentions</h3>
-        <div className="trend-chart-container">
-          <Line data={chartData} options={lineChartOptions} width={400} height={200} />
-        </div>
-      </div>
-
-      {/* Row containing Pie Chart and Sentiment Trend Chart */}
-      <div className="chart-row">
-        {/* Pie Chart for Sentiment Summary */}
-        <div className="chart-tile">
-          <h3 className="chart-heading">Sentiment Summary</h3>
-          <div className="pie-chart-container">
-            <Pie Doughnut data={sentimentData} options={pieChartOptions} width={300} height={300} />
-          </div>
+  <div className="mentions-chart-container p-4 bg-gray-100 min-h-screen">
+    {loading ? (
+      <p>Loading data...</p>
+    ) : (
+      <div className="space-y-6">
+        {/* Top Chart Card */}
+        <div className="bg-white shadow-lg rounded-lg p-6">
+          <h3 className="text-lg mb-4 font-semibold">Last 30 Days Mentions</h3>
+          <ReactApexChart
+            options={apexChartOptions}
+            series={mentionsChartData.series}
+            type="line"
+            height={300}
+          />
         </div>
 
-        {/* Line Chart for Sentiment Trend */}
-        <div className="chart-tile">
-          <h3 className="chart-heading">Sentiment Trend Analysis</h3>
-          <div className="trend-chart-container">
-            <Line data={trendData} options={lineChartOptions} width={400} height={200} />
+        {/* Bottom Charts */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Pie Chart Card */}
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <h3 className="text-lg mb-4 font-semibold">Sentiment Summary</h3>
+            <div className="flex items-center">
+              {/* Pie Chart */}
+              <div>
+                <Pie
+                  data={sentimentData}
+                  options={pieChartOptions}
+                  width={300}
+                  height={300}
+                />
+              </div>
+
+              {/* Sentiment Breakdown */}
+              <div className="ml-6 flex flex-col justify-center space-y-4">
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-yellow-500 mr-2"></div>
+                  <p className="text-sm">
+                    <span className="font-bold">Neutral:</span>{" "}
+                    {sentimentData.datasets[0]?.data[2]}
+                  </p>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-red-500 mr-2"></div>
+                  <p className="text-sm">
+                    <span className="font-bold">Negative:</span>{" "}
+                    {sentimentData.datasets[0]?.data[1]}
+                  </p>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-4 h-4 bg-green-500 mr-2"></div>
+                  <p className="text-sm">
+                    <span className="font-bold">Positive:</span>{" "}
+                    {sentimentData.datasets[0]?.data[0]}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Trend Chart Card */}
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <h3 className="text-lg mb-4 font-semibold">Sentiment Trend Analysis</h3>
+            <ReactApexChart
+              options={trendChartOptions}
+              series={trendChartData.series}
+              type="line"
+              height={300}
+            />
           </div>
         </div>
       </div>
-    </>
-  )}
-</div>
-  );
+    )}
+  </div>
+);
 };
-
 export default MentionsChart;
-
-

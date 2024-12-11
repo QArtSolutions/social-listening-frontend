@@ -4,133 +4,174 @@ import Sidebar from '../../components/layout/Sidebar';
 import Header from '../../components/layout/Header';
 import ComparisonCard from './comparisioncard';
 import { useBrand } from '../../contexts/BrandContext';
-import './comparisioncard.css'; 
+import './comparisioncard.css';
+
+const indexName = 'filtered_tweets'; // Elasticsearch index name
+const apiUrl = 'https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-south-1.on.aws'; // OpenSearch API endpoint
 
 const ComparisonPage = () => {
-  const { hashtag1 } = useBrand(); 
-  const [hashtag1Input, setHashtag1Input] = useState(hashtag1); 
-  const [hashtag2, setHashtag2] = useState('');
-  const [hashtag1Count, setHashtag1Count] = useState(0);
-  const [hashtag2Count, setHashtag2Count] = useState(0);
-  const [hashtag3Count, setHashtag3Count] = useState(0);
-  const [hashtag4Count, setHashtag4Count] = useState(0);
+  
+  // const {Brand1} = useBrand(); 
+  const [Brand2, setBrand2] = useState('');
+  const [Brand1Input, setBrand1Input] = useState('');
+  const [twitterCountBrand1, setTwitterCountBrand1] = useState(0);
+  const [instagramCountBrand1, setInstagramCountBrand1] = useState(0);
+  const [twitterCountBrand2, setTwitterCountBrand2] = useState(0);
+  const [instagramCountBrand2, setInstagramCountBrand2] = useState(0);
+  const [LinkedInCountBrand1, setLinkedInCountBrand1] = useState(0);
+  const [LinkedInCountBrand2, setLinkedInCountBrand2] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    setHashtag1Input(hashtag1); // Update local state with context value
-  }, [hashtag1]);
+  // Update local state with context value
+  // useEffect(() => {
+  //   setBrand1Input(Brand1); // Set initial input value from Brand1 context
+  // }, [Brand1]);
 
-  const fetchHashtagData = async () => {
-    if (!hashtag1Input || !hashtag2) {
-      alert("Please enter two different hashtags.");
+
+  // const fetchHashtagData = async () => {
+  //  
+
+  //   setLoading(true);
+  //   setError(null);
+
+  // Function to search for a keyword in the 'filtered_tweets' index using Axios
+  async function searchForKeyword(keyword, page = 0, size = 100) {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/${indexName}/_search`,
+        {
+          "from": page * size, // Skip documents based on the page
+          "size": size, // Number of documents to fetch per page
+          "query": {
+            "match": {
+              "Keyword": keyword
+            }
+          }
+        },
+        {
+          auth: {
+            username: 'qartAdmin',
+            password: '6#h!%HbsBH4zXRat@qFPSnfn@04#2023',
+          },
+        }
+      );
+      return response.data.hits.hits; // Return documents that match the keyword
+    } catch (error) {
+      console.error(`Error searching for keyword "${keyword}" in OpenSearch:`, error.message);
+      return [];
+    }
+  }
+  
+  // Function to fetch all paginated results
+  async function fetchAllPaginatedResults(keyword, size = 100) {
+    let page = 0;
+    let results = [];
+    let hasMore = true;
+  
+    while (hasMore) {
+      const hits = await searchForKeyword(keyword, page, size);
+      if (hits.length > 0) {
+        results = results.concat(hits); // Add results to the array
+        page++;
+      } else {
+        hasMore = false; // Stop if no more results
+      }
+    }
+  
+    return results;
+  }
+  
+  // Function to filter results by source (Twitter or Instagram)
+  async function filterBySource(results, source) {
+    return results.filter((result) => result._source.source === source);
+  }
+  
+  // Function to get the count of Twitter or Instagram sources for a given brand
+  async function getSourceCountForBrand(brandKeyword, source) {
+    const brandResults = await fetchAllPaginatedResults(brandKeyword); // Get all paginated documents for the brand
+    const filteredResults = await filterBySource(brandResults, source); // Filter by source
+    return filteredResults.length; // Return the count of filtered results
+  }
+  
+  // Function to get the count for Brand1's Twitter and Instagram sources
+  async function getBrand1Counts() {
+    const twitterCountBrand1 = await getSourceCountForBrand(Brand1Input, 'Twitter');
+    const instagramCountBrand1 = await getSourceCountForBrand(Brand1Input, 'Instagram');
+    const LinkedInCountBrand1 = await getSourceCountForBrand(Brand1Input, 'LinkedIn');
+    setTwitterCountBrand1(twitterCountBrand1);
+    setInstagramCountBrand1(instagramCountBrand1);
+    setLinkedInCountBrand1(LinkedInCountBrand1);
+  }
+  
+  // Function to get the count for Brand2's Twitter and Instagram sources
+  async function getBrand2Counts() {
+    const twitterCountBrand2 = await getSourceCountForBrand(Brand2, 'Twitter');
+    const instagramCountBrand2 = await getSourceCountForBrand(Brand2, 'Instagram');
+    const LinkedInCountBrand2 = await getSourceCountForBrand(Brand2, 'LinkedIn');
+    setTwitterCountBrand2(twitterCountBrand2);
+    setInstagramCountBrand2(instagramCountBrand2);
+    setLinkedInCountBrand2(LinkedInCountBrand2);
+  }
+  
+  // Fetch and log the counts
+  async function fetchCounts() {
+    if (!Brand1Input || !Brand2 || Brand1Input === Brand2) {
+      alert("Please enter two different brands.");
       return;
     }
-
+  
     setLoading(true);
-    setError(null);
-
     try {
-      const options1 = {
-        method: 'GET',
-        url: 'https://instagram-data1.p.rapidapi.com/hashtag/info',
-        params: { hashtag: hashtag1Input }, 
-        headers: {
-          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
-          'X-RapidAPI-Host': 'instagram-data1.p.rapidapi.com',
-        },
-      };
-
-      const options2 = {
-        method: 'GET',
-        url: 'https://instagram-data1.p.rapidapi.com/hashtag/info',
-        params: { hashtag: hashtag2 },
-        headers: {
-          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
-          'X-RapidAPI-Host': 'instagram-data1.p.rapidapi.com',
-        },
-      };
-
-      const options3 = {
-        method: 'GET',
-        url: 'https://get-twitter-mentions.p.rapidapi.com',
-        params: { hashtag: hashtag1Input, period: 1 },
-        headers: {
-          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
-          'X-RapidAPI-Host': 'get-twitter-mentions.p.rapidapi.com',
-        },
-      };
-
-      const options4 = {
-        method: 'GET',
-        url: 'https://get-twitter-mentions.p.rapidapi.com',
-        params: { hashtag: hashtag2, period: 1 },
-        headers: {
-          'X-RapidAPI-Key': 'b2a1325b3fmsh3ce6cd42aee1d93p15881cjsn7d38aeedbf83',
-          'X-RapidAPI-Host': 'get-twitter-mentions.p.rapidapi.com',
-        },
-      };
-
-      const [response1, response2, response3, response4] = await Promise.all([
-        axios.request(options1),
-        axios.request(options2),
-        axios.request(options3),
-        axios.request(options4),
-      ]);
-
-      setHashtag1Count(response1.data.count);
-      setHashtag2Count(response2.data.count);
-      setHashtag3Count(response3.data.length);
-      setHashtag4Count(response4.data.length);
-
+      await getBrand1Counts();
+      await getBrand2Counts();
     } catch (err) {
-      if (err.response && err.response.status === 429) {
-        setError('API limit reached. Please try again later.');
-      } else {
-        setError('Failed to fetch data.');
-      }
-      console.error('API Error:', err);
+      setError('Failed to fetch data');
     } finally {
       setLoading(false);
     }
-  };
+  }
+  
 
   return (
     <div className="comparison-container">
       <Sidebar />
       <div className="comparison-content">
         <Header />
-
         <div className="comparison-input">
           <h1>Social Media Brand Comparison</h1>
           <input
             type="text"
-            placeholder={hashtag1} 
-            value={hashtag1Input} 
-            onChange={(e) => setHashtag1Input(e.target.value)}
+            placeholder={'Enter name of first brand'}
+            value={Brand1Input}
+            onChange={(e) => setBrand1Input(e.target.value)}
           />
           <input
             type="text"
-            placeholder="Enter second brandname"
-            value={hashtag2}
-            onChange={(e) => setHashtag2(e.target.value)}
+            placeholder="Enter name of second brand"
+            value={Brand2}
+            onChange={(e) => setBrand2(e.target.value)}
           />
-          <button onClick={fetchHashtagData}>Compare</button>
+          <button onClick={fetchCounts}>Compare</button>
         </div>
 
         {loading && <p className="loading-text">Loading...</p>}
         {error && <p className="error-text">{error}</p>}
 
         <div className="results">
-          <ComparisonCard 
-            hashtag1={hashtag1Input || hashtag1} // Use the state variable for hashtag1
-            hashtag1Count={hashtag1Count} 
-            hashtag2={hashtag2} 
-            hashtag2Count={hashtag2Count} 
-            hashtag3Count={hashtag3Count} 
-            hashtag4Count={hashtag4Count} 
+          <ComparisonCard
+            hashtag1={Brand1Input}
+            hashtag2={Brand2}
+            hashtag1Count={instagramCountBrand1 + twitterCountBrand1 + LinkedInCountBrand1}
+            hashtag2Count={instagramCountBrand2 + twitterCountBrand2 + LinkedInCountBrand2}
+            hashtag3Count={twitterCountBrand1}
+            hashtag4Count={twitterCountBrand2}
+            hashtag5Count={instagramCountBrand1}
+            hashtag6Count={instagramCountBrand2}
+            hashtag7Count={LinkedInCountBrand1}
+            hashtag8Count={LinkedInCountBrand2}
+
           />
-        
         </div>
       </div>
     </div>
@@ -140,4 +181,13 @@ const ComparisonPage = () => {
 export default ComparisonPage;
 
 
+
+  
+//   // Set brand inputs
+//   const {Brand1} = useBrand(); 
+//   const [Brand2, setBrand2] = useState('brand2Keyword');
+  
+//   useEffect(() => {
+//     setHashtag1Input(Brand1); // Update local state with context value
+//   }, [Brand1]);
 

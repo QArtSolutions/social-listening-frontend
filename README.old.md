@@ -10,5 +10,6 @@ npm install react-chartjs-2
 npm install react-datepicker
 npm install recharts
 npm install react-icons
+npm install chartjs-plugin-datalabels
 
 npm install axios

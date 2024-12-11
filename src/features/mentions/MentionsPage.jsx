@@ -4,6 +4,7 @@ import MentionCard from './MentionCard';
 import Sidebar from '../../components/layout/Sidebar';
 import Header from '../../components/layout/Header';
 import { useBrand } from '../../contexts/BrandContext';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import axios from 'axios';
 import '../../styles/MentionsPage.css';
 
@@ -89,17 +90,49 @@ const MentionsPage = () => {
           <>
             {activeTab === 'analytics' && <MentionsChart mentions={mentions} />}
             {activeTab === 'conversations' && (
+              // <div className="mentions-list">
+              //   {/* Render Mentions */}
+              //   {mentions.map((mention, index) => (
+              //     <MentionCard
+              //       key={index}
+              //       mention={mention}
+              //       isInstagram={mention.source === 'instagram'}
+              //       isLinkedIn={mention.source === 'LinkedIn'}
+              //     />
+              //   ))}
+              // </div>
               <div className="mentions-list">
                 {/* Render Mentions */}
-                {mentions.map((mention, index) => (
-                  <MentionCard
-                    key={index}
-                    mention={mention}
-                    isInstagram={mention.source === 'instagram'}
-                    isLinkedIn={mention.source === 'LinkedIn'}
-                  />
-                ))}
+                {mentions
+                  .sort((a, b) => {
+                    try {
+                      const dateA = new Date(a.timestamp).getTime();
+                      const dateB = new Date(b.timestamp).getTime();
+
+                      // If both timestamps are valid, compare them
+                      if (!isNaN(dateA) && !isNaN(dateB)) {
+                        return dateB - dateA;
+                      }
+
+                      // If one timestamp is invalid, treat it as "equal" for sorting purposes
+                      if (isNaN(dateA) || isNaN(dateB)) {
+                        return 0;
+                      }
+                    } catch {
+                      // On unexpected errors, treat timestamps as equal
+                      return 0;
+                    }
+                  })
+                  .map((mention, index) => (
+                    <MentionCard
+                      key={index}
+                      mention={mention}
+                      isInstagram={mention.source === 'instagram'}
+                      isLinkedIn={mention.source === 'LinkedIn'}
+                    />
+                  ))}
               </div>
+
             )}
           </>
         )}

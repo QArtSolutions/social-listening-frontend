@@ -63,15 +63,21 @@ const MentionsPage = () => {
       <Sidebar />
       <div className="mentions-content">
         <Header onSearch={handleSearch} />
-        <div className="mentions-tabs">
+        <div className="flex items-center space-x-4 border-b-2 border-gray-300 mb-4">
           <button
-            className={`tab-button ${activeTab === 'analytics' ? 'active' : ''}`}
+            className={`px-6 py-2 text-sm font-semibold ${activeTab === 'analytics'
+                ? 'bg-blue-500 text-white border-b-2 border-blue-500'
+                : 'text-gray-600 hover:text-blue-500'
+              }`}
             onClick={() => setActiveTab('analytics')}
           >
             Analytics
           </button>
           <button
-            className={`tab-button ${activeTab === 'conversations' ? 'active' : ''}`}
+            className={`px-6 py-2 text-sm font-semibold ${activeTab === 'conversations'
+                ? 'bg-blue-500 text-white border-b-2 border-blue-500'
+                : 'text-gray-600 hover:text-blue-500'
+              }`}
             onClick={() => setActiveTab('conversations')}
           >
             Conversations

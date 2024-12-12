@@ -95,13 +95,13 @@ const Sidebar = () => {
         >
           <FiBarChart2
             className={`text-xl mr-3 ${
-              location.pathname === "/comparison" ? "text-white" : "text-black"
+              location.pathname === "/comparision" ? "text-white" : "text-black"
             }`}
           />
           <Link
             to="/comparision"
             className={`block ${
-              location.pathname === "/comparison" ? "text-white" : "text-black"
+              location.pathname === "/comparision" ? "text-white" : "text-black"
             }`}
           >
             Comparison

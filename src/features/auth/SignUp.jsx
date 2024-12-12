@@ -74,7 +74,7 @@ const SignUp = () => {
             <input
               type="text"
               id="name"
-              placeholder="Name"
+              placeholder="User Name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required

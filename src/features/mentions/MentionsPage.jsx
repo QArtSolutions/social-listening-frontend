@@ -5,6 +5,7 @@ import Sidebar from '../../components/layout/Sidebar';
 import Header from '../../components/layout/Header';
 import { useBrand } from '../../contexts/BrandContext';
 import axios from 'axios';
+import { getBackendUrl } from "../../utils/apiUrl.jsx";
 import '../../styles/MentionsPage.css';
 
 const MentionsPage = () => {
@@ -12,7 +13,37 @@ const MentionsPage = () => {
   const [searchTerm, setSearchTerm] = useState(''); // State for search input
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [activeTab, setActiveTab] = useState('analytics'); // State for active tab
-  const { brand } = useBrand();
+  const { brand, setBrand } = useBrand();
+
+
+  const fetchLastSearchedBrand = async () => {
+    const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage
+    const apiUrl = getBackendUrl();
+    if (!userId) {
+      console.error('User ID not found in localStorage');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${apiUrl}/api/users/search-history_userData`, // Your API endpoint
+        {
+          userId,
+          limit: 1, // Fetch only the latest search
+        }
+      );
+
+      if (response.data && response.data.length > 0) {
+        const lastSearchedBrand = response.data[0].searched_brand;
+        setBrand(lastSearchedBrand); // Update the brand in context
+        setSearchTerm(lastSearchedBrand); // Set the search term for fetching mentions
+        fetchData(lastSearchedBrand); // Fetch mentions for the last searched brand
+      } else {
+        console.log('No search history found for this user.');
+      }
+    } catch (error) {
+      console.error('Error fetching last searched brand:', error);
+    }
+  };
 
   // Function to fetch data from Elasticsearch
   const fetchData = async (query) => {
@@ -49,13 +80,15 @@ const MentionsPage = () => {
 
   // Fetch data when the component mounts or the search term changes
   useEffect(() => {
-    fetchData(searchTerm || brand);
-  }, [brand, searchTerm]);
+    fetchLastSearchedBrand();
+    //  fetchData(searchTerm || brand);
+  }, []);
 
   // Handle search input from Header
   const handleSearch = (newSearchTerm) => {
     setSearchTerm(newSearchTerm);
     setMentions([]); // Clear previous mentions
+    fetchData(newSearchTerm);
   };
 
   return (

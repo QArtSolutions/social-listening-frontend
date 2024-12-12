@@ -78,16 +78,17 @@ const Entry = ({ setIsAuthenticated }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-      <h2 className="text-2xl font-medium text-gray-800 text-center mb-6">
-        Login To Your Account
-      </h2>
+        <h2 className="text-2xl font-medium text-gray-800 text-center mb-6">Login To Your Account</h2>
+
         {error && <p className="text-red-500 text-center text-sm mb-4">{error}</p>}
+
         <form onSubmit={handleSubmit}>
           {/* Email Field */}
           <div className="mb-6 relative">
             <label
               htmlFor="email"
-              className="absolute -top-2 left-4 bg-white px-1 text-sm text-blue-600"
+              className="absolute -top-2 left-4 bg-white px-1 text-sm"
+              style={{ color: '#0A66C2' }}
             >
               Email Address
             </label>
@@ -97,15 +98,21 @@ const Entry = ({ setIsAuthenticated }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="Emai Id"
-              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Email Id"
+              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2"
+              style={{
+                borderColor: '#0A66C2',
+                focus: { borderColor: '#0A66C2' },
+              }}
             />
           </div>
+
           {/* Password Field */}
           <div className="mb-6 relative">
             <label
               htmlFor="password"
-              className="absolute -top-2 left-4 bg-white px-1 text-sm text-blue-600"
+              className="absolute -top-2 left-4 bg-white px-1 text-sm"
+              style={{ color: '#0A66C2' }}
             >
               Password
             </label>
@@ -116,26 +123,37 @@ const Entry = ({ setIsAuthenticated }) => {
               onChange={(e) => setPassword(e.target.value)}
               required
               placeholder="**********"
-              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2"
+              style={{
+                borderColor: '#0A66C2',
+                focus: { borderColor: '#0A66C2' },
+              }}
             />
           </div>
+
           {/* Submit Button */}
-         <button
-  type="submit"
-  className={`mx-auto block w-32 bg-blue-600 text-white py-2 text-md font-medium rounded hover:bg-blue-700 transition ${
-    loading ? 'opacity-50 cursor-not-allowed' : ''
-  }`}
-  disabled={loading}
->
-  {loading ? 'Logging in...' : 'Login'}
-</button>
+          <button
+            type="submit"
+            className={`mx-auto block w-32 bg-blue-600 text-white py-2 text-md font-medium rounded-lg hover:bg-blue-700 transition ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            disabled={loading}
+            style={{
+              backgroundColor: '#0A66C2',
+              color: 'white',
+            }}
+          >
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
         </form>
+
         {/* Footer */}
         <p className="text-center text-sm text-gray-500 mt-4">
           You don’t have an account yet?{' '}
           <button
             onClick={() => navigate('/signup')}
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline font-medium"
+            style={{ color: '#0A66C2' }}
           >
             Create one now!
           </button>

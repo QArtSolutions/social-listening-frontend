@@ -67,7 +67,8 @@ const SignUp = () => {
           <div className="mb-6 relative">
             <label
               htmlFor="name"
-              className="absolute -top-2 left-4 bg-white px-1 text-sm text-blue-600"
+              className="absolute -top-2 left-4 bg-white px-1 text-sm"
+              style={{ color: '#0A66C2' }}
             >
               Name
             </label>
@@ -78,7 +79,11 @@ const SignUp = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2"
+              style={{
+                borderColor: '#0A66C2',
+                focus: { borderColor: '#0A66C2' },
+              }}
             />
           </div>
 
@@ -86,7 +91,8 @@ const SignUp = () => {
           <div className="mb-6 relative">
             <label
               htmlFor="email"
-              className="absolute -top-2 left-4 bg-white px-1 text-sm text-blue-600"
+              className="absolute -top-2 left-4 bg-white px-1 text-sm"
+              style={{ color: '#0A66C2' }}
             >
               Business Email
             </label>
@@ -97,7 +103,11 @@ const SignUp = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2"
+              style={{
+                borderColor: '#0A66C2',
+                focus: { borderColor: '#0A66C2' },
+              }}
             />
           </div>
 
@@ -105,7 +115,8 @@ const SignUp = () => {
           <div className="mb-6 relative">
             <label
               htmlFor="password"
-              className="absolute -top-2 left-4 bg-white px-1 text-sm text-blue-600"
+              className="absolute -top-2 left-4 bg-white px-1 text-sm"
+              style={{ color: '#0A66C2' }}
             >
               Password
             </label>
@@ -116,14 +127,22 @@ const SignUp = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2"
+              style={{
+                borderColor: '#0A66C2',
+                focus: { borderColor: '#0A66C2' },
+              }}
             />
           </div>
 
           {/* Submit Button */}
           <button
             type="submit"
-            className="mx-auto block w-32 bg-blue-600 text-white py-2 text-md font-medium rounded-lg hover:bg-blue-700 transition duration-200"
+            className="mx-auto block w-32 py-2 text-md font-medium rounded-lg hover:bg-blue-700 transition duration-200"
+            style={{
+              backgroundColor: '#0A66C2',
+              color: 'white',
+            }}
           >
             Sign Up
           </button>
@@ -132,12 +151,12 @@ const SignUp = () => {
         {/* Terms and Conditions */}
         <p className="text-center text-sm text-gray-500 mt-4">
           By signing up I agree to the
-          <a href="/terms" target="_blank" className="text-blue-600 hover:underline">
+          <a href="/terms" target="_blank" className="hover:underline" style={{ color: '#0A66C2' }}>
             {' '}
             terms & conditions{' '}
           </a>
           and
-          <a href="/privacy" target="_blank" className="text-blue-600 hover:underline">
+          <a href="/privacy" target="_blank" className="hover:underline" style={{ color: '#0A66C2' }}>
             {' '}
             privacy policy
           </a>
@@ -149,7 +168,8 @@ const SignUp = () => {
           Already have an account?{' '}
           <button
             onClick={() => navigate('/entry')}
-            className="text-blue-600 hover:underline font-medium"
+            className="hover:underline font-medium"
+            style={{ color: '#0A66C2' }}
           >
             Sign In
           </button>
@@ -158,5 +178,4 @@ const SignUp = () => {
     </div>
   );
 };
-
 export default SignUp;

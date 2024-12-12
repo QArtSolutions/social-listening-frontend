@@ -76,12 +76,30 @@ const Entry = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col relative">
+    {/* Fixed Top Header with Logo and Text */}
+    <header className="absolute top-0 left-0 w-full flex items-center p-6">
+      <img
+        src="/SocialAwaz (8).png"
+        alt="Social Hear"
+        className="mr-3"
+        style={{ width: '80px', height: '80px' }}
+      />
+    <h1
+  className="text-xl font-medium text-gray-800"
+  style={{ marginLeft: '-2%' }}
+>
+  Social Hear
+</h1>
+    </header>
+  
+    {/* Centered Login Form */}
+    <div className="flex justify-center items-center min-h-screen">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-medium text-gray-800 text-center mb-6">Login To Your Account</h2>
-
+  
         {error && <p className="text-red-500 text-center text-sm mb-4">{error}</p>}
-
+  
         <form onSubmit={handleSubmit}>
           {/* Email Field */}
           <div className="mb-6 relative">
@@ -106,7 +124,7 @@ const Entry = ({ setIsAuthenticated }) => {
               }}
             />
           </div>
-
+  
           {/* Password Field */}
           <div className="mb-6 relative">
             <label
@@ -130,7 +148,7 @@ const Entry = ({ setIsAuthenticated }) => {
               }}
             />
           </div>
-
+  
           {/* Submit Button */}
           <button
             type="submit"
@@ -146,8 +164,7 @@ const Entry = ({ setIsAuthenticated }) => {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-
-        {/* Footer */}
+  
         <p className="text-center text-sm text-gray-500 mt-4">
           You don’t have an account yet?{' '}
           <button
@@ -160,6 +177,7 @@ const Entry = ({ setIsAuthenticated }) => {
         </p>
       </div>
     </div>
+  </div>
   );
 };
 

@@ -73,6 +73,7 @@ const MentionsChart = () => {
         );
 
         const mentions = response.data.hits?.hits?.map((hit) => hit._source) || [];
+        console.log("mentions are: ", mentions);
         processMentionsData(mentions);
         processSentimentData(mentions);
         processSentimentTrendData(mentions);
@@ -196,7 +197,7 @@ const MentionsChart = () => {
     const labels = [];
     const currentDate = new Date();
 
-    for (let i = days - 1; i >= 0; i -= 4) {
+    for (let i = days - 1; i >= 0; i--) {
       labels.push(format(addDays(currentDate, -i), "d MMM"));
     }
     return labels;
@@ -219,22 +220,77 @@ const MentionsChart = () => {
         subText: "Total Mentions",
       },
     },
-    cutout: "60%",
+    cutout: "70%",
   };
 
   const apexChartOptions = {
     chart: { type: "spline", toolbar: { show: false } },
-    xaxis: { categories: mentionsChartData.categories },
-    yaxis: { title: { text: "Mentions Count" } },
+    xaxis: {
+      categories: mentionsChartData.categories,
+      labels: {
+        style: {
+          fontWeight: "bold",
+          fontSize: "13px",
+          fontFamily: "Segoe UI",
+        },
+        formatter: (value) => value, // Keep all data, limit visible labels with `tickAmount`
+      },
+      tickAmount: Math.ceil(mentionsChartData.categories.length / 5), // Show every 4th label
+    },
+    yaxis: {
+      title: { text: "Mentions Count" },
+      labels: {
+        style: {
+          fontWeight: "bold",
+          fontSize: "13px",
+          fontFamily: "Segoe UI",
+        },
+      },
+    },
     stroke: { curve: "smooth" },
+    grid: { show: false },
     colors: ["blue"],
   };
 
   const trendChartOptions = {
     chart: { type: "spline", toolbar: { show: false } },
-    xaxis: { categories: trendChartData.categories },
+    xaxis: {
+      categories: trendChartData.categories, // Use your x-axis categories
+      labels: {
+        style: {
+          fontWeight: "bold",
+          fontSize: '13px',
+          fontFamily: 'Segoe UI',
+        },
+        formatter: (value) => value, // Ensure all data is plotted, but limit labels
+      },
+      tickAmount: Math.ceil(trendChartData.categories.length / 5), // Show every 4th label
+      axisBorder: {
+        show: false, // Remove the bottom border
+      },
+      axisTicks: {
+        show: false, // Remove ticks on the x-axis
+      },
+    },
     stroke: { curve: "smooth" },
-    yaxis: { title: { text: "Sentiment Count" } },
+    yaxis: {
+      labels: {
+        style: {
+          fontSize: '13px',
+          fontWeight: "bold",
+          fontFamily: 'Segoe UI',
+        },
+      },
+      axisBorder: {
+        show: false, // Remove the left border
+      },
+      axisTicks: {
+        show: false, // Remove ticks on the y-axis
+      },
+    },
+    grid: {
+      show: false, // Completely remove the grid lines
+    },
     colors: trendChartData.series.map((s) => s.color),
   };
 
@@ -246,7 +302,7 @@ const MentionsChart = () => {
       <div className="space-y-6">
         {/* Top Chart Card */}
         <div className="bg-white shadow-lg rounded-lg p-6">
-          <h3 className="text-lg mb-4 font-semibold">Last 30 Days Mentions</h3>
+          <h3 className="font-sans text-[20px] font-normal leading-[26.6px] text-left  underline-offset-auto decoration-slice mb-4">Last 30 Days Mentions</h3>
           <ReactApexChart
             options={apexChartOptions}
             series={mentionsChartData.series}
@@ -259,7 +315,7 @@ const MentionsChart = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Pie Chart Card */}
           <div className="bg-white shadow-lg rounded-lg p-6">
-            <h3 className="text-lg mb-4 font-semibold">Sentiment Summary</h3>
+            <h3 className="font-sans text-[20px] font-normal leading-[15px] text-left underline-offset-auto decoration-slice mb-6">Sentiment Summary</h3>
             <div className="flex items-center">
               {/* Pie Chart */}
               <div>
@@ -300,7 +356,7 @@ const MentionsChart = () => {
 
           {/* Trend Chart Card */}
           <div className="bg-white shadow-lg rounded-lg p-6">
-            <h3 className="text-lg mb-4 font-semibold">Sentiment Trend Analysis</h3>
+            <h3 className="font-sans text-[20px] font-normal leading-[15px] text-left underline-offset-auto decoration-slice mb-4">Sentiment Trend Analysis</h3>
             <ReactApexChart
               options={trendChartOptions}
               series={trendChartData.series}

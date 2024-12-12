@@ -76,53 +76,70 @@ const Entry = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96 flex flex-col justify-center">
-        <h2 className="text-2xl font-serif text-gray-600 text-left mb-4">Login To Your Account</h2>
-        {error && <div className="text-red-500 text-sm text-center mb-4">{error}</div>}
-        <form onSubmit={handleSubmit} className="flex flex-col items-center">
-          <div className="mb-6 relative w-full">
-            <FontAwesomeIcon icon={faEnvelope} className="absolute left-3 top-3 text-gray-400" />
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+      <h2 className="text-2xl font-medium text-gray-800 text-center mb-6">
+  Login To Your Account
+</h2>
+        {error && <p className="text-red-500 text-center text-sm mb-4">{error}</p>}
+        <form onSubmit={handleSubmit}>
+          {/* Email Field */}
+          <div className="mb-6 relative">
+            <label
+              htmlFor="email"
+              className="absolute -top-2 left-4 bg-white px-1 text-sm text-blue-600"
+            >
+              Email Address
+            </label>
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="Email"
-              className="border-b border-gray-300 focus:border-blue-500 focus:outline-none w-full pl-10 pb-2 text-gray-600 placeholder-gray-300"
-              style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} // Slightly transparent
+              placeholder="Qart@solutions.com"
+              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <div className="mb-6 relative w-full">
-            <FontAwesomeIcon icon={faLock} className="absolute left-3 top-3 text-gray-400" />
+          {/* Password Field */}
+          <div className="mb-6 relative">
+            <label
+              htmlFor="password"
+              className="absolute -top-2 left-4 bg-white px-1 text-sm text-blue-600"
+            >
+              Password
+            </label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="Password"
-              className="border-b border-gray-300 focus:border-blue-500 focus:outline-none w-full pl-10 pb-2 text-gray-600 placeholder-gray-300"
-              style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }} // Slightly transparent
+              placeholder="**********"
+              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          <button
-            type="submit"
-            className={`w-full bg-blue-600 text-white py-2 text-lg font-medium hover:bg-blue-700 transition duration-200 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
-            disabled={loading}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
+          {/* Submit Button */}
+         <button
+  type="submit"
+  className={`mx-auto block w-32 bg-blue-600 text-white py-2 text-md font-medium rounded hover:bg-blue-700 transition ${
+    loading ? 'opacity-50 cursor-not-allowed' : ''
+  }`}
+  disabled={loading}
+>
+  {loading ? 'Logging in...' : 'Login'}
+</button>
         </form>
-        <div className="text-center mt-4">
-          <p className="text-sm text-gray-500">
-            You don't have an account yet?{' '}
-            <button onClick={() => navigate('/signup')} className="text-blue-600 hover:underline">
-              Create one now!
-            </button>
-          </p>
-        </div>
+        {/* Footer */}
+        <p className="text-center text-sm text-gray-500 mt-4">
+          You don’t have an account yet?{' '}
+          <button
+            onClick={() => navigate('/signup')}
+            className="text-blue-600 hover:underline"
+          >
+            Create one now!
+          </button>
+        </p>
       </div>
     </div>
   );

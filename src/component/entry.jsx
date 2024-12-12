@@ -79,8 +79,8 @@ const Entry = ({ setIsAuthenticated }) => {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
       <h2 className="text-2xl font-medium text-gray-800 text-center mb-6">
-  Login To Your Account
-</h2>
+        Login To Your Account
+      </h2>
         {error && <p className="text-red-500 text-center text-sm mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           {/* Email Field */}
@@ -97,7 +97,7 @@ const Entry = ({ setIsAuthenticated }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="Qart@solutions.com"
+              placeholder="Emai Id"
               className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>

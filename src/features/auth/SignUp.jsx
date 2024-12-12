@@ -93,7 +93,7 @@ const SignUp = () => {
             <input
               type="email"
               id="email"
-              placeholder="Qart@solutions.com"
+              placeholder="Email Id"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

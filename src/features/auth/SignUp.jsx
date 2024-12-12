@@ -48,64 +48,103 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-96 flex flex-col">
-        <h2 className="text-2xl font-serif text-gray-600 text-left mb-4">Create an Account</h2>
-        
+    <div className="flex items-center justify-center h-screen bg-gray-50">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-medium text-gray-800 text-center mb-6">Create an Account</h2>
+
         {message && (
-          <div className={`text-sm text-center mb-4 ${messageType === 'error' ? 'text-red-500' : 'text-green-500'}`}>
+          <div
+            className={`text-sm text-center mb-4 ${
+              messageType === 'error' ? 'text-red-500' : 'text-green-500'
+            }`}
+          >
             {message}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="flex flex-col">
-          <div className="mb-6 relative w-full">
+        <form onSubmit={handleSubmit}>
+          {/* Name Field */}
+          <div className="mb-6 relative">
+            <label
+              htmlFor="name"
+              className="absolute -top-2 left-4 bg-white px-1 text-sm text-blue-600"
+            >
+              Name
+            </label>
             <input
               type="text"
+              id="name"
               placeholder="Name"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="border-b border-gray-300 focus:border-blue-500 focus:outline-none w-full pb-2 text-gray-600 placeholder-gray-300"
+              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          <div className="mb-6 relative w-full">
+          {/* Email Field */}
+          <div className="mb-6 relative">
+            <label
+              htmlFor="email"
+              className="absolute -top-2 left-4 bg-white px-1 text-sm text-blue-600"
+            >
+              Business Email
+            </label>
             <input
               type="email"
-              placeholder="Business Email"
+              id="email"
+              placeholder="Qart@solutions.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="border-b border-gray-300 focus:border-blue-500 focus:outline-none w-full pb-2 text-gray-600 placeholder-gray-300"
+              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
-          <div className="mb-6 relative w-full">
+          {/* Password Field */}
+          <div className="mb-6 relative">
+            <label
+              htmlFor="password"
+              className="absolute -top-2 left-4 bg-white px-1 text-sm text-blue-600"
+            >
+              Password
+            </label>
             <input
               type="password"
-              placeholder="Password"
+              id="password"
+              placeholder="**********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="border-b border-gray-300 focus:border-blue-500 focus:outline-none w-full pb-2 text-gray-600 placeholder-gray-300"
+              className="w-full border border-blue-500 rounded-lg px-4 py-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 text-lg font-medium hover:bg-blue-700 transition duration-200"
+            className="mx-auto block w-32 bg-blue-600 text-white py-2 text-md font-medium rounded-lg hover:bg-blue-700 transition duration-200"
           >
             Sign Up
           </button>
         </form>
 
+        {/* Terms and Conditions */}
         <p className="text-center text-sm text-gray-500 mt-4">
           By signing up I agree to the
-          <a href="/terms" target="_blank" className="text-blue-600 hover:underline"> terms & conditions </a>
-          and <a href="/privacy" target="_blank" className="text-blue-600 hover:underline"> privacy policy</a>.
+          <a href="/terms" target="_blank" className="text-blue-600 hover:underline">
+            {' '}
+            terms & conditions{' '}
+          </a>
+          and
+          <a href="/privacy" target="_blank" className="text-blue-600 hover:underline">
+            {' '}
+            privacy policy
+          </a>
+          .
         </p>
 
+        {/* Already have an account */}
         <p className="text-center text-sm text-gray-500 mt-4">
           Already have an account?{' '}
           <button
@@ -115,7 +154,6 @@ const SignUp = () => {
             Sign In
           </button>
         </p>
-        
       </div>
     </div>
   );

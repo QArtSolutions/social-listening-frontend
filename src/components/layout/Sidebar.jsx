@@ -88,20 +88,20 @@ const Sidebar = () => {
         {/* Comparison */}
         <li
           className={`flex items-center p-2 rounded ${
-            location.pathname === "/comparison"
+            location.pathname === "/comparision"
               ? "bg-blue-500 text-white"
               : "text-black hover:text-red-500"
           }`}
         >
           <FiBarChart2
             className={`text-xl mr-3 ${
-              location.pathname === "/comparison" ? "text-white" : "text-black"
+              location.pathname === "/comparision" ? "text-white" : "text-black"
             }`}
           />
           <Link
-            to="/comparison"
+            to="/comparision"
             className={`block ${
-              location.pathname === "/comparison" ? "text-white" : "text-black"
+              location.pathname === "/comparision" ? "text-white" : "text-black"
             }`}
           >
             Comparison

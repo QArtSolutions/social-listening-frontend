@@ -94,29 +94,33 @@ const MentionsPage = () => {
 
   return (
     <div className="mentions-page">
+      <div className="sidebar">
       <Sidebar />
+      </div>
       <div className="mentions-content">
         <Header onSearch={handleSearch} />
-        <div className="flex items-center space-x-4 border-b-2 border-gray-300 mb-4">
-          <button
-            className={`px-6 py-2 text-sm font-semibold ${activeTab === 'analytics'
-                ? 'bg-[#0A66C2] text-white border-b-2 border-blue-500'
-                : 'text-gray-600 hover:text-blue-500'
-              }`}
-            onClick={() => setActiveTab('analytics')}
-          >
-            Analytics
-          </button>
-          <button
-            className={`px-6 py-2 text-sm font-semibold ${activeTab === 'conversations'
-                ? 'bg-[#0A66C2] text-white border-b-2 border-blue-500'
-                : 'text-gray-600 hover:text-blue-500'
-              }`}
-            onClick={() => setActiveTab('conversations')}
-          >
-            Conversations
-          </button>
-        </div>
+        <div className="flex items-center space-x-2 border-b-2 border-gray-300 mb-4 ml-5">
+  <button
+    className={`w-[100px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
+      activeTab === 'analytics'
+        ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
+        : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
+    }`}
+    onClick={() => setActiveTab('analytics')}
+  >
+    Analytics
+  </button>
+  <button
+    className={`w-[110px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
+      activeTab === 'conversations'
+        ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
+        : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
+    }`}
+    onClick={() => setActiveTab('conversations')}
+  >
+    Conversations
+  </button>
+</div>
         {loading ? (
           <p>Loading mentions...</p>
         ) : (

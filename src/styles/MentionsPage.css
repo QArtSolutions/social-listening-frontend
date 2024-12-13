@@ -1,7 +1,7 @@
-/* Layout container for the entire page */
 .mentions-page {
   display: flex;
   padding-top: 60px; /* Offset for fixed header */
+  background-color: #f7f7f7; /* Light gray background for the page */
 }
 
 /* Fixed sidebar styling */
@@ -9,30 +9,27 @@
   position: fixed;
   top: 60px; /* Start below the header */
   left: 0;
-  width: 200px;
+  width: 220px;
   height: calc(100vh - 60px); /* Full height minus header */
-  background-color: #333;
+  background-color: white; /* Dark background */
   padding: 1rem;
   color: white;
   overflow-y: auto;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 /* Main content area */
 .mentions-content {
-  margin-left: 200px; /* Offset for fixed sidebar */
-  padding: 1.5rem;
+  margin-left: 200px; /* Offset for the fixed sidebar */
+  padding: 2rem;
   flex: 1;
   overflow-y: auto;
   height: calc(100vh - 60px); /* Full height minus header */
+  background-color: #f7f7f7; /* Light gray background */
+  border-left: 1px solid #ddd; /* Subtle border for separation */
 }
 
 /* Chart and mentions list container */
-h2 {
-  font-size: 1.2rem;
-  color: #333;
-  margin-bottom: 1rem;
-}
-
 .mentions-list {
   display: flex;
   flex-direction: column;
@@ -40,37 +37,14 @@ h2 {
   margin-top: 1rem;
 }
 
-/* Button for loading more mentions */
-.load-more-button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 20px auto;
-  display: block;
-  text-align: center;
-  transition: background-color 0.3s ease;
-}
-
-.load-more-button:hover {
-  background-color: #45a049;
-}
-
-.load-more-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-/* Tabs container for Analytics and Conversations */
 /* Tabs container for Analytics and Conversations */
 .mentions-tabs {
   display: flex;
-  border-bottom: 2px solid #ddd; /* Line below tabs */
+  align-items: center;
+  border-bottom: 2px solid #ddd; /* Separator line below tabs */
   margin-bottom: 20px;
-  margin-left: 20px; /* Shift the tabs to the right */
+  padding-bottom: 8px;
+  margin-left: 20px; /* Offset tabs slightly to the right */
 }
 
 /* Default styling for tab buttons */
@@ -79,17 +53,19 @@ h2 {
   margin-right: 10px;
   border: none;
   cursor: pointer;
-  background-color: #f0f0f0;
+  background-color: #ffffff; /* White background for tabs */
   color: #333;
   border-radius: 4px 4px 0 0; /* Rounded top corners */
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
   transition: background-color 0.3s ease, color 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 /* Styling for the active tab */
 .tab-button.active {
-  background-color: #007bff; /* Blue background for active tab */
-  color: white; /* White text for active tab */
+  background-color: #0a66c2; /* Blue background for active tab */
+  color: white; /* White text */
   font-weight: bold; /* Bold text */
   border-bottom: 2px solid transparent; /* Removes bottom border */
 }
@@ -97,5 +73,5 @@ h2 {
 /* Hover effect for inactive tabs */
 .tab-button:hover:not(.active) {
   background-color: #e0e0e0; /* Light gray background on hover */
-  color: #000; /* Black text on hover */
+  color: #000; /* Black text */
 }

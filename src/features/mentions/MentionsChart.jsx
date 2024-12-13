@@ -249,7 +249,8 @@ const MentionsChart = () => {
     },
     stroke: { curve: "smooth" },
     grid: { show: false },
-    colors: ["blue"],
+    colors: ["#2D85E5"],
+    border: ["2.5px solid"]
   };
 
   const trendChartOptions = {
@@ -274,6 +275,7 @@ const MentionsChart = () => {
     },
     stroke: { curve: "smooth" },
     yaxis: {
+      title: { text: "Sentiments Count" },
       labels: {
         style: {
           fontSize: '13px',
@@ -295,79 +297,90 @@ const MentionsChart = () => {
   };
 
   return (
-  <div className="mentions-chart-container p-4 bg-gray-100 min-h-screen">
-    {loading ? (
-      <p>Loading data...</p>
-    ) : (
-      <div className="space-y-6">
-        {/* Top Chart Card */}
-        <div className="bg-white shadow-lg rounded-lg p-6">
-          <h3 className="font-sans text-[20px] font-normal leading-[26.6px] text-left  underline-offset-auto decoration-slice mb-4">Last 30 Days Mentions</h3>
-          <ReactApexChart
-            options={apexChartOptions}
-            series={mentionsChartData.series}
-            type="line"
-            height={300}
-          />
-        </div>
-
-        {/* Bottom Charts */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Pie Chart Card */}
+    <div className="mentions-chart-container p-4 bg-gray-100 min-h-screen">
+      {loading ? (
+        <p>Loading data...</p>
+      ) : (
+        <div className="space-y-6">
+          {/* Top Chart Card */}
           <div className="bg-white shadow-lg rounded-lg p-6">
-            <h3 className="font-sans text-[20px] font-normal leading-[15px] text-left underline-offset-auto decoration-slice mb-6">Sentiment Summary</h3>
-            <div className="flex items-center">
-              {/* Pie Chart */}
-              <div>
-                <Pie
-                  data={sentimentData}
-                  options={pieChartOptions}
-                  width={300}
-                  height={300}
-                />
-              </div>
-
-              {/* Sentiment Breakdown */}
-              <div className="ml-6 flex flex-col justify-center space-y-4">
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-yellow-500 mr-2"></div>
-                  <p className="text-sm">
-                    <span className="font-bold">Neutral:</span>{" "}
-                    {sentimentData.datasets[0]?.data[2]}
-                  </p>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-red-500 mr-2"></div>
-                  <p className="text-sm">
-                    <span className="font-bold">Negative:</span>{" "}
-                    {sentimentData.datasets[0]?.data[1]}
-                  </p>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-4 h-4 bg-green-500 mr-2"></div>
-                  <p className="text-sm">
-                    <span className="font-bold">Positive:</span>{" "}
-                    {sentimentData.datasets[0]?.data[0]}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Trend Chart Card */}
-          <div className="bg-white shadow-lg rounded-lg p-6">
-            <h3 className="font-sans text-[20px] font-normal leading-[15px] text-left underline-offset-auto decoration-slice mb-4">Sentiment Trend Analysis</h3>
+            <h3 className="font-sans text-[20px] font-normal leading-[26.6px] text-left underline-offset-auto decoration-slice mb-4 relative">
+              Last 30 Days Mentions
+              <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>
+            </h3>
             <ReactApexChart
-              options={trendChartOptions}
-              series={trendChartData.series}
+              options={apexChartOptions}
+              series={mentionsChartData.series}
               type="line"
               height={300}
             />
           </div>
-        </div>
-      </div>
-    )}
-  </div>
-);
+
+          {/* Bottom Charts */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Pie Chart Card */}
+            < div className="bg-white shadow-lg rounded-lg p-6">
+              <h3 className="font-sans text-[20px] font-normal leading-[15px] text-left underline-offset-auto decoration-slice mb-6 relative">
+                Sentiment Summary
+                <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>
+              </h3>
+              < div className="flex items-center">
+                {/* Pie Chart */}
+                <div>
+                  <Pie
+                    data={sentimentData}
+                    options={pieChartOptions}
+                    width={300}
+                    height={300}
+                  />
+                </div>
+
+
+                {/* Sentiment Breakdown */}
+                <div className="ml-6 flex flex-col justify-center space-y-4">
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 bg-yellow-500 mr-2"></div>
+                    <p className="text-sm">
+                      <span className="font-bold">Neutral:</span>{" "}
+                      {sentimentData.datasets[0]?.data[2]}
+                    </p>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 bg-red-500 mr-2"></div>
+                    <p className="text-sm">
+                      <span className="font-bold">Negative:</span>{" "}
+                      {sentimentData.datasets[0]?.data[1]}
+                    </p>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 bg-green-500 mr-2"></div>
+                    <p className="text-sm">
+                      <span className="font-bold">Positive:</span>{" "}
+                      {sentimentData.datasets[0]?.data[0]}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Trend Chart Card */}
+            <div className="bg-white shadow-lg rounded-lg p-6">
+              <h3 className="font-sans text-[20px] font-normal leading-[15px] text-left underline-offset-auto decoration-slice mb-4 relative">
+                Sentiment Trend Analysis
+                <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>
+              </h3>
+              <ReactApexChart
+                options={trendChartOptions}
+                series={trendChartData.series}
+                type="line"
+                height={300}
+              />
+            </div>
+
+          </div>
+        </div >
+      )}
+    </div >
+  );
 };
 export default MentionsChart;

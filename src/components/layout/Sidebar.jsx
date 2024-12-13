@@ -53,7 +53,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="fixed top-16 left-0 w-52 h-[calc(100vh-4rem)] bg-white-800 text-black p-4 overflow-y-auto">
+    <aside className="fixed top-20 left-0 w-52 h-[calc(100vh-4rem)] bg-white-800 text-black p-4 overflow-y-auto">
       {/* Project Name */}
       <div className="text-lg font-bold mb-4 text-black-500">
         {brand || "Brand Name"}

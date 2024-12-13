@@ -13,15 +13,15 @@ const MentionCard = ({ mention }) => {
     mention.Sentiment === "positive"
       ? "Positive"
       : mention.Sentiment === "negative"
-      ? "Negative"
-      : "Neutral";
+        ? "Negative"
+        : "Neutral";
 
   const isFilteredClass =
     mention.Sentiment === "positive"
       ? "text-green-700 bg-green-100 border-green-700"
       : mention.Sentiment === "negative"
-      ? "text-red-700 bg-red-100 border-red-700"
-      : "text-yellow-700 bg-yellow-100 border-yellow-700";
+        ? "text-red-700 bg-red-100 border-red-700"
+        : "text-yellow-700 bg-yellow-100 border-yellow-700";
 
   const userImage = mention.profile_image_url || "./profile image.jpg";
 
@@ -46,20 +46,36 @@ const MentionCard = ({ mention }) => {
 
       {/* Card Body */}
       <div className="mb-4">
-        <p className="text-gray-700 text-sm leading-6">
+        <p
+          className="text-black bg-white text-left font-[Segoe UI] text-[14px] font-normal leading-[18.62px]"
+          style={{
+            textUnderlinePosition: "from-font",
+            textDecorationSkipInk: "none",
+          }}
+        >
           {mention.text || "No mention text available"}
         </p>
+
+
         {mention.hashtags && mention.hashtags.length > 0 && (
           <div className="flex flex-wrap mt-2">
             {mention.hashtags.map((tag, index) => (
               <span
                 key={index}
-                className="text-blue-500 text-sm font-medium mr-2"
+                className="text-[#0A66C2] text-[12px] font-semibold leading-[15.96px]  mr-2 rounded"
+                style={{
+                  fontFamily: "Segoe UI",
+                  textAlign: "left",
+                  textUnderlinePosition: "from-font",
+                  textDecorationSkipInk: "none",
+                }}
               >
                 #{tag}
               </span>
             ))}
           </div>
+
+
         )}
       </div>
 

@@ -1,193 +1,133 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
-import Sidebar from '../../components/layout/Sidebar';
-import Header from '../../components/layout/Header';
-import ComparisonCard from './comparisioncard';
-import { useBrand } from '../../contexts/BrandContext';
+import React, { useState, useEffect } from "react";
+import ReactApexChart from "react-apexcharts";
+import { Bar } from "react-chartjs-2";
+import "chart.js/auto";
+import Sidebar from "../../components/layout/Sidebar";
+import Header from "../../components/layout/Header";
 import './comparisioncard.css';
+import "../../styles/MentionsChart.css";
 
-const indexName = 'filtered_tweets'; // Elasticsearch index name
-const apiUrl = 'https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-south-1.on.aws'; // OpenSearch API endpoint
+const Comparison = () => {
+  const [activityData, setActivityData] = useState({ categories: [], series: [] });
+  const [channelData, setChannelData] = useState(null);
+  const [sentimentData, setSentimentData] = useState(null);
 
-const ComparisonPage = () => {
-  
-  // const {Brand1} = useBrand(); 
-  const [Brand2, setBrand2] = useState('');
-  const [Brand1Input, setBrand1Input] = useState('');
-  const [twitterCountBrand1, setTwitterCountBrand1] = useState(0);
-  const [instagramCountBrand1, setInstagramCountBrand1] = useState(0);
-  const [twitterCountBrand2, setTwitterCountBrand2] = useState(0);
-  const [instagramCountBrand2, setInstagramCountBrand2] = useState(0);
-  const [LinkedInCountBrand1, setLinkedInCountBrand1] = useState(0);
-  const [LinkedInCountBrand2, setLinkedInCountBrand2] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  useEffect(() => {
+    fetchComparisonData();
+  }, []);
 
-  // Update local state with context value
-  // useEffect(() => {
-  //   setBrand1Input(Brand1); // Set initial input value from Brand1 context
-  // }, [Brand1]);
+  const fetchComparisonData = async () => {
+    const fetchedActivityData = {
+      categories: ["1 Nov", "5 Nov", "10 Nov", "15 Nov", "20 Nov", "25 Nov", "30 Nov"],
+      series: [
+        { name: "Levis", data: [1000, 3000, 5000, 7000, 8000, 9000, 10000] },
+        { name: "Raymond", data: [2000, 2500, 3000, 4000, 5000, 7000, 8000] },
+        { name: "Mufti", data: [1500, 2000, 2500, 3000, 3500, 4000, 4500] },
+      ],
+    };
 
+    const fetchedChannelData = {
+      labels: ["Levis", "Raymond", "Mufti"],
+      datasets: [
+        { label: "Twitter", data: [4000, 3000, 2000], backgroundColor: "#1DA1F2" },
+        { label: "Instagram", data: [3000, 4000, 3000], backgroundColor: "#E1306C" },
+        { label: "Linkedin", data: [2000, 2500, 1500], backgroundColor: "#0077B5" },
+      ],
+    };
 
-  // const fetchHashtagData = async () => {
-  //  
+    const fetchedSentimentData = {
+      labels: ["Levis", "Raymond", "Mufti"],
+      datasets: [
+        { label: "Neutral", data: [4000, 3500, 3000], backgroundColor: "#FFC107" },
+        { label: "Negative", data: [2000, 1500, 1000], backgroundColor: "#F44336" },
+        { label: "Positive", data: [6000, 5000, 4000], backgroundColor: "#4CAF50" },
+      ],
+    };
 
-  //   setLoading(true);
-  //   setError(null);
+    setActivityData(fetchedActivityData);
+    setChannelData(fetchedChannelData);
+    setSentimentData(fetchedSentimentData);
+  };
 
-  // Function to search for a keyword in the 'filtered_tweets' index using Axios
-  async function searchForKeyword(keyword, page = 0, size = 100) {
-    try {
-      const response = await axios.post(
-        `${apiUrl}/${indexName}/_search`,
-        {
-          "from": page * size, // Skip documents based on the page
-          "size": size, // Number of documents to fetch per page
-          "query": {
-            "match": {
-              "Keyword": keyword
-            }
-          }
-        },
-        {
-          auth: {
-            username: 'qartAdmin',
-            password: '6#h!%HbsBH4zXRat@qFPSnfn@04#2023',
-          },
-        }
-      );
-      return response.data.hits.hits; // Return documents that match the keyword
-    } catch (error) {
-      console.error(`Error searching for keyword "${keyword}" in OpenSearch:`, error.message);
-      return [];
-    }
-  }
-  
-  // Function to fetch all paginated results
-  async function fetchAllPaginatedResults(keyword, size = 100) {
-    let page = 0;
-    let results = [];
-    let hasMore = true;
-  
-    while (hasMore) {
-      const hits = await searchForKeyword(keyword, page, size);
-      if (hits.length > 0) {
-        results = results.concat(hits); // Add results to the array
-        page++;
-      } else {
-        hasMore = false; // Stop if no more results
-      }
-    }
-  
-    return results;
-  }
-  
-  // Function to filter results by source (Twitter or Instagram)
-  async function filterBySource(results, source) {
-    return results.filter((result) => result._source.source === source);
-  }
-  
-  // Function to get the count of Twitter or Instagram sources for a given brand
-  async function getSourceCountForBrand(brandKeyword, source) {
-    const brandResults = await fetchAllPaginatedResults(brandKeyword); // Get all paginated documents for the brand
-    const filteredResults = await filterBySource(brandResults, source); // Filter by source
-    return filteredResults.length; // Return the count of filtered results
-  }
-  
-  // Function to get the count for Brand1's Twitter and Instagram sources
-  async function getBrand1Counts() {
-    const twitterCountBrand1 = await getSourceCountForBrand(Brand1Input, 'Twitter');
-    const instagramCountBrand1 = await getSourceCountForBrand(Brand1Input, 'Instagram');
-    const LinkedInCountBrand1 = await getSourceCountForBrand(Brand1Input, 'LinkedIn');
-    setTwitterCountBrand1(twitterCountBrand1);
-    setInstagramCountBrand1(instagramCountBrand1);
-    setLinkedInCountBrand1(LinkedInCountBrand1);
-  }
-  
-  // Function to get the count for Brand2's Twitter and Instagram sources
-  async function getBrand2Counts() {
-    const twitterCountBrand2 = await getSourceCountForBrand(Brand2, 'Twitter');
-    const instagramCountBrand2 = await getSourceCountForBrand(Brand2, 'Instagram');
-    const LinkedInCountBrand2 = await getSourceCountForBrand(Brand2, 'LinkedIn');
-    setTwitterCountBrand2(twitterCountBrand2);
-    setInstagramCountBrand2(instagramCountBrand2);
-    setLinkedInCountBrand2(LinkedInCountBrand2);
-  }
-  
-  // Fetch and log the counts
-  async function fetchCounts() {
-    if (!Brand1Input || !Brand2 || Brand1Input === Brand2) {
-      alert("Please enter two different brands.");
-      return;
-    }
-  
-    setLoading(true);
-    try {
-      await getBrand1Counts();
-      await getBrand2Counts();
-    } catch (err) {
-      setError('Failed to fetch data');
-    } finally {
-      setLoading(false);
-    }
-  }
-  
+  const apexChartOptions = {
+    chart: {
+      type: "line",
+      toolbar: { show: false },
+    },
+    xaxis: {
+      categories: activityData.categories,
+    },
+    yaxis: {
+      title: { text: "Brand Mentions" },
+    },
+    stroke: { curve: "smooth" },
+    colors: ["#1DA1F2", "#E1306C", "#0077B5"],
+  };
 
   return (
-    <div className="comparison-container">
-      <Sidebar />
+    <div className="mentions-chart-container p-4 bg-gray-100 min-h-screen">
+      <div className="sidebar">
+        <Sidebar />
+      </div>
       <div className="comparison-content">
         <Header />
-        <div className="comparison-input">
-          <h1>Social Media Brand Comparison</h1>
-          <input
-            type="text"
-            placeholder={'Enter name of first brand'}
-            value={Brand1Input}
-            onChange={(e) => setBrand1Input(e.target.value)}
-          />
-          <input
-            type="text"
-            placeholder="Enter name of second brand"
-            value={Brand2}
-            onChange={(e) => setBrand2(e.target.value)}
-          />
-          <button onClick={fetchCounts}>Compare</button>
+        
+        <div className="space-y-6">
+
+          <div className="bg-white shadow-lg rounded-lg p-6">
+            <h3 className="font-sans text-[20px] font-normal leading-[26.6px] text-left  underline-offset-auto decoration-slice mb-4">
+              Brand activity trend over time
+            </h3>
+            <ReactApexChart
+              options={apexChartOptions}
+              series={activityData.series}
+              type="line"
+              height={300}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white shadow-lg rounded-lg p-6 h-[300px] flex flex-col justify-center">
+              <h3 className="font-sans text-[20px] font-normal leading-[15px] text-left underline-offset-auto decoration-slice mb-4">
+                Channel wise activity of brand
+              </h3>
+              {channelData && (
+                <Bar
+                  data={channelData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { display: true, position: "top" },
+                    },
+                  }}
+                />
+              )}
+            </div>
+
+            <div className="bg-white shadow-lg rounded-lg p-6 h-[300px] flex flex-col justify-center">
+              <h3 className="font-sans text-[20px] font-normal leading-[15px] text-left underline-offset-auto decoration-slice mb-4">
+                Sentiment of fan voice
+              </h3>
+              {sentimentData && (
+                <Bar
+                  data={sentimentData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { display: true, position: "top" },
+                    },
+                  }}
+                />
+              )}
+            </div>
+          </div>
         </div>
-
-        {loading && <p className="loading-text">Loading...</p>}
-        {error && <p className="error-text">{error}</p>}
-
-        <div className="results">
-          <ComparisonCard
-            hashtag1={Brand1Input}
-            hashtag2={Brand2}
-            hashtag1Count={instagramCountBrand1 + twitterCountBrand1 + LinkedInCountBrand1}
-            hashtag2Count={instagramCountBrand2 + twitterCountBrand2 + LinkedInCountBrand2}
-            hashtag3Count={twitterCountBrand1}
-            hashtag4Count={twitterCountBrand2}
-            hashtag5Count={instagramCountBrand1}
-            hashtag6Count={instagramCountBrand2}
-            hashtag7Count={LinkedInCountBrand1}
-            hashtag8Count={LinkedInCountBrand2}
-
-          />
         </div>
       </div>
-    </div>
+   
   );
 };
 
-export default ComparisonPage;
-
-
-
-  
-//   // Set brand inputs
-//   const {Brand1} = useBrand(); 
-//   const [Brand2, setBrand2] = useState('brand2Keyword');
-  
-//   useEffect(() => {
-//     setHashtag1Input(Brand1); // Update local state with context value
-//   }, [Brand1]);
-
+export default Comparison;

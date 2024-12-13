@@ -100,7 +100,7 @@ const MentionsPage = () => {
         <div className="flex items-center space-x-4 border-b-2 border-gray-300 mb-4">
           <button
             className={`px-6 py-2 text-sm font-semibold ${activeTab === 'analytics'
-                ? 'bg-blue-500 text-white border-b-2 border-blue-500'
+                ? 'bg-[#0A66C2] text-white border-b-2 border-blue-500'
                 : 'text-gray-600 hover:text-blue-500'
               }`}
             onClick={() => setActiveTab('analytics')}
@@ -109,7 +109,7 @@ const MentionsPage = () => {
           </button>
           <button
             className={`px-6 py-2 text-sm font-semibold ${activeTab === 'conversations'
-                ? 'bg-blue-500 text-white border-b-2 border-blue-500'
+                ? 'bg-[#0A66C2] text-white border-b-2 border-blue-500'
                 : 'text-gray-600 hover:text-blue-500'
               }`}
             onClick={() => setActiveTab('conversations')}

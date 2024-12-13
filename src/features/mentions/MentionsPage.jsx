@@ -99,7 +99,7 @@ const MentionsPage = () => {
       </div>
       <div className="mentions-content">
         <Header onSearch={handleSearch} />
-        <div className="flex items-center space-x-2 border-b-2 border-gray-300 mb-4 ml-5">
+        <div className="flex items-center space-x-2  mb-4 ml-5">
   <button
     className={`w-[100px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
       activeTab === 'analytics'

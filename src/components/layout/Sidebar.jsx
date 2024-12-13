@@ -66,7 +66,7 @@ const Sidebar = () => {
         <li
         className={`flex items-center p-2 rounded ${
           location.pathname === "/profile"
-            ? "bg-blue-500 text-white"
+            ? "bg-[#0A66C2] text-white"
             : "text-black hover:text-red-500"
         }`}
       >
@@ -89,7 +89,7 @@ const Sidebar = () => {
         <li
           className={`flex items-center p-2 rounded ${
             location.pathname === "/mentions"
-              ? "bg-blue-500 text-white"
+              ? "bg-[#0A66C2] text-white"
               : "text-black hover:text-red-500"
           }`}
         >
@@ -112,7 +112,7 @@ const Sidebar = () => {
         <li
           className={`flex items-center p-2 rounded ${
             location.pathname === "/comparision"
-              ? "bg-blue-500 text-white"
+              ? "bg-[#0A66C2] text-white"
               : "text-black hover:text-red-500"
           }`}
         >

@@ -69,10 +69,10 @@ const Comparison = () => {
       <div className="sidebar">
         <Sidebar />
       </div>
-      <div className="comparison-content">
+      <div className="comparison-content ">
         <Header />
         
-        <div className="space-y-6">
+        <div className="space-y-6 ">
 
           <div className="bg-white shadow-lg rounded-lg p-6">
             <h3 className="font-sans text-[20px] font-normal leading-[26.6px] text-left  underline-offset-auto decoration-slice mb-4">

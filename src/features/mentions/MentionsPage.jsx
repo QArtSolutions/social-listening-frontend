@@ -16,6 +16,38 @@ const MentionsPage = () => {
   const [activeTab, setActiveTab] = useState('analytics'); // State for active tab
   const { brand, setBrand } = useBrand();
 
+  // Function to check and adjust zoom level based on screen size
+  const checkScreenSize = () => {
+    const screenInches = getScreenSizeInInches();
+
+    if (screenInches >= 13.5 && screenInches <= 14.5) {
+      // Screen is approximately 14 inches
+      console.log("14 Inch Screen");
+      document.body.style.zoom = "80%";
+    } else {
+      console.log("15 inches or more");
+      document.body.style.zoom = "100%"; // Reset zoom for other screen sizes
+    }
+  };
+
+  // Function to calculate screen size in inches
+  const getScreenSizeInInches = () => {
+    const dpi = window.devicePixelRatio * 96; // Assuming standard 96 DPI
+    const widthInInches = window.screen.width / dpi;
+    const heightInInches = window.screen.height / dpi;
+
+    return Math.sqrt(Math.pow(widthInInches, 2) + Math.pow(heightInInches, 2));
+  };
+
+  useEffect(() => {
+    fetchLastSearchedBrand();
+    checkScreenSize(); // Check and adjust zoom level on component mount
+    window.addEventListener('resize', checkScreenSize); // Recheck on window resize
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize); // Cleanup listener on unmount
+    };
+  }, []);
 
   const fetchLastSearchedBrand = async () => {
     const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage
@@ -79,12 +111,6 @@ const MentionsPage = () => {
     }
   };
 
-  // Fetch data when the component mounts or the search term changes
-  useEffect(() => {
-    fetchLastSearchedBrand();
-    //  fetchData(searchTerm || brand);
-  }, []);
-
   // Handle search input from Header
   const handleSearch = (newSearchTerm) => {
     setSearchTerm(newSearchTerm);
@@ -95,68 +121,49 @@ const MentionsPage = () => {
   return (
     <div className="mentions-page">
       <div className="sidebar">
-      <Sidebar />
+        <Sidebar />
       </div>
       <div className="mentions-content">
         <Header onSearch={handleSearch} />
-        <div className="flex items-center space-x-2  mb-4 ml-5">
-  <button
-    className={`w-[100px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
-      activeTab === 'analytics'
-        ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
-        : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
-    }`}
-    onClick={() => setActiveTab('analytics')}
-  >
-    Analytics
-  </button>
-  <button
-    className={`w-[110px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
-      activeTab === 'conversations'
-        ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
-        : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
-    }`}
-    onClick={() => setActiveTab('conversations')}
-  >
-    Conversations
-  </button>
-</div>
+        <div className="flex items-center space-x-2 mb-4 ml-5">
+          <button
+            className={`w-[100px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
+              activeTab === 'analytics'
+                ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
+                : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
+            }`}
+            onClick={() => setActiveTab('analytics')}
+          >
+            Analytics
+          </button>
+          <button
+            className={`w-[110px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
+              activeTab === 'conversations'
+                ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
+                : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
+            }`}
+            onClick={() => setActiveTab('conversations')}
+          >
+            Conversations
+          </button>
+        </div>
         {loading ? (
           <p>Loading mentions...</p>
         ) : (
           <>
             {activeTab === 'analytics' && <MentionsChart mentions={mentions} />}
             {activeTab === 'conversations' && (
-              // <div className="mentions-list">
-              //   {/* Render Mentions */}
-              //   {mentions.map((mention, index) => (
-              //     <MentionCard
-              //       key={index}
-              //       mention={mention}
-              //       isInstagram={mention.source === 'instagram'}
-              //       isLinkedIn={mention.source === 'LinkedIn'}
-              //     />
-              //   ))}
-              // </div>
               <div className="mentions-list">
-                {/* Render Mentions */}
                 {mentions
                   .sort((a, b) => {
                     try {
                       const dateA = new Date(a.timestamp).getTime();
                       const dateB = new Date(b.timestamp).getTime();
-
-                      // If both timestamps are valid, compare them
                       if (!isNaN(dateA) && !isNaN(dateB)) {
                         return dateB - dateA;
                       }
-
-                      // If one timestamp is invalid, treat it as "equal" for sorting purposes
-                      if (isNaN(dateA) || isNaN(dateB)) {
-                        return 0;
-                      }
+                      return 0;
                     } catch {
-                      // On unexpected errors, treat timestamps as equal
                       return 0;
                     }
                   })
@@ -169,7 +176,6 @@ const MentionsPage = () => {
                     />
                   ))}
               </div>
-
             )}
           </>
         )}

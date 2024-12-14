@@ -39,9 +39,12 @@ const MentionCard = ({ mention }) => {
             {mention.username || "Unknown User"}
           </h3>
           <span className="text-sm text-gray-500 italic">
-            {mention.timestamp || "No timestamp available"}
+            {mention.timestamp
+              ? mention.timestamp.split(" ").slice(0, 3).join(" ") // Shows "Fri Dec 13"
+              : "No timestamp available"}
           </span>
         </div>
+
       </div>
 
       {/* Card Body */}
@@ -91,36 +94,47 @@ const MentionCard = ({ mention }) => {
       )} */}
 
       {/* Card Footer */}
-      <div className="flex justify-between items-center">
-        {/* Sentiment Tag */}
-        <span
-          className={`px-4 py-1 text-sm font-bold uppercase rounded-full border shadow-sm ${isFilteredClass}`}
-        >
-          {isFilteredText}
-        </span>
+      <div className="flex items-center justify-between">
+  {/* Left Section: Sentiment Tag and Timestamp */}
+  <div className="flex items-center space-x-2">
+    {/* Sentiment Tag */}
+    <span
+      className={`px-4 py-1 text-sm font-[Segoe UI] border shadow-sm ${isFilteredClass}`}
+    >
+      {isFilteredText}
+    </span>
+    <span className="text-sm text-gray-500 italic">
+      {mention.timestamp
+        ? mention.timestamp.split(" ").slice(3).join(" ") // Shows "03:09:37 +0000 2024"
+        : ""}
+    </span>
+  </div>
 
-        {/* Platform Tag */}
-        <span className="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-700">
-          {platformName === "Twitter" && (
-            <>
-              <FaTwitter className="text-blue-500 w-4 h-4 mr-2" />
-              Twitter
-            </>
-          )}
-          {platformName === "Instagram" && (
-            <>
-              <FaInstagram className="text-pink-500 w-4 h-4 mr-2" />
-              Instagram
-            </>
-          )}
-          {platformName === "LinkedIn" && (
-            <>
-              <FaLinkedin className="text-blue-700 w-4 h-4 mr-2" />
-              LinkedIn
-            </>
-          )}
-        </span>
-      </div>
+  {/* Right Section: Platform Tag */}
+  <div>
+    <span className="inline-flex items-center px-3 py-1 text-sm font-semibold rounded-full bg-gray-100 text-gray-700">
+      {platformName === "Twitter" && (
+        <>
+          <FaTwitter className="text-blue-500 w-4 h-4 mr-2" />
+          Twitter
+        </>
+      )}
+      {platformName === "Instagram" && (
+        <>
+          <FaInstagram className="text-pink-500 w-4 h-4 mr-2" />
+          Instagram
+        </>
+      )}
+      {platformName === "LinkedIn" && (
+        <>
+          <FaLinkedin className="text-blue-700 w-4 h-4 mr-2" />
+          LinkedIn
+        </>
+      )}
+    </span>
+  </div>
+</div>
+
     </div>
   );
 };

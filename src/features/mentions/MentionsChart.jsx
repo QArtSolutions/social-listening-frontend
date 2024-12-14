@@ -26,16 +26,16 @@ ChartJS.register({
       ctx.save();
 
       // Style for the subtext
-      ctx.font = "bold 16px Poppins";
-      ctx.fillStyle = "#666";
+      ctx.font = "bold 60px Poppins";
+      ctx.fillStyle = "#000";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(subText, width / 2, height / 2 - 10);
+      ctx.fillText(subText, width / 2, height / 2 - 15);
 
       // Style for the main text
-      ctx.font = "bold 24px Poppins";
+      ctx.font = " 20px Poppins";
       ctx.fillStyle = "#000";
-      ctx.fillText(text, width / 2, height / 2 + 15);
+      ctx.fillText(text, width / 2, height / 2 + 20);
 
       ctx.restore();
     }
@@ -151,6 +151,7 @@ const MentionsChart = () => {
             sentimentCounts.neutral,
           ],
           backgroundColor: ["#4caf50", "#f44336", "#ffc107"],
+          borderWidth: 0,
         },
       ],
     });
@@ -216,26 +217,34 @@ const MentionsChart = () => {
       tooltip: { enabled: true },
       centerText: {
         display: true,
-        text: `${totalMentions}`,
-        subText: "Total Mentions",
+        text: "Mentions",
+        subText:`${totalMentions}`,
       },
     },
     cutout: "70%",
   };
 
   const apexChartOptions = {
-    chart: { type: "spline", toolbar: { show: false } },
+    chart: { type: "spline", toolbar: { show: false },zoom: { enabled: false }, },
     xaxis: {
       categories: mentionsChartData.categories,
+      title: { text: "Date" ,style: {
+        fontWeight: "bold",
+        fontSize: "14px",
+        fontFamily: "Segoe UI",
+        color: "#333",
+      },
+      offsetY: -30, // Move the title closer to the labels
+    },
       labels: {
         style: {
           fontWeight: "bold",
           fontSize: "13px",
           fontFamily: "Segoe UI",
-        },
+        }, 
         formatter: (value) => value, // Keep all data, limit visible labels with `tickAmount`
       },
-      tickAmount: Math.ceil(mentionsChartData.categories.length / 5), // Show every 4th label
+      tickAmount: Math.ceil(mentionsChartData.categories.length / 6), // Show every 4th label
     },
     yaxis: {
       title: { text: "Mentions Count" },
@@ -254,8 +263,16 @@ const MentionsChart = () => {
   };
 
   const trendChartOptions = {
-    chart: { type: "spline", toolbar: { show: false } },
+    chart: { type: "spline", toolbar: { show: false },zoom: { enabled: false }, },
     xaxis: {
+      title: { text: "Date" ,style: {
+        fontWeight: "bold",
+        fontSize: "14px",
+        fontFamily: "Segoe UI",
+        color: "#333",
+      },
+      offsetY: -30, // Move the title closer to the labels
+    },
       categories: trendChartData.categories, // Use your x-axis categories
       labels: {
         style: {
@@ -265,7 +282,7 @@ const MentionsChart = () => {
         },
         formatter: (value) => value, // Ensure all data is plotted, but limit labels
       },
-      tickAmount: Math.ceil(trendChartData.categories.length / 5), // Show every 4th label
+      tickAmount: Math.ceil(trendChartData.categories.length / 6), // Show every 4th label
       axisBorder: {
         show: false, // Remove the bottom border
       },
@@ -303,7 +320,7 @@ const MentionsChart = () => {
       ) : (
         <div className="space-y-6">
           {/* Top Chart Card */}
-          <div className="bg-white shadow-lg rounded-lg p-6">
+          <div className="bg-white shadow-lg rounded-lg p-6 -mt-6"style={{ width: "102%", marginLeft: "auto", marginRight: "auto" }}>
             <h3 className="font-sans text-[20px] font-normal leading-[26.6px] text-left underline-offset-auto decoration-slice mb-4 relative">
               Last 30 Days Mentions
               <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>
@@ -364,7 +381,7 @@ const MentionsChart = () => {
             </div>
 
             {/* Trend Chart Card */}
-            <div className="bg-white shadow-lg rounded-lg p-6">
+            <div className="bg-white shadow-lg rounded-lg p-6"style={{ width: "104%", marginLeft: "auto", marginRight: "auto" }}>
               <h3 className="font-sans text-[20px] font-normal leading-[15px] text-left underline-offset-auto decoration-slice mb-4 relative">
                 Sentiment Trend Analysis
                 <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>

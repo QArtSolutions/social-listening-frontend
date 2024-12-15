@@ -9,6 +9,7 @@ const SignUp = lazy(() => import('../features/auth/SignUp'));
 const BrandPage = lazy(() => import('./BrandPage'));
 const MentionsPage = lazy(() => import('../features/mentions/MentionsPage'));
 const Comparision = lazy(() => import('../features/comparision/comparisionpage'));
+const Profile = lazy(() => import('../features/profile/Profile'));
 
 const AppRouter = ({ isAuthenticated, setIsAuthenticated }) => {
   
@@ -18,7 +19,7 @@ const AppRouter = ({ isAuthenticated, setIsAuthenticated }) => {
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
         <Route
-          exact
+          exact 
           path="/"
           element={
             isAuthenticated ? (
@@ -52,6 +53,17 @@ const AppRouter = ({ isAuthenticated, setIsAuthenticated }) => {
           element={
             isAuthenticated ? (
               <Comparision setIsAuthenticated={setIsAuthenticated} />
+            ) : (
+              <Entry setIsAuthenticated={setIsAuthenticated} />
+            )
+          }
+        />
+         <Route
+          exact
+          path="/profile"
+          element={
+            isAuthenticated ? (
+              <Profile setIsAuthenticated={setIsAuthenticated} />
             ) : (
               <Entry setIsAuthenticated={setIsAuthenticated} />
             )

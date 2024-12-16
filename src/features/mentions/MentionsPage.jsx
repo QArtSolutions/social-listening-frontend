@@ -40,7 +40,8 @@ const MentionsPage = () => {
   };
 
   useEffect(() => {
-    fetchLastSearchedBrand();
+    // fetchLastSearchedBrand();
+    fetchPreferences();
     checkScreenSize(); // Check and adjust zoom level on component mount
     window.addEventListener('resize', checkScreenSize); // Recheck on window resize
 
@@ -49,34 +50,49 @@ const MentionsPage = () => {
     };
   }, []);
 
-  const fetchLastSearchedBrand = async () => {
-    const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage
+
+  const fetchPreferences = async () => {
+    const userId = localStorage.getItem("userId");
     const apiUrl = getBackendUrl();
-    if (!userId) {
-      console.error('User ID not found in localStorage');
-      return;
-    }
 
     try {
-      const response = await axios.post(`${apiUrl}/api/users/search-history_userData`, // Your API endpoint
-        {
-          userId,
-          limit: 1, // Fetch only the latest search
-        }
-      );
+      const response = await axios.post(`${apiUrl}/api/users/get-preferences`, { userId });
+      const { company } = response.data;
 
-      if (response.data && response.data.length > 0) {
-        const lastSearchedBrand = response.data[0].searched_brand;
-        setBrand(lastSearchedBrand); // Update the brand in context
-        setSearchTerm(lastSearchedBrand); // Set the search term for fetching mentions
-        fetchData(lastSearchedBrand); // Fetch mentions for the last searched brand
-      } else {
-        console.log('No search history found for this user.');
-      }
+      setBrand(company);
     } catch (error) {
-      console.error('Error fetching last searched brand:', error);
+      console.error("Error fetching preferences:", error);
     }
   };
+
+  // const fetchLastSearchedBrand = async () => {
+  //   const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage
+  //   const apiUrl = getBackendUrl();
+  //   if (!userId) {
+  //     console.error('User ID not found in localStorage');
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await axios.post(`${apiUrl}/api/users/search-history_userData`, // Your API endpoint
+  //       {
+  //         userId,
+  //         limit: 1, // Fetch only the latest search
+  //       }
+  //     );
+
+  //     if (response.data && response.data.length > 0) {
+  //       const lastSearchedBrand = response.data[0].searched_brand;
+  //       setBrand(lastSearchedBrand); // Update the brand in context
+  //       setSearchTerm(lastSearchedBrand); // Set the search term for fetching mentions
+  //       fetchData(lastSearchedBrand); // Fetch mentions for the last searched brand
+  //     } else {
+  //       console.log('No search history found for this user.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching last searched brand:', error);
+  //   }
+  // };
 
   // Function to fetch data from Elasticsearch
   const fetchData = async (query) => {

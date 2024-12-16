@@ -35,6 +35,25 @@ const Entry = ({ setIsAuthenticated }) => {
     }
   }
 
+  const checkUserPreferences = async (userId) => {
+    try {
+      const apiUrl = getBackendUrl();
+      const response = await axios.post(`${apiUrl}/api/users/get-preferences`, {
+        userId,
+      });
+
+      // Check if company name exists
+      if (response.data && response.data.company) {
+        return true; // Company name exists
+      }
+      return false; // Company name not set
+    } catch (error) {
+      console.error("Error fetching preferences:", error);
+      return false; // Default to preferences missing
+    }
+  };
+
+
   // Function to fetch the last searched brand after login
   const fetchLastSearchedBrand = async (userId) => {
     try {
@@ -61,18 +80,28 @@ const Entry = ({ setIsAuthenticated }) => {
       setIsAuthenticated(true);
 
       // Fetch the last searched brand for the user after login
-      const lastSearchedBrand = await fetchLastSearchedBrand(user.id);
+      // const lastSearchedBrand = await fetchLastSearchedBrand(user.id);
 
-      // Redirect to Mentions Page with the last searched brand if found, otherwise to Home Page
-      if (lastSearchedBrand) {
-        navigate('/mentions', { state: { brand: lastSearchedBrand } });
+      // // Redirect to Mentions Page with the last searched brand if found, otherwise to Home Page
+      // if (lastSearchedBrand) {
+      //   navigate('/mentions', { state: { brand: lastSearchedBrand } });
+      // } else {
+      //   navigate('/home');
+      // }
+   
+
+    const hasCompanyName = await checkUserPreferences(user.id);
+
+      // Redirect user based on company name status
+      if (hasCompanyName) {
+        navigate("/mentions");
       } else {
-        navigate('/home');
+        navigate("/profile");
       }
     } catch (error) {
       setError(error.message);
       setLoading(false);
-    }
+     }
   };
 
   return (

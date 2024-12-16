@@ -106,15 +106,20 @@ const ProfilePage = () => {
     (option) => option.value !== formData.company
   );
 
-
+  const handleMultiSelect = (selectedOptions) => {
+    if (selectedOptions.length > 3) {
+      setError("You can select up to 3 competitors only.");
+      return;
+    }
+    setFormData({ ...formData, competitors: selectedOptions });
+    setError(""); // Clear error if selection is valid
+  };
   // const handleChange = (e) => {
   //   const { name, value } = e.target;
   //   setFormData({ ...formData, [name]: value });
   // };
 
-  const handleMultiSelect = (selectedOptions) => {
-    setFormData({ ...formData, competitors: selectedOptions });
-  };
+
 
   const handleSubmit = async (e) => {
 
@@ -242,6 +247,7 @@ const ProfilePage = () => {
                   onChange={handleMultiSelect}
                   placeholder="Select Competitors"
                 />
+             
               </div>
 
               {/* Submit Button */}

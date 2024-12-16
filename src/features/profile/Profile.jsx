@@ -173,7 +173,9 @@ const ProfilePage = () => {
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
-      <Sidebar />
+      <div className="sidebar">
+        <Sidebar />
+      </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col bg-gray-200">

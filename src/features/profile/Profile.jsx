@@ -33,6 +33,7 @@ const ProfilePage = () => {
     }),
   };
   
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       const userId = localStorage.getItem("userId");
@@ -92,25 +93,24 @@ const ProfilePage = () => {
 
 
   const companyOptions = [
-    { value: "QArt Solutions", label: "QArt Solutions" },
-    { value: "Lifestyle Clothing", label: "Lifestyle Clothing" },
-    { value: "Ludhiana Dresses", label: "Ludhiana Dresses" },
-  ];
-  const industryOptions = [
-    { value: "Fashion Tech", label: "Fashion Tech" },
-  ];
-  const competitorOptions = [
     { value: "Levis", label: "Levis" },
     { value: "Raymond", label: "Raymond" },
     { value: "Mufti", label: "Mufti" },
     { value: "Pepe Jeans", label: "Pepe Jeans" },
     { value: "Blackberrys", label: "Blackberrys" },
   ];
+  const industryOptions = [
+    { value: "Apparel Industry", label: "Apparel Industry" },
+  ];
+  const filteredCompetitorOptions = companyOptions.filter(
+    (option) => option.value !== formData.company
+  );
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData({ ...formData, [name]: value });
+  // };
 
   const handleMultiSelect = (selectedOptions) => {
     setFormData({ ...formData, competitors: selectedOptions });
@@ -137,6 +137,7 @@ const ProfilePage = () => {
         competitors: formData.competitors.map((comp) => comp.value),
       });
   
+
       await axios.post(`${apiUrl}/api/users/save-preferences`, {
         userId,
         company: formData.company,
@@ -235,7 +236,7 @@ const ProfilePage = () => {
               <div className="mb-4">
                 <label className="block font-medium mb-1 text-[#5C5C5C] text-[16px] font-[Segoe UI]">Competitors</label>
                 <Select
-                  options={competitorOptions}
+                  options={filteredCompetitorOptions}
                   isMulti
                   value={formData.competitors}
                   onChange={handleMultiSelect}

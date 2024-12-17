@@ -257,14 +257,19 @@ const Comparison = () => {
   // Helper function to format brand names
   const getBrandIndex = (brand) => {
     const indexMapping = {
-      Raymond: "raymond",
-      Mufti: "mufti",
-      "Pepe Jeans": "pepe_jeans",
-      Blackberrys: "blackberrys",
-      Levis: "levis",
-      "Jack & Jones": "jack_and_jones"
+      raymond: "raymond",
+      mufti: "mufti",
+      "pepe jeans": "pepe_jeans",
+      blackberrys: "blackberrys",
+      levis: "levis",
+      "jack & jones": "jack_&_jones"
     };
-    return indexMapping[brand] || brand.toLowerCase().replace(" ", "_");
+  
+    // Normalize input: trim spaces, convert to lowercase
+    const normalizedBrand = brand.trim().toLowerCase();
+  
+    // Check if the brand exists in the mapping
+    return indexMapping[normalizedBrand] || normalizedBrand.replace(/\s+/g, "_");
   };
   
   

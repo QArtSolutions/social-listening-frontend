@@ -119,7 +119,22 @@ const MentionsChart = () => {
   }, [brand]);
 
   
-
+  const getBrandIndex = (brand) => {
+    const indexMapping = {
+      raymond: "raymond",
+      mufti: "mufti",
+      "pepe jeans": "pepe_jeans",
+      blackberrys: "blackberrys",
+      levis: "levis",
+      "jack & jones": "jack_&_jones"
+    };
+  
+    // Normalize input: trim spaces, convert to lowercase
+    const normalizedBrand = brand.trim().toLowerCase();
+  
+    // Check if the brand exists in the mapping
+    return indexMapping[normalizedBrand] || normalizedBrand.replace(/\s+/g, "_");
+  };
 
   useEffect(() => {
     const fetchChartDatafollow = async () => {
@@ -127,10 +142,7 @@ const MentionsChart = () => {
         setLoading(true);
         const dates = getPast30Days(); // Helper function to get past 30 days
         
-        let brandlower = brand.toLowerCase();
-        if (brand === "pepe jeans"){
-          brandlower = "pepe_jeans"
-        }
+        let brandlower = getBrandIndex(brand);
         
         const response = await axios.post(
           `https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-south-1.on.aws/${brandlower}/_search`,

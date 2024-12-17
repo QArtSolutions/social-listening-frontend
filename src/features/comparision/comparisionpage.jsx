@@ -16,6 +16,8 @@ const Comparison = () => {
   // const [selectedCompetitors, setSelectedCompetitors] = useState([]);
   const [brand, setBrand] = useState(""); // Brand from the last searched data
   const [competitors, setCompetitors] = useState([]); // Example competitors
+  const [followerChartData, setFollowerChartData] = useState({ categories: [], series: [] });
+
 
   const checkScreenSize = () => {
     const screenInches = getScreenSizeInInches();
@@ -43,11 +45,20 @@ const Comparison = () => {
     fetchPreferences();
   }, []);
 
+  // useEffect(() => {
+  //   if (brand && competitors.length > 0) {
+  //     fetchComparisonData([brand, ...competitors]);
+  //   }
+  // }, [brand, competitors]);
+
   useEffect(() => {
     if (brand && competitors.length > 0) {
-      fetchComparisonData([brand, ...competitors]);
+      const allBrands = [brand, ...competitors];
+      fetchComparisonData(allBrands);
+      fetchTodayFollowerData(allBrands);
     }
   }, [brand, competitors]);
+  
 
   useEffect(() => {
     // fetchLastSearchedBrand();
@@ -197,11 +208,82 @@ const Comparison = () => {
     setChannelSeries(channelSeries);
     setSentimentSeries(sentimentSeries);
     setCategories(brandNames); // Set brand names as categories for y-axis
+
+    
+  };
+
+  const fetchTodayFollowerData = async (brands) => {
+    const today = format(new Date(), "yyyy-MM-dd"); // Today's date
+    const brandIndices = brands.map((brand) => getBrandIndex(brand)); // Get indices dynamically
+    const allFollowerData = [];
+    
+  
+    try {
+      for (const index of brandIndices) {
+        const response = await axios.post(
+          `https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-south-1.on.aws/${index}/_search`,
+          {
+            query: {
+              match: {
+                date: today, // Filter by today's date
+              },
+            },
+            size: 1, // Fetch the most recent record
+          },
+          {
+            auth: {
+              username: "qartAdmin",
+              password: "6#h!%HbsBH4zXRat@qFPSnfn@04#2023",
+            },
+          }
+        );
+  
+        const source = response.data.hits.hits[0]?._source;
+  
+        allFollowerData.push({
+          brandName: index, // Use formatted name for display
+          instagram: source?.instagram || 0,
+          linkedin: source?.linkedin || 0,
+          twitter: source?.twitter || 0,
+        });
+      }
+  
+      processFollowerChartData(allFollowerData);
+    } catch (error) {
+      console.error("Error fetching follower data:", error);
+    }
+  };
+  
+  // Helper function to format brand names
+  const getBrandIndex = (brand) => {
+    const indexMapping = {
+      Raymond: "raymond",
+      Mufti: "mufti",
+      "Pepe Jeans": "pepe_jeans",
+      Blackberrys: "blackberrys",
+      Levis: "levis",
+    };
+    return indexMapping[brand] || brand.toLowerCase().replace(" ", "_");
+  };
+  
+  
+  // Function to process follower data and prepare it for the chart
+  const processFollowerChartData = (data) => {
+    const categories = data.map((item) => 
+      item.brandName.charAt(0).toUpperCase() + item.brandName.slice(1)
+    ); // Y-axis: brand names
+    const series = [
+      { name: "Instagram", data: data.map((item) => item.instagram) },
+      { name: "LinkedIn", data: data.map((item) => item.linkedin) },
+      { name: "Twitter", data: data.map((item) => item.twitter) },
+    ];
+  
+    setFollowerChartData({ categories, series });
   };
 
 
   const apexChartOptions = {
-    chart: { type: "line", toolbar: { show: false } },
+    chart: { type: "line", toolbar: { show: false }, zoom: { enabled: false } },
     legend: {
       position: "top", // Move legend above the chart
       horizontalAlign: "center", // Center align the legend
@@ -263,7 +345,7 @@ const Comparison = () => {
       axisTicks: { show: false }, // Remove y-axis ticks
     },
     legend: { position: "top", horizontalAlign: "center" },
-    plotOptions: { bar: { horizontal: true, barHeight: "70%", dataLabels: { enabled: false },  } },
+    plotOptions: { bar: { horizontal: true, barHeight: "70%", dataLabels: { enabled: false }, } },
     dataLabels: { enabled: false }, // Global option to hide data labels
     grid: { show: false }, // Remove grid lines
   };
@@ -279,6 +361,50 @@ const Comparison = () => {
   // const removeCompetitor = (competitor) => {
   //   setSelectedCompetitors((prev) => prev.filter((item) => item !== competitor));
   // };
+
+  const followerChartOptions = {
+    chart: { 
+      type: "bar", 
+      stacked: true, 
+      toolbar: { show: false }
+    },
+    plotOptions: {
+      bar: { 
+        horizontal: true, 
+        barHeight: "70%"
+      }
+    },
+    
+    yaxis: {
+      title: { 
+        text: "Brand", 
+        style: { fontSize: "14px", fontWeight: "bold" } 
+      },
+      labels: { 
+        style: { fontWeight: "bold", fontSize: "13px" }
+      }
+    },
+    grid: { show: false },
+    legend: {
+      position: "top", 
+      horizontalAlign: "center"
+    },
+    xaxis: {
+      categories: followerChartData.categories, // Use brand names here
+      title: { 
+        text: "Follower Count", 
+        style: { fontSize: "14px", fontWeight: "bold" }
+      },
+      labels: { 
+        style: { fontWeight: "bold", fontSize: "13px" }
+      },
+      axisBorder: { show: false }, // Remove x-axis border line
+      axisTicks: { show: false }, // Remove x-axis ticks
+    },
+    dataLabels: { enabled: false },
+    colors: ["#5CC8C3", "#FB8F53", "#AC56AE"], // Instagram, Twitter, LinkedIn
+  };
+  
 
   return (
     <div className="mentions-chart-container p-4 bg-gray-100 min-h-screen">
@@ -331,9 +457,9 @@ const Comparison = () => {
 
         <div className="space-y-6">
           <div className="bg-white shadow-lg rounded-lg p-6 mt-4">
-          <h3 className="relative text-[20px] font-semibold leading-[26.6px] text-left text-black decoration-skip-ink-none font-['Segoe UI'] mb-4 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[1px] after:bg-[#C6C6C6] after:opacity-50">
-  Brand activity trend over time
-</h3>
+            <h3 className="relative text-[20px] font-semibold leading-[26.6px] text-left text-black decoration-skip-ink-none font-['Segoe UI'] mb-4 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[1px] after:bg-[#C6C6C6] after:opacity-50">
+              Brand activity trend over time
+            </h3>
 
             <ReactApexChart
               options={apexChartOptions}
@@ -366,8 +492,21 @@ const Comparison = () => {
                 type="bar"
                 height={300}
               />
-            </div>
+            </div>     
           </div>
+          <div className="bg-white shadow-lg rounded-lg p-6 mt-4">
+            <h3 className="relative text-[20px] font-semibold leading-[26.6px] text-left text-black decoration-skip-ink-none font-['Segoe UI'] mb-4 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[1px] after:bg-[#C6C6C6] after:opacity-50">
+              No. of Followers
+            </h3>
+
+            <ReactApexChart
+              options={followerChartOptions }
+              series={followerChartData.series}
+              type="bar"
+              height={300}
+            />
+          </div>
+
         </div>
       </div>
     </div>

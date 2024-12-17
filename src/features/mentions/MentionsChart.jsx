@@ -322,7 +322,7 @@ const MentionsChart = () => {
           {/* Top Chart Card */}
           <div className="bg-white shadow-lg rounded-lg p-6 -mt-6"style={{ width: "102%", marginLeft: "auto", marginRight: "auto" }}>
             <h3 className="font-sans text-[20px] font-normal leading-[26.6px] text-left underline-offset-auto decoration-slice mb-4 relative">
-              Last 30 Days Mentions
+              Total Mentions
               <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>
             </h3>
             <ReactApexChart

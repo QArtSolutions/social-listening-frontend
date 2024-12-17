@@ -222,21 +222,19 @@ const fetchChartDatafollow = async () => {
         <div className="flex justify-between items-center mb-4 ml-5 mr-5">
         <div className="flex items-center space-x-2 mb-4 ml-5">
           <button
-            className={`w-[100px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
-              activeTab === 'analytics'
+            className={`w-[100px] h-[40px] flex items-center justify-center text-sm font-semibold  ${activeTab === 'analytics'
                 ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
                 : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
-            }`}
+              }`}
             onClick={() => setActiveTab('analytics')}
           >
             Analytics
           </button>
           <button
-            className={`w-[110px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
-              activeTab === 'conversations'
+            className={`w-[110px] h-[40px] flex items-center justify-center text-sm font-semibold  ${activeTab === 'conversations'
                 ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
                 : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
-            }`}
+              }`}
             onClick={() => setActiveTab('conversations')}
           >
             Conversations

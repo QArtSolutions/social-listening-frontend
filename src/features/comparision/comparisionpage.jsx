@@ -262,6 +262,7 @@ const Comparison = () => {
       "Pepe Jeans": "pepe_jeans",
       Blackberrys: "blackberrys",
       Levis: "levis",
+      "Jack & Jones": "jack_and_jones"
     };
     return indexMapping[brand] || brand.toLowerCase().replace(" ", "_");
   };

@@ -3,7 +3,7 @@ import ReactApexChart from "react-apexcharts";
 import { Pie } from "react-chartjs-2";
 import { useBrand } from "../../contexts/BrandContext";
 import axios from "axios";
-import { addDays, format } from "date-fns";
+import { addDays, format, isToday } from "date-fns";
 import "../../styles/MentionsChart.css";
 import {
   Chart as ChartJS,
@@ -42,6 +42,32 @@ ChartJS.register({
   },
 });
 
+
+// const getTodayDate = () => {
+//   const today = new Date();
+//   const year = today.getFullYear();
+//   const month = String(today.getMonth() + 1).padStart(2, "0");
+//   const day = String(today.getDate()).padStart(2, "0");
+//   return `${year}-${month}-${day}`;
+// };
+
+const getPast30Days = () => {
+  const dates = [];
+  const IST_OFFSET = 330; // IST is UTC+5:30, so 330 minutes ahead
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date();
+    date.setMinutes(date.getMinutes() + IST_OFFSET); // Convert to IST
+    date.setDate(date.getDate() - i); // Subtract days
+    // Extract YYYY-MM-DD in IST
+    const istDate = date.toISOString().split("T")[0];
+    dates.push(istDate);
+  }
+  return dates;
+};
+
+console.log(getPast30Days());
+
+
 const MentionsChart = () => {
   const { brand } = useBrand();
   const [mentionsChartData, setMentionsChartData] = useState({ categories: [], series: [] });
@@ -49,6 +75,9 @@ const MentionsChart = () => {
   const [sentimentData, setSentimentData] = useState({ labels: [], datasets: [] });
   const [loading, setLoading] = useState(false);
   const [totalMentions, setTotalMentions] = useState(0);
+  const [followersData, setFollowersData] = useState([]);
+
+ 
 
   useEffect(() => {
     const fetchChartData = async () => {
@@ -73,7 +102,7 @@ const MentionsChart = () => {
         );
 
         const mentions = response.data.hits?.hits?.map((hit) => hit._source) || [];
-        console.log("mentions are: ", mentions);
+        // console.log("mentions are: ", mentions);
         processMentionsData(mentions);
         processSentimentData(mentions);
         processSentimentTrendData(mentions);
@@ -84,8 +113,73 @@ const MentionsChart = () => {
       }
     };
 
+   
+
     fetchChartData();
   }, [brand]);
+
+  
+
+
+  useEffect(() => {
+    const fetchChartDatafollow = async () => {
+      try {
+        setLoading(true);
+        const dates = getPast30Days(); // Helper function to get past 30 days
+        
+        let brandlower = brand.toLowerCase();
+        if (brand === "pepe jeans"){
+          brandlower = "pepe_jeans"
+        }
+        
+        const response = await axios.post(
+          `https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-south-1.on.aws/${brandlower}/_search`,
+          {
+            query: {
+              range: {
+                date: {
+                  gte: dates[0], // 30 days ago
+                  lte: dates[dates.length - 1], // Today
+                  format: "yyyy-MM-dd",
+                },
+              },
+            },
+            sort: [{ date: { order: "asc" } }], // Sort results by date
+            size: 100, // Fetch up to 100 documents
+          },
+          {
+            auth: {
+              username: "qartAdmin",
+              password: "6#h!%HbsBH4zXRat@qFPSnfn@04#2023",
+            },
+          }
+        );
+  
+        console.log("API Response:", response.data);
+        const hits = response.data.hits?.hits || [];
+        const followersByDate = dates.map((date) => {
+        const dataForDate = hits.find((hit) => hit._source.date === date);
+          return {
+            date,
+            instagram: dataForDate?._source.instagram || 0,
+            twitter: dataForDate?._source.twitter || 0,
+            linkedin: dataForDate?._source.linkedin || 0,
+          };
+        });
+  
+        setFollowersData(followersByDate); // Update state as an array
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchChartDatafollow();
+  }, [brand]);
+  
+  
+
 
   const processMentionsData = (mentions) => {
     const categories = generateLabels(30);
@@ -313,6 +407,105 @@ const MentionsChart = () => {
     colors: trendChartData.series.map((s) => s.color),
   };
 
+  const seriesfollow = [
+    {
+      name: "Instagram",
+      data: followersData.map((item) => item.instagram || 0), // Extract Instagram data
+    },
+    {
+      name: "Twitter",
+      data: followersData.map((item) => item.twitter || 0), // Extract Twitter data
+    },
+    {
+      name: "LinkedIn",
+      data: followersData.map((item) => item.linkedin || 0), // Extract LinkedIn data
+    },
+  ];
+  
+  const followersChartOptions = {
+    chart: {
+      type: "line", // Line chart
+      toolbar: { show: false },
+      zoom: { enabled: false },
+    },
+    xaxis: {
+      categories: followersData.map((item) => item.date), // Dates as X-axis categories
+      title: {
+        text: "Date",
+        style: {
+          fontWeight: "bold",
+          fontSize: "14px",
+          fontFamily: "Segoe UI",
+          color: "#333",
+        },
+        offsetY: -30, // Match offset to bring title closer
+      },
+      labels: {
+        style: {
+          fontWeight: "bold",
+          fontSize: "13px",
+          fontFamily: "Segoe UI",
+        },
+        formatter: (value) => {
+          const date = new Date(value); // Convert string date to Date object
+          const day = date.getDate(); // Extract day
+          const month = date.toLocaleString("en-US", { month: "short" }); // Get short month name (e.g., Nov, Dec)
+          return `${day} ${month}`; // Return formatted string
+        },
+      },
+      tickAmount: Math.ceil(followersData.length / 6), // Similar tick logic
+    },
+    yaxis: {
+      title: {
+        text: "Follower Count",
+        style: {
+          fontWeight: "bold",
+          fontSize: "14px",
+          fontFamily: "Segoe UI",
+          color: "#000000",
+        },
+      },
+      labels: {
+        style: {
+          fontWeight: "bold",
+          fontSize: "13px",
+          fontFamily: "Segoe UI",
+        },
+      },
+    },
+    stroke: { curve: "smooth" }, // Smooth lines for the chart
+    grid: { show: false }, // Match grid setting
+    colors: ["#F19650", "#54BEEE", "#AC54AE"], // Three lines with distinct colors
+    legend: {
+      show: true,
+      position: "top", // Place the legend at the top
+      horizontalAlign: "left", // Align legend items to the left
+      markers: {
+        width: 1, // Set the width of legend line markers
+        height: 0, // Set marker height to show a thin line
+        radius: 0, // Ensure lines are not rounded
+        offsetX: -5,
+      },
+      itemMargin: {
+        horizontal: 10,
+        vertical: 5,
+      },
+      fontSize: "12px",
+      fontWeight: "bold",
+      labels: {
+        colors: "#000000", // Legend label text color
+        useSeriesColors: false,
+      },
+    },
+    border: ["2.5px solid"], // Consistent border
+  };
+  
+  
+  
+  // console.log(followersData);
+
+  // console.log(seriesfollow);
+  
   return (
     <div className="mentions-chart-container p-4 bg-gray-100 min-h-screen">
       {loading ? (
@@ -394,10 +587,36 @@ const MentionsChart = () => {
               />
             </div>
 
+         
+            
+
           </div>
-        </div >
+
+             {/* New Chart */}
+             <div
+  className="bg-white shadow-lg rounded-lg p-6 -mt-6"
+  style={{ width: "102%", marginLeft: "auto", marginRight: "auto" }}
+>
+  <h3 className="font-sans text-[20px] font-normal leading-[26.6px] text-left underline-offset-auto decoration-slice mb-4 relative">
+    Followers Count
+    <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>
+  </h3>
+  {loading ? (
+    <p>Loading...</p>
+  ) : (
+    <ReactApexChart
+      options={followersChartOptions}
+      series={seriesfollow}
+      type="line"
+      height={300}
+    />
+  )}
+  </div>
+ </div >
+        
       )}
     </div >
   );
 };
+
 export default MentionsChart;

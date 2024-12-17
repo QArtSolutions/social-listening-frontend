@@ -60,6 +60,9 @@ const MentionsPage = () => {
       const { company } = response.data;
 
       setBrand(company);
+      setSearchTerm(company); // Set the search term for fetching mentions
+      fetchData(company);
+
     } catch (error) {
       console.error("Error fetching preferences:", error);
     }

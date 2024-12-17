@@ -60,7 +60,7 @@ const Header =({ onSearch }) => {
       </span>
             </Link>
             </div>
-            <form onSubmit={handleSearch} className="search-form">
+            {/* <form onSubmit={handleSearch} className="search-form">
                 <input
                     type="text"
                     value={searchInput}
@@ -69,7 +69,7 @@ const Header =({ onSearch }) => {
                     className="search-bar"
                 />
                 <button type="submit" className="search-button">🔍</button>
-            </form>
+            </form> */}
             <button onClick={handleLogout} className="logout-button">Logout</button>
         </header>
     );

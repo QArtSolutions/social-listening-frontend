@@ -98,6 +98,7 @@ const ProfilePage = () => {
     { value: "Mufti", label: "Mufti" },
     { value: "Pepe Jeans", label: "Pepe Jeans" },
     { value: "Blackberrys", label: "Blackberrys" },
+    { value: "Jack & Jones", label: "Jack & Jones"}
   ];
   const industryOptions = [
     { value: "Apparel Industry", label: "Apparel Industry" },

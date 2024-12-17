@@ -14,7 +14,12 @@ const MentionsPage = () => {
   const [searchTerm, setSearchTerm] = useState(''); // State for search input
   const [loading, setLoading] = useState(false); // State for loading indicator
   const [activeTab, setActiveTab] = useState('analytics'); // State for active tab
-  const { brand, setBrand } = useBrand();
+  const {brand, setBrand } = useBrand();
+  const [followersData, setFollowersData] = useState({
+    instagram: 0,
+    twitter: 0,
+    linkedin: 0,
+  });
 
   // Function to check and adjust zoom level based on screen size
   const checkScreenSize = () => {
@@ -38,6 +43,16 @@ const MentionsPage = () => {
 
     return Math.sqrt(Math.pow(widthInInches, 2) + Math.pow(heightInInches, 2));
   };
+
+  const getTodayDate = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is 0-based
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  
+
 
   useEffect(() => {
     // fetchLastSearchedBrand();
@@ -67,6 +82,56 @@ const MentionsPage = () => {
       console.error("Error fetching preferences:", error);
     }
   };
+
+  useEffect(() => {
+    // Fetch followers only when brand is set
+    if (brand) {
+      fetchChartDatafollow();
+    }
+  }, [brand]);
+  
+ 
+const fetchChartDatafollow = async () => {
+  try {
+    const todayDate = getTodayDate();
+    console.log(`${todayDate}`);
+    setLoading(true);
+
+    let brandlower = brand.toLowerCase();
+        if (brand === "pepe jeans"){
+          brandlower = "pepe_jeans"
+        }
+
+    const response = await axios.post(
+      `https://search-devsocialhear-ngvsq7uyye5itqksxzscw2ngmm.aos.ap-south-1.on.aws/${brandlower}/_search`,
+      {
+        query: { match: { date: todayDate } },
+        size: 1,
+      },
+      {
+        auth: {
+          username: "qartAdmin",
+          password: "6#h!%HbsBH4zXRat@qFPSnfn@04#2023",
+        },
+      }
+    );
+
+    const hits = response.data.hits?.hits || [];
+    console.log("Inside relevant data fetcher");
+    if (hits.length > 0) {
+      const { instagram = 10, twitter = 10, linkedin = 10 } = hits[0]._source;
+      setFollowersData({ instagram, twitter, linkedin });
+    } else {
+      console.warn("No data found for today's date.");
+      setFollowersData({ instagram: 20, twitter: 20, linkedin: 20 });
+    }
+  } catch (error) {
+    console.error("Error fetching chart data:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // const fetchLastSearchedBrand = async () => {
   //   const userId = localStorage.getItem('userId'); // Assuming userId is stored in localStorage
@@ -137,6 +202,16 @@ const MentionsPage = () => {
     fetchData(newSearchTerm);
   };
 
+  function formatNumber(number) {
+    if (number >= 1000000) {
+      return (number / 1000000).toFixed(1) + "M"; // For millions
+    } else if (number >= 1000) {
+      return (number / 1000).toFixed(1) + "K"; // For thousands
+    }
+    return number.toString(); // For numbers less than 1000
+  }
+  
+
   return (
     <div className="mentions-page">
       <div className="sidebar">
@@ -144,6 +219,7 @@ const MentionsPage = () => {
       </div>
       <div className="mentions-content">
         <Header onSearch={handleSearch} />
+        <div className="flex justify-between items-center mb-4 ml-5 mr-5">
         <div className="flex items-center space-x-2 mb-4 ml-5">
           <button
             className={`w-[100px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
@@ -165,7 +241,138 @@ const MentionsPage = () => {
           >
             Conversations
           </button>
+          <div className="relative">
+            <button
+              className="w-[150px] h-[40px] flex items-center justify-between px-4 text-sm font-semibold bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black rounded-md"
+              disabled
+            >
+              <span>Last 30 Days</span>
+              <svg
+                className="w-4 h-4 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            
+            {/* Dropdown Items (hidden for now) */}
+            <div className="absolute left-0 w-full mt-1 bg-white border border-[#E0E0E0] shadow-lg rounded-md hidden">
+              <div className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-100">
+                Last 7 Days
+              </div>
+              <div className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-100">
+                Last 30 Days
+              </div>
+              <div className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-100">
+                Last 90 Days
+              </div>
+            </div>
+          </div>
+
+       </div>
+
+       <div className="flex items-center space-x-6">
+      {/* Twitter */}
+      <div className="flex items-center space-x-2">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/6/6f/Logo_of_Twitter.svg"
+          alt="Twitter"
+          style={{ width: '28px', height: '28px' }}
+        />
+        <div className="flex flex-col leading-none">
+          <span
+            style={{
+              fontFamily: 'Segoe UI',
+              fontSize: '16px',
+              fontWeight: '700',
+              color: '#000000',
+            }}
+          >
+           {loading ? "..." : formatNumber(followersData.twitter || 0)}
+          </span>
+          <span
+            style={{
+              fontFamily: 'Segoe UI',
+              fontSize: '12px',
+              fontWeight: '400',
+              color: '#000000',
+            }}
+          >
+            Followers
+          </span>
         </div>
+      </div>
+      {/* Instagram */}
+      <div className="flex items-center space-x-2">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"
+          alt="Instagram"
+          style={{ width: '28px', height: '28px' }}
+        />
+        <div className="flex flex-col leading-none">
+          <span
+            style={{
+              fontFamily: 'Segoe UI',
+              fontSize: '16px',
+              fontWeight: '700',
+              color: '#000000',
+            }}
+          >
+            {loading ? "..." : formatNumber(followersData.instagram || 0)}
+          </span>
+          <span
+            style={{
+              fontFamily: 'Segoe UI',
+              fontSize: '12px',
+              fontWeight: '400',
+              color: '#000000',
+            }}
+          >
+            Followers
+          </span>
+        </div>
+      </div>
+      {/* LinkedIn */}
+      <div className="flex items-center space-x-2">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png"
+          alt="LinkedIn"
+          style={{ width: '28px', height: '28px' }}
+        />
+        <div className="flex flex-col leading-none">
+          <span
+            style={{
+              fontFamily: 'Segoe UI',
+              fontSize: '16px',
+              fontWeight: '700',
+              color: '#000000',
+            }}
+          >
+            {loading ? "..." : formatNumber(followersData.linkedin || 0)}
+          </span>
+          <span
+            style={{
+              fontFamily: 'Segoe UI',
+              fontSize: '12px',
+              fontWeight: '400',
+              color: '#000000',
+            }}
+          >
+            Followers
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
         {loading ? (
           <p>Loading mentions...</p>
         ) : (

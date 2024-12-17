@@ -5,6 +5,14 @@ import axios from "axios";
 import { getBackendUrl } from "../../utils/apiUrl.jsx";
 import { FiMessageSquare, FiBarChart2, FiUser } from "react-icons/fi"; 
 
+
+const toCamelCase = (str) => {
+  return str.split(" ") // Split the string into words
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize first letter
+    .join(" "); // Join back the words with a space
+};
+
+
 const Sidebar = () => {
   const { brand } = useBrand(); // Access the brand name
   const [searchHistory, setSearchHistory] = useState([]); // State for storing search history
@@ -13,6 +21,8 @@ const Sidebar = () => {
   const location = useLocation();
 
   const itemsPerPage = 10;
+
+  const formattedBrand = toCamelCase(brand);
 
   // Fetch search history from backend when user is logged in
   useEffect(() => {
@@ -56,7 +66,7 @@ const Sidebar = () => {
     <aside className="fixed top-20 left-0 w-52 h-[calc(100vh-4rem)] bg-white-800 text-black p-4 overflow-y-auto">
       {/* Project Name */}
       <div className="text-lg font-bold mb-4 text-black-500">
-        {brand || "Brand Name"}
+        {formattedBrand || "Brand Name"}
       </div>
 
       {/* Navigation Links */}

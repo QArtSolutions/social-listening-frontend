@@ -146,25 +146,62 @@ const MentionsPage = () => {
         <Header onSearch={handleSearch} />
         <div className="flex items-center space-x-2 mb-4 ml-5">
           <button
-            className={`w-[100px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
-              activeTab === 'analytics'
+            className={`w-[100px] h-[40px] flex items-center justify-center text-sm font-semibold  ${activeTab === 'analytics'
                 ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
                 : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
-            }`}
+              }`}
             onClick={() => setActiveTab('analytics')}
           >
             Analytics
           </button>
           <button
-            className={`w-[110px] h-[40px] flex items-center justify-center text-sm font-semibold  ${
-              activeTab === 'conversations'
+            className={`w-[110px] h-[40px] flex items-center justify-center text-sm font-semibold  ${activeTab === 'conversations'
                 ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
                 : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
-            }`}
+              }`}
             onClick={() => setActiveTab('conversations')}
           >
             Conversations
           </button>
+
+          {/* New Dropdown Button */}
+          <div className="relative">
+            <button
+              className="w-[150px] h-[40px] flex items-center justify-between px-4 text-sm font-semibold bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black rounded-md"
+              disabled
+            >
+              <span>Last 30 Days</span>
+              <svg
+                className="w-4 h-4 text-gray-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </button>
+            
+            {/* Dropdown Items (hidden for now) */}
+            <div className="absolute left-0 w-full mt-1 bg-white border border-[#E0E0E0] shadow-lg rounded-md hidden">
+              <div className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-100">
+                Last 7 Days
+              </div>
+              <div className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-100">
+                Last 30 Days
+              </div>
+              <div className="px-4 py-2 text-gray-700 cursor-pointer hover:bg-gray-100">
+                Last 90 Days
+              </div>
+            </div>
+          </div>
+
+
         </div>
         {loading ? (
           <p>Loading mentions...</p>

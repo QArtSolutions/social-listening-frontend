@@ -363,6 +363,7 @@ const MentionsChart = () => {
           color: "#000000",
           letterSpacing: "1.5px", // Adjust letter spacing
         },
+        offsetX: 5,
      },
       labels: {
         style: {

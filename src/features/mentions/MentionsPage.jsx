@@ -220,7 +220,7 @@ const fetchChartDatafollow = async () => {
     if (number >= 1000000) {
       return (number / 1000000).toFixed(1) + "M"; // For millions
     } else if (number >= 1000) {
-      return (number / 1000).toFixed(1) + "K"; // For thousands
+      return (number / 1000).toFixed(1) + "k"; // For thousands
     }
     return number.toString(); // For numbers less than 1000
   }
@@ -233,47 +233,105 @@ const fetchChartDatafollow = async () => {
       </div>
       <div className="mentions-content">
         <Header onSearch={handleSearch} />
-        <div className="flex justify-between items-center mb-4 ml-5 mr-5">
-        <div className="flex items-center space-x-2 mb-4 ml-5">
+        <div className="flex justify-between items-center mb-4 mr-5">
+        <div
+        className="flex items-center space-x-2 mb-4 ml-5 bg-white shadow-lg rounded-lg "
+        style={{
+          width: '182px',
+          height: '36px',
+          padding: '5px 0px 0px 0px',
+          borderRadius: '2px',
+          border: '0.5px solid transparent',
+          backgroundColor: '#FFFFFF',
+        }}
+      >
           <button
-            className={`w-[100px] h-[40px] flex items-center justify-center text-sm font-semibold  ${activeTab === 'analytics'
-                ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
-                : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
-              }`}
-            onClick={() => setActiveTab('analytics')}
-          >
+          style={{
+            width: '69px',
+            height: '26px',
+            padding: '5px 10px',
+            fontSize: '12px',
+            color: activeTab === 'analytics' ? '#0E63F7' : '#000000',
+            fontWeight: 'bold',
+            backgroundColor: '#FFFFFF',
+            border: activeTab === 'analytics' ? '1px solid #0E63F7' : '1px solid #D3D3D3',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '2px',
+            marginLeft: '5px',
+            marginBottom: '5px',
+          }}
+          onClick={() => setActiveTab('analytics')}
+        >
             Analytics
           </button>
           <button
-            className={`w-[110px] h-[40px] flex items-center justify-center text-sm font-semibold  ${activeTab === 'conversations'
-                ? 'bg-[#FFFFFF] border border-[#0E63F7] text-[#0E63F7]'
-                : 'bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black'
-              }`}
-            onClick={() => setActiveTab('conversations')}
-          >
+          style={{
+            width: '95px',
+            height: '26px',
+             padding: '5px 10px',
+            fontSize: '12px',
+            color: activeTab === 'conversations' ? '#0E63F7' : '#000000',
+            fontWeight: 'bold',
+            backgroundColor: '#FFFFFF',
+            border: activeTab === 'conversations' ? '1px solid #0E63F7' : '1px solid #D3D3D3',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: '2px',
+            marginRight: '5px',
+            marginBottom: '5px',
+          }}
+          onClick={() => setActiveTab('conversations')}
+        >
             Conversations
           </button>
           <div className="relative">
-            <button
-              className="w-[150px] h-[40px] flex items-center justify-between px-4 text-sm font-semibold bg-[#F7F7F7] border border-[#E0E0E0] text-gray-600 hover:bg-[#E0E0E0] hover:text-black rounded-md"
-              disabled
-            >
-              <span>Last 30 Days</span>
-              <svg
-                className="w-4 h-4 text-gray-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button>
+  <button
+    className="w-[126px] h-[36px] flex items-center px-4 bg-white shadow-lg border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-black rounded-lg"
+    style={{
+      width: '126px', // Matches the second box width
+      height: '36px', // Matches the second box height
+      padding: '0px 0px 0px 0px', // Consistent padding
+      borderRadius: '2px', // Same rounded corners
+      border: '0.5px solid #E0E0E0', // Matches border styling
+      backgroundColor: '#FFFFFF', // Matches the background color
+      marginBottom: '5px',
+    }}
+    disabled
+  >
+    <span
+      style={{
+        fontWeight: 'normal', // Unbold the text
+        fontSize: '13px', // Set font size to 13px
+        color: '#5A5A5A', // Set color to #5A5A5A
+        marginLeft: '10px',
+      }}
+    >
+      Last 30 Days
+    </span>
+    <svg
+      className="w-4 h-4 text-gray-600"
+      style={{
+        transform: 'translateX(10px)', // Shift the arrow to the left by 5px
+      }}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M19 9l-7 7-7-7"
+      ></path>
+    </svg>
+  </button>
+
+
+
             
             {/* Dropdown Items (hidden for now) */}
             <div className="absolute left-0 w-full mt-1 bg-white border border-[#E0E0E0] shadow-lg rounded-md hidden">

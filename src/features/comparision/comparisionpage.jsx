@@ -7,6 +7,7 @@ import "../../styles/MentionsChart.css";
 import axios from "axios";
 import { getBackendUrl } from "../../utils/apiUrl";
 import { addDays, format } from "date-fns";
+import { offset } from "highcharts";
 
 const Comparison = () => {
   const [activityData, setActivityData] = useState({ categories: [], series: [] });
@@ -58,7 +59,7 @@ const Comparison = () => {
       fetchTodayFollowerData(allBrands);
     }
   }, [brand, competitors]);
-  
+
 
   useEffect(() => {
     // fetchLastSearchedBrand();
@@ -209,15 +210,15 @@ const Comparison = () => {
     setSentimentSeries(sentimentSeries);
     setCategories(brandNames); // Set brand names as categories for y-axis
 
-    
+
   };
 
   const fetchTodayFollowerData = async (brands) => {
     const today = format(new Date(), "yyyy-MM-dd"); // Today's date
     const brandIndices = brands.map((brand) => getBrandIndex(brand)); // Get indices dynamically
     const allFollowerData = [];
-    
-  
+
+
     try {
       for (const index of brandIndices) {
         const response = await axios.post(
@@ -237,9 +238,9 @@ const Comparison = () => {
             },
           }
         );
-  
+
         const source = response.data.hits.hits[0]?._source;
-  
+
         allFollowerData.push({
           brandName: index, // Use formatted name for display
           instagram: source?.instagram || 0,
@@ -247,13 +248,13 @@ const Comparison = () => {
           twitter: source?.twitter || 0,
         });
       }
-  
+
       processFollowerChartData(allFollowerData);
     } catch (error) {
       console.error("Error fetching follower data:", error);
     }
   };
-  
+
   // Helper function to format brand names
   const getBrandIndex = (brand) => {
     const indexMapping = {
@@ -264,26 +265,32 @@ const Comparison = () => {
       levis: "levis",
       "jack & jones": "jack_&_jones"
     };
-  
+
     // Normalize input: trim spaces, convert to lowercase
     const normalizedBrand = brand.trim().toLowerCase();
-  
+
     // Check if the brand exists in the mapping
     return indexMapping[normalizedBrand] || normalizedBrand.replace(/\s+/g, "_");
   };
+
   
-  
+
+
   // Function to process follower data and prepare it for the chart
   const processFollowerChartData = (data) => {
-    const categories = data.map((item) => 
-      item.brandName.charAt(0).toUpperCase() + item.brandName.slice(1)
-    ); // Y-axis: brand names
+    const categories = data.map((item) =>
+      item.brandName
+        .split('_')
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(' ')
+    );
+    // Y-axis: brand names
     const series = [
       { name: "Instagram", data: data.map((item) => item.instagram) },
       { name: "LinkedIn", data: data.map((item) => item.linkedin) },
       { name: "Twitter", data: data.map((item) => item.twitter) },
     ];
-  
+
     setFollowerChartData({ categories, series });
   };
 
@@ -298,20 +305,21 @@ const Comparison = () => {
     },
     xaxis: {
       categories: activityData.categories,
-      title: { text: "Date", style: { fontSize: "14px", fontWeight: "bold", fontFamily: "Segoe UI" }, offsetY: -30, },
+      title: { text: "Date", style: { fontSize: "14px", fontWeight: "bold", fontFamily: "Segoe UI" }, offsetY: 1, },
       labels: {
         style: {
           fontWeight: "bold",
           fontSize: "13px",
           fontFamily: "Segoe UI",
         },
+        rotate: 0,
         formatter: (value) => value, // Keep all data, limit visible labels with `tickAmount`
       },
       tickAmount: Math.ceil(activityData.categories.length / 6),
     },
     yaxis: {
-      title: { text: "Brand Mentions" },
-      labels: { style: { fontWeight: "bold", fontSize: "13px" } },
+      title: { text: "Mentions", style: { fontSize: "14px", fontWeight: "bold", fontFamily: "Segoe UI" }, offsetX: -4 },
+      labels: { style: { fontWeight: "bold", fontSize: "13px" }, },
     },
     stroke: { curve: "smooth" },
     colors: ["#18A837", "#2D85E5", "#94467D", "#4CAF50", "#F44336"],
@@ -323,7 +331,7 @@ const Comparison = () => {
     xaxis: {
       categories: categories,
       title: {
-        text: "Brand Mentions",
+        text: "Mentions",
         style: { fontWeight: "bold", fontSize: "14px" },
         offsetX: -20,
       },
@@ -343,8 +351,8 @@ const Comparison = () => {
         style: { fontWeight: "bold", fontSize: "13px" }
       },
       title: {
-        text: "Brand",
-        style: { fontWeight: "bold", fontSize: "13px" },
+        // text: "Brand",
+        style: { fontWeight: "bold", fontSize: "13px", fontFamily: "Segoe UI" },
 
       },
       axisBorder: { show: false }, // Remove y-axis border line
@@ -369,40 +377,47 @@ const Comparison = () => {
   // };
 
   const followerChartOptions = {
-    chart: { 
-      type: "bar", 
-      stacked: true, 
+    chart: {
+      type: "bar",
+      stacked: true,
       toolbar: { show: false }
     },
     plotOptions: {
-      bar: { 
-        horizontal: true, 
+      bar: {
+        horizontal: true,
         barHeight: "70%"
       }
     },
-    
+
     yaxis: {
-      title: { 
-        text: "Brand", 
-        style: { fontSize: "14px", fontWeight: "bold" } 
+      title: {
+        // text: "Brand", 
+        style: { fontSize: "14px", fontWeight: "bold", fontFamily: "Segoe UI" }
       },
-      labels: { 
+      labels: {
         style: { fontWeight: "bold", fontSize: "13px" }
       }
     },
     grid: { show: false },
     legend: {
-      position: "top", 
+      position: "top",
       horizontalAlign: "center"
     },
     xaxis: {
       categories: followerChartData.categories, // Use brand names here
-      title: { 
-        text: "Follower Count", 
-        style: { fontSize: "14px", fontWeight: "bold" }
+      title: {
+        text: "Followers",
+        style: { fontSize: "14px", fontWeight: "bold", fontFamily: "Segoe UI" },
+        offsetY: 15,
       },
-      labels: { 
-        style: { fontWeight: "bold", fontSize: "13px" }
+      labels: {
+        style: { fontWeight: "bold", fontSize: "13px" },
+        formatter: (value) => {
+          if (value >= 1000) {
+            return (value / 1000) + "k"; // Convert to "k" format
+          }
+          return value;
+        },
       },
       axisBorder: { show: false }, // Remove x-axis border line
       axisTicks: { show: false }, // Remove x-axis ticks
@@ -410,7 +425,7 @@ const Comparison = () => {
     dataLabels: { enabled: false },
     colors: ["#5CC8C3", "#FB8F53", "#AC56AE"], // Instagram, Twitter, LinkedIn
   };
-  
+
 
   return (
     <div className="mentions-chart-container p-4 bg-gray-100 min-h-screen">
@@ -421,18 +436,31 @@ const Comparison = () => {
         <Header />
 
         {/* Dropdown Section */}
-        <div div className="flex items-center space-x-6 mt-10">
+        <div className="flex items-center space-x-6 mt-10">
           <div className="flex flex-col">
             <label htmlFor="brand" className="text-[14px] font-normal text-black mb-1">
               Brand
             </label>
             <div
               id="brand"
-              className="w-[300px] h-[40px] flex items-center rounded-md border-gray-300 shadow-sm bg-gray-100 text-black px-3 cursor-not-allowed"
+              className="w-[300px] h-[40px] flex items-center rounded-md border-gray-300 border bg-white text-black px-3 cursor-not-allowed"
             >
-              {brand || "Loading..."}
+              {brand ? (
+                <>
+                  <img
+                    src={`${brand.replace(/\s+/g, "_")}.png`}
+                    alt={brand}
+                    className="w-6 h-6 mr-3 object-contain"
+                  />
+                  {brand}
+                </>
+              ) : (
+                "Loading..."
+              )}
             </div>
           </div>
+
+
 
 
 
@@ -443,12 +471,23 @@ const Comparison = () => {
             >
               Competitor Brand
             </label>
-            <div className="flex flex-wrap items-center w-[900px] min-h-[40px] rounded-md border-gray-300 shadow-sm px-2 bg-gray-100">
+            <div className="flex flex-wrap items-center w-[900px] h-[40px] rounded-md border-gray-300 border bg-white shadow-sm px-2">
               {competitors.map((competitor, index) => (
                 <div
                   key={index}
-                  className="flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full mr-2 mb-2"
+                  className="flex items-center px-3 py-1  rounded-full mr-2 mb-2 "
                 >
+                  <img
+                    src={`${competitor.replace(/\s+/g, "_")}.png`}
+                    alt={competitor}
+                    className="w-8 h-8 mr-2 object-contain"
+                    style={{
+                      maxWidth: "32px", // Prevent overly wide logos
+                      maxHeight: "32px", // Maintain consistent height
+                      padding: competitor === "Mufti" || competitor === "Blackberrys" ? "2px" : "0",
+                      height: competitor === "Blackberrys" ? "48px" : "32px"
+                    }}
+                  />
                   <span>{competitor}</span>
                 </div>
               ))}
@@ -458,8 +497,8 @@ const Comparison = () => {
 
 
         {/* Charts */}
-        <h2 className="text-[20px] font-semibold mt-6">Competitor Analysis</h2>
-        <p className="text-[16px]">Know where your brand stacks in the industry</p>
+        <h2 className="text-[20px] font-semibold mt-6">Competitor Analysis (Last 30 Days)</h2>
+        <p className="text-[16px]">Know where your brand stands in the industry</p>
 
         <div className="space-y-6">
           <div className="bg-white shadow-lg rounded-lg p-6 mt-4">
@@ -467,12 +506,14 @@ const Comparison = () => {
               Brand activity trend over time
             </h3>
 
-            <ReactApexChart
-              options={apexChartOptions}
-              series={activityData.series}
-              type="line"
-              height={300}
-            />
+            <div className="mt-2"> {/* Use mt-6 or another value to move the chart */}
+              <ReactApexChart
+                options={apexChartOptions}
+                series={activityData.series}
+                type="line"
+                height={350}
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -498,7 +539,7 @@ const Comparison = () => {
                 type="bar"
                 height={300}
               />
-            </div>     
+            </div>
           </div>
           <div className="bg-white shadow-lg rounded-lg p-6 mt-4">
             <h3 className="relative text-[20px] font-semibold leading-[26.6px] text-left text-black decoration-skip-ink-none font-['Segoe UI'] mb-4 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[1px] after:bg-[#C6C6C6] after:opacity-50">
@@ -506,7 +547,7 @@ const Comparison = () => {
             </h3>
 
             <ReactApexChart
-              options={followerChartOptions }
+              options={followerChartOptions}
               series={followerChartData.series}
               type="bar"
               height={300}

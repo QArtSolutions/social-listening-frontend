@@ -528,6 +528,15 @@ const MentionsChart = () => {
           fontSize: "13px",
           fontFamily: "Segoe UI",
         },
+        formatter: (number) => {
+          if (number >= 1000000) {
+            return (number / 1000000).toFixed(1) + "M"; // For millions
+          } else if (number >= 1000) {
+            return (number / 1000).toFixed(1) + "k"; // For thousands
+          }
+          return number;
+        },
+        offsetY: -5, 
       },
     },
     stroke: { curve: "smooth" }, // Smooth lines for the chart

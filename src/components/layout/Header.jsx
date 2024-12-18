@@ -53,12 +53,12 @@ const Header =({ onSearch }) => {
     return (
         <header className="header bg-white shadow-sm flex items-center justify-center h-16 w-full fixed top-0 z-50">
             <div className="flex items-center justify-center w-[200px]">
-            <Link to="/" className="flex items-center space-x-2">
+            
                 <img src="/SocialAwaz.png" alt="social awaz" className="logo-image w-8 h-8" />
                 <span className="text-lg  text-white-800">
         Social Hear
       </span>
-            </Link>
+            
             </div>
             {/* <form onSubmit={handleSearch} className="search-form">
                 <input

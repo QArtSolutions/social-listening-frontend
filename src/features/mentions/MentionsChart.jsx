@@ -355,7 +355,7 @@ const MentionsChart = () => {
     },
     yaxis: {
       title: { 
-        text: "Mentions Count",
+        text: "Count",
         style: {
           fontSize: "14px",
           fontWeight: "bold",
@@ -377,8 +377,8 @@ const MentionsChart = () => {
         
       },
       min: 0, // Start the axis at 0
-      max: Math.ceil(Math.max(...trendChartData.series.map(s => Math.max(...s.data))))+1, // Round up to the nearest integer
-      // tickAmount: 5, // Ensure tick marks are integers
+      max: Math.ceil(Math.max(...mentionsChartData.series.map(s => Math.max(...s.data)))), // Round up to the nearest integer
+      tickAmount: 3, // Ensure tick marks are integers
     },
     stroke: { curve: "smooth" },
     grid: { show: false },
@@ -518,7 +518,7 @@ const MentionsChart = () => {
     },
     yaxis: {
       title: {
-        text: "Brand Mentions",
+        text: "Mentions",
         style: {
           fontSize: "14px",
           fontWeight: "bold",

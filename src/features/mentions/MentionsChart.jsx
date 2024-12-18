@@ -340,27 +340,42 @@ const MentionsChart = () => {
         fontFamily: "Segoe UI",
         color: "#333",
       },
-      offsetY: -30, // Move the title closer to the labels
+      offsetY: 0, // Move the title closer to the labels
     },
       labels: {
         style: {
           fontWeight: "bold",
-          fontSize: "13px",
+          fontSize: "12px",
           fontFamily: "Segoe UI",
         }, 
         formatter: (value) => value, // Keep all data, limit visible labels with `tickAmount`
+        rotate: 0, 
       },
       tickAmount: Math.ceil(mentionsChartData.categories.length / 6), // Show every 4th label
     },
     yaxis: {
-      title: { text: "Mentions Count" },
+      title: { 
+        text: "Mentions Count",
+        style: {
+          fontSize: "14px",
+          fontWeight: "bold",
+          fontFamily: "Segoe UI",
+          color: "#000000",
+          letterSpacing: "1.5px", // Adjust letter spacing
+        },
+     },
       labels: {
         style: {
           fontWeight: "bold",
-          fontSize: "13px",
+          fontSize: "12px",
           fontFamily: "Segoe UI",
+          color: "#000000",
         },
+        formatter: (value) => value.toFixed(0),
       },
+      min: 0, // Start the axis at 0
+      max: Math.ceil(Math.max(...trendChartData.series.map(s => Math.max(...s.data)))), // Round up to the nearest integer
+      tickAmount: 3, // Ensure tick marks are integers
     },
     stroke: { curve: "smooth" },
     grid: { show: false },
@@ -377,16 +392,17 @@ const MentionsChart = () => {
         fontFamily: "Segoe UI",
         color: "#333",
       },
-      offsetY: -30, // Move the title closer to the labels
+      offsetY: 0, // Move the title closer to the labels
     },
       categories: trendChartData.categories, // Use your x-axis categories
       labels: {
         style: {
           fontWeight: "bold",
-          fontSize: '13px',
+          fontSize: '10px',
           fontFamily: 'Segoe UI',
         },
         formatter: (value) => value, // Ensure all data is plotted, but limit labels
+        rotate: 0,  
       },
       tickAmount: Math.ceil(trendChartData.categories.length / 6), // Show every 4th label
       axisBorder: {
@@ -398,19 +414,43 @@ const MentionsChart = () => {
     },
     stroke: { curve: "smooth" },
     yaxis: {
-      title: { text: "Sentiments Count" },
+      title: { text: "Sentiments Count",
+        style: {
+        fontSize: "14px",
+        fontWeight: "bold",
+        fontFamily: "Segoe UI",
+        color: "#000000",
+        letterSpacing: "1.5px", // Adjust letter spacing
+      },
+     },
       labels: {
         style: {
-          fontSize: '13px',
           fontWeight: "bold",
-          fontFamily: 'Segoe UI',
+          fontSize: "12px",
+          fontFamily: "Segoe UI",
+          color: "#000000",
+          letterSpacing: "1.5px",
         },
+        formatter: (value) => value.toFixed(0),
       },
+      min: 0, // Start the axis at 0
+      max: Math.ceil(Math.max(...trendChartData.series.map(s => Math.max(...s.data)))), // Round up to the nearest integer
+      tickAmount: 3,
       axisBorder: {
         show: false, // Remove the left border
       },
       axisTicks: {
         show: false, // Remove ticks on the y-axis
+      },
+    },
+    legend: {
+      show: true,
+      position: "top", // Place the legend at the top
+      horizontalAlign: "left",
+      fontSize: "12px",
+      labels: {
+        colors: "#000000", // Legend label text color
+        useSeriesColors: false,
       },
     },
     grid: {
@@ -450,12 +490,12 @@ const MentionsChart = () => {
           fontFamily: "Segoe UI",
           color: "#333",
         },
-        offsetY: -30, // Match offset to bring title closer
+        offsetY: 0, // Match offset to bring title closer
       },
       labels: {
         style: {
           fontWeight: "bold",
-          fontSize: "13px",
+          fontSize: "12px",
           fontFamily: "Segoe UI",
         },
         formatter: (value) => {
@@ -464,17 +504,22 @@ const MentionsChart = () => {
           const month = date.toLocaleString("en-US", { month: "short" }); // Get short month name (e.g., Nov, Dec)
           return `${day} ${month}`; // Return formatted string
         },
+      min: 0, // Start the axis at 0
+      max: Math.ceil(Math.max(...trendChartData.series.map(s => Math.max(...s.data)))), // Round up to the nearest integer
+      tickAmount: 3,
+        rotate: 0, 
       },
       tickAmount: Math.ceil(followersData.length / 6), // Similar tick logic
     },
     yaxis: {
       title: {
-        text: "Follower Count",
+        text: "Brand Mentions",
         style: {
-          fontWeight: "bold",
           fontSize: "14px",
+          fontWeight: "bold",
           fontFamily: "Segoe UI",
           color: "#000000",
+          letterSpacing: "1.5px", // Adjust letter spacing
         },
       },
       labels: {
@@ -503,7 +548,7 @@ const MentionsChart = () => {
         vertical: 5,
       },
       fontSize: "12px",
-      fontWeight: "bold",
+     
       labels: {
         colors: "#000000", // Legend label text color
         useSeriesColors: false,

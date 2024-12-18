@@ -371,7 +371,10 @@ const MentionsChart = () => {
           fontFamily: "Segoe UI",
           color: "#000000",
         },
-        formatter: (value) => value.toFixed(0),
+        formatter: (value) => {
+          return value === 0 ? "" : value.toFixed(0); // Hide 0 label
+        },
+        
       },
       min: 0, // Start the axis at 0
       max: Math.ceil(Math.max(...mentionsChartData.series.map(s => Math.max(...s.data)))), // Round up to the nearest integer
@@ -431,11 +434,13 @@ const MentionsChart = () => {
           color: "#000000",
           letterSpacing: "1.5px",
         },
-        formatter: (value) => value.toFixed(0),
+        formatter: (value) => {
+          return value === 0 ? "" : value.toFixed(0); // Hide 0 label
+        },
       },
       min: 0, // Start the axis at 0
       max: Math.ceil(Math.max(...trendChartData.series.map(s => Math.max(...s.data)))), // Round up to the nearest integer
-      tickAmount: 3,
+      // tickAmount: 5,
       axisBorder: {
         show: false, // Remove the left border
       },
@@ -446,7 +451,7 @@ const MentionsChart = () => {
     legend: {
       show: true,
       position: "top", // Place the legend at the top
-      horizontalAlign: "left",
+      centerAlign: "center",
       fontSize: "12px",
       labels: {
         colors: "#000000", // Legend label text color
@@ -506,10 +511,10 @@ const MentionsChart = () => {
         },
       min: 0, // Start the axis at 0
       max: Math.ceil(Math.max(...trendChartData.series.map(s => Math.max(...s.data)))), // Round up to the nearest integer
-      tickAmount: 3,
+      // tickAmount: 3, // useful for x axis not for y axis
         rotate: 0, 
       },
-      tickAmount: Math.ceil(followersData.length / 6), // Similar tick logic
+      tickAmount: Math.ceil(followersData.length / 6 ), // Similar tick logic
     },
     yaxis: {
       title: {
@@ -529,10 +534,11 @@ const MentionsChart = () => {
           fontFamily: "Segoe UI",
         },
         formatter: (number) => {
+          if (number === 0) return "";
           if (number >= 1000000) {
-            return (number / 1000000).toFixed(1) + "M"; // For millions
+            return Math.floor(number / 1000000) + "M"; // For millions
           } else if (number >= 1000) {
-            return (number / 1000).toFixed(1) + "k"; // For thousands
+            return Math.floor(number / 1000) + "k"; // For thousands
           }
           return number;
         },
@@ -545,7 +551,8 @@ const MentionsChart = () => {
     legend: {
       show: true,
       position: "top", // Place the legend at the top
-      horizontalAlign: "left", // Align legend items to the left
+      // horizontalAlign: "left", // Align legend items to the left
+      centerAlign: "center",
       markers: {
         width: 1, // Set the width of legend line markers
         height: 0, // Set marker height to show a thin line
@@ -584,6 +591,7 @@ const MentionsChart = () => {
               Total Mentions
               <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>
             </h3>
+            
             <ReactApexChart
               options={apexChartOptions}
               series={mentionsChartData.series}
@@ -642,9 +650,9 @@ const MentionsChart = () => {
             {/* Trend Chart Card */}
             <div className="bg-white shadow-lg rounded-lg p-6"style={{ width: "104%", marginLeft: "auto", marginRight: "auto" }}>
               <h3 className="font-sans text-[20px] font-normal leading-[15px] text-left underline-offset-auto decoration-slice mb-4 relative">
-                Sentiment Trend Analysis
+                Sentiment Analysis
                 <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>
-              </h3>
+              </h3>              
               <ReactApexChart
                 options={trendChartOptions}
                 series={trendChartData.series}
@@ -659,14 +667,21 @@ const MentionsChart = () => {
           </div>
 
              {/* New Chart */}
-             <div
+            
+<div
   className="bg-white shadow-lg rounded-lg p-6 -mt-6"
   style={{ width: "102%", marginLeft: "auto", marginRight: "auto" }}
 >
-  <h3 className="font-sans text-[20px] font-normal leading-[26.6px] text-left underline-offset-auto decoration-slice mb-4 relative">
-    Followers Count
-    <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>
-  </h3>
+  {/* Header with title and keys */}
+  <div className="flex justify-between items-center mb-4 relative">
+    <h3 className="font-sans text-[20px] font-normal leading-[26.6px] text-left underline-offset-auto decoration-slice"
+     style={{ fontFamily: "Segoe UI" }}>
+      Followers Count
+      <span className="absolute bottom-[-8px] left-0 w-full h-[1px] bg-[#C6C6C6] opacity-50"></span>
+    </h3>
+    
+  </div>
+
   {loading ? (
     <p>Loading...</p>
   ) : (
@@ -677,7 +692,9 @@ const MentionsChart = () => {
       height={300}
     />
   )}
-  </div>
+</div>
+
+
  </div >
         
       )}

@@ -59,7 +59,7 @@ const Comparison = () => {
       fetchTodayFollowerData(allBrands);
     }
   }, [brand, competitors]);
-  
+
 
   useEffect(() => {
     // fetchLastSearchedBrand();
@@ -210,15 +210,15 @@ const Comparison = () => {
     setSentimentSeries(sentimentSeries);
     setCategories(brandNames); // Set brand names as categories for y-axis
 
-    
+
   };
 
   const fetchTodayFollowerData = async (brands) => {
     const today = format(new Date(), "yyyy-MM-dd"); // Today's date
     const brandIndices = brands.map((brand) => getBrandIndex(brand)); // Get indices dynamically
     const allFollowerData = [];
-    
-  
+
+
     try {
       for (const index of brandIndices) {
         const response = await axios.post(
@@ -238,9 +238,9 @@ const Comparison = () => {
             },
           }
         );
-  
+
         const source = response.data.hits.hits[0]?._source;
-  
+
         allFollowerData.push({
           brandName: index, // Use formatted name for display
           instagram: source?.instagram || 0,
@@ -248,13 +248,13 @@ const Comparison = () => {
           twitter: source?.twitter || 0,
         });
       }
-  
+
       processFollowerChartData(allFollowerData);
     } catch (error) {
       console.error("Error fetching follower data:", error);
     }
   };
-  
+
   // Helper function to format brand names
   const getBrandIndex = (brand) => {
     const indexMapping = {
@@ -265,18 +265,20 @@ const Comparison = () => {
       levis: "levis",
       "jack & jones": "jack_&_jones"
     };
-  
+
     // Normalize input: trim spaces, convert to lowercase
     const normalizedBrand = brand.trim().toLowerCase();
-  
+
     // Check if the brand exists in the mapping
     return indexMapping[normalizedBrand] || normalizedBrand.replace(/\s+/g, "_");
   };
+
   
-  
+
+
   // Function to process follower data and prepare it for the chart
   const processFollowerChartData = (data) => {
-    const categories = data.map((item) => 
+    const categories = data.map((item) =>
       item.brandName
         .split('_')
         .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
@@ -288,7 +290,7 @@ const Comparison = () => {
       { name: "LinkedIn", data: data.map((item) => item.linkedin) },
       { name: "Twitter", data: data.map((item) => item.twitter) },
     ];
-  
+
     setFollowerChartData({ categories, series });
   };
 
@@ -316,8 +318,8 @@ const Comparison = () => {
       tickAmount: Math.ceil(activityData.categories.length / 6),
     },
     yaxis: {
-      title: { text: "Mentions",style: { fontSize: "14px", fontWeight: "bold", fontFamily: "Segoe UI" }, offsetX: -4 },
-      labels: { style: { fontWeight: "bold", fontSize: "13px" },  },
+      title: { text: "Mentions", style: { fontSize: "14px", fontWeight: "bold", fontFamily: "Segoe UI" }, offsetX: -4 },
+      labels: { style: { fontWeight: "bold", fontSize: "13px" }, },
     },
     stroke: { curve: "smooth" },
     colors: ["#18A837", "#2D85E5", "#94467D", "#4CAF50", "#F44336"],
@@ -375,40 +377,40 @@ const Comparison = () => {
   // };
 
   const followerChartOptions = {
-    chart: { 
-      type: "bar", 
-      stacked: true, 
+    chart: {
+      type: "bar",
+      stacked: true,
       toolbar: { show: false }
     },
     plotOptions: {
-      bar: { 
-        horizontal: true, 
+      bar: {
+        horizontal: true,
         barHeight: "70%"
       }
     },
-    
+
     yaxis: {
-      title: { 
+      title: {
         // text: "Brand", 
-        style: { fontSize: "14px", fontWeight: "bold", fontFamily: "Segoe UI" } 
+        style: { fontSize: "14px", fontWeight: "bold", fontFamily: "Segoe UI" }
       },
-      labels: { 
+      labels: {
         style: { fontWeight: "bold", fontSize: "13px" }
       }
     },
     grid: { show: false },
     legend: {
-      position: "top", 
+      position: "top",
       horizontalAlign: "center"
     },
     xaxis: {
       categories: followerChartData.categories, // Use brand names here
-      title: { 
-        text: "Followers", 
+      title: {
+        text: "Followers",
         style: { fontSize: "14px", fontWeight: "bold", fontFamily: "Segoe UI" },
         offsetY: 15,
       },
-      labels: { 
+      labels: {
         style: { fontWeight: "bold", fontSize: "13px" },
         formatter: (value) => {
           if (value >= 1000) {
@@ -423,7 +425,7 @@ const Comparison = () => {
     dataLabels: { enabled: false },
     colors: ["#5CC8C3", "#FB8F53", "#AC56AE"], // Instagram, Twitter, LinkedIn
   };
-  
+
 
   return (
     <div className="mentions-chart-container p-4 bg-gray-100 min-h-screen">
@@ -434,7 +436,7 @@ const Comparison = () => {
         <Header />
 
         {/* Dropdown Section */}
-        <div div className="flex items-center space-x-6 mt-10">
+        <div className="flex items-center space-x-6 mt-10">
           <div className="flex flex-col">
             <label htmlFor="brand" className="text-[14px] font-normal text-black mb-1">
               Brand
@@ -443,9 +445,22 @@ const Comparison = () => {
               id="brand"
               className="w-[300px] h-[40px] flex items-center rounded-md border-gray-300 border bg-white text-black px-3 cursor-not-allowed"
             >
-              {brand || "Loading..."}
+              {brand ? (
+                <>
+                  <img
+                    src={`${brand.replace(/\s+/g, "_")}.png`}
+                    alt={brand}
+                    className="w-6 h-6 mr-3 object-contain"
+                  />
+                  {brand}
+                </>
+              ) : (
+                "Loading..."
+              )}
             </div>
           </div>
+
+
 
 
 
@@ -460,8 +475,19 @@ const Comparison = () => {
               {competitors.map((competitor, index) => (
                 <div
                   key={index}
-                  className="flex items-center px-3 py-1 bg-blue-100 text-blue-800 rounded-full mr-2 mb-2 mt-1"
+                  className="flex items-center px-3 py-1  rounded-full mr-2 mb-2 "
                 >
+                  <img
+                    src={`${competitor.replace(/\s+/g, "_")}.png`}
+                    alt={competitor}
+                    className="w-8 h-8 mr-2 object-contain"
+                    style={{
+                      maxWidth: "32px", // Prevent overly wide logos
+                      maxHeight: "32px", // Maintain consistent height
+                      padding: competitor === "Mufti" || competitor === "Blackberrys" ? "2px" : "0",
+                      height: competitor === "Blackberrys" ? "48px" : "32px"
+                    }}
+                  />
                   <span>{competitor}</span>
                 </div>
               ))}
@@ -481,13 +507,13 @@ const Comparison = () => {
             </h3>
 
             <div className="mt-2"> {/* Use mt-6 or another value to move the chart */}
-    <ReactApexChart
-      options={apexChartOptions}
-      series={activityData.series}
-      type="line"
-      height={350} 
-    />
-  </div>
+              <ReactApexChart
+                options={apexChartOptions}
+                series={activityData.series}
+                type="line"
+                height={350}
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -513,7 +539,7 @@ const Comparison = () => {
                 type="bar"
                 height={300}
               />
-            </div>     
+            </div>
           </div>
           <div className="bg-white shadow-lg rounded-lg p-6 mt-4">
             <h3 className="relative text-[20px] font-semibold leading-[26.6px] text-left text-black decoration-skip-ink-none font-['Segoe UI'] mb-4 after:content-[''] after:absolute after:left-0 after:bottom-[-4px] after:w-full after:h-[1px] after:bg-[#C6C6C6] after:opacity-50">
@@ -521,7 +547,7 @@ const Comparison = () => {
             </h3>
 
             <ReactApexChart
-              options={followerChartOptions }
+              options={followerChartOptions}
               series={followerChartData.series}
               type="bar"
               height={300}
